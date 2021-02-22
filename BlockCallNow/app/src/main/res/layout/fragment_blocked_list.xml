@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="utf-8"?><!--<androidx.coordinatorlayout.widget.CoordinatorLayout -->
+<!--    android:layout_width="match_parent"-->
+<!--    android:layout_height="wrap_content">-->
+
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".ui.menu.home.BlockedListFragment">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:paddingBottom="@dimen/_10sdp">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/tv_hello"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/label_hello"
+                android:textColor="#aaaaaa"
+                android:textSize="@dimen/_15ssp"
+                tools:ignore="RelativeOverlap" />
+
+            <TextView
+                android:id="@+id/tv_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/tv_hello"
+                android:textColor="#000"
+                android:textSize="@dimen/_30ssp"
+                android:textStyle="bold"
+                tools:text="Eliel Joel" />
+
+            <com.google.android.material.switchmaterial.SwitchMaterial
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:checked="false"
+                android:thumb="@drawable/custom_thumb"
+                android:visibility="gone"
+                app:track="@drawable/custom_track" />
+
+        </RelativeLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/cl_plan_detail"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#1880FF"
+            android:visibility="gone">
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_32sdp"
+                android:scaleType="fitXY"
+                android:src="@drawable/ic_drawer_wave"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:ignore="ContentDescription" />
+
+            <!--        <ImageView-->
+            <!--            android:id="@+id/imageView11"-->
+            <!--            android:layout_width="wrap_content"-->
+            <!--            android:layout_height="wrap_content"-->
+            <!--            android:layout_marginStart="8dp"-->
+            <!--            android:layout_marginTop="12dp"-->
+            <!--            -->
+            <!--            android:src="@drawable/ic_block_list"-->
+            <!--            app:layout_constraintStart_toStartOf="0"-->
+            <!--            app:layout_constraintTop_toTopOf="0" />-->
+
+            <TextView
+                android:id="@+id/tv_plan_msg"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/_5sdp"
+                android:text="@string/msg_your_plan_has_expired_please_upgrade_to_use_full_functionality"
+                android:textColor="@color/colorWhite"
+                android:textSize="@dimen/_15ssp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/textView19"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/_5sdp"
+                android:text="@string/label_protection_status"
+                android:textColor="@color/colorWhite"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tv_plan_msg" />
+
+            <TextView
+                android:id="@+id/tv_protection"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:padding="@dimen/_5sdp"
+                android:text="@string/label_disabled"
+                android:textAllCaps="true"
+                android:textColor="@color/colorWhite"
+                app:layout_constraintStart_toEndOf="@+id/textView19"
+                app:layout_constraintTop_toBottomOf="@+id/tv_plan_msg" />
+
+            <Button
+                android:id="@+id/btn_upgrade"
+                style="@style/BtnSecondary"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="16dp"
+                android:layout_marginBottom="8dp"
+                android:text="@string/label_upgrade"
+                android:textAllCaps="false"
+                android:textColor="@color/colorBlack"
+                android:textSize="@dimen/_12ssp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <!--    <androidx.cardview.widget.CardView-->
+        <!--        android:id="@+id/cb_block"-->
+        <!--        android:layout_width="match_parent"-->
+        <!--        android:layout_height="wrap_content"-->
+        <!--        android:layout_marginTop="@dimen/_10sdp"-->
+        <!--        app:cardBackgroundColor="#1880FF"-->
+        <!--        app:cardCornerRadius="@dimen/_15sdp"-->
+        <!--        app:cardUseCompatPadding="true"-->
+        <!--        app:contentPadding="@dimen/_10sdp">-->
+
+        <!--        <FrameLayout-->
+        <!--            android:layout_width="match_parent"-->
+        <!--            android:layout_height="wrap_content">-->
+
+        <!--            <ImageView-->
+        <!--                android:layout_width="wrap_content"-->
+        <!--                android:layout_height="wrap_content"-->
+        <!--                android:layout_marginTop="32dp"-->
+        <!--                android:scaleType="fitXY"-->
+        <!--                android:src="@drawable/ic_drawer_wave"-->
+        <!--                app:layout_constraintBottom_toBottomOf="0"-->
+        <!--                app:layout_constraintEnd_toEndOf="0"-->
+        <!--                app:layout_constraintStart_toStartOf="0"-->
+        <!--                app:layout_constraintTop_toTopOf="0" />-->
+
+        <!--        </FrameLayout>-->
+
+
+        <!--    </androidx.cardview.widget.CardView>-->
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/tv_blocked_list"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_white_round"
+                android:drawablePadding="@dimen/_5sdp"
+                android:padding="@dimen/_10sdp"
+                android:text="@string/menu_blocked_list"
+                android:textSize="@dimen/_15ssp"
+                app:drawableStartCompat="@drawable/ic_block_list" />
+
+            <ImageView
+                android:id="@+id/iv_call"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_toEndOf="@+id/tv_blocked_list"
+                android:background="@drawable/bg_circle"
+                android:padding="@dimen/_10sdp"
+                android:src="@drawable/ic_block"
+                tools:ignore="ContentDescription" />
+
+        </RelativeLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_3sdp"
+            android:layout_marginTop="@dimen/_5sdp"
+            android:background="#e2e2e2" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_5sdp"
+            android:text="@string/msg_please_click_button_to_add_number_to_the_block_list"
+            android:textSize="@dimen/_14ssp" />
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ProgressBar
+                android:id="@+id/pb"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:visibility="gone" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_block_list"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_5sdp"
+                android:nestedScrollingEnabled="false"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                tools:listitem="@layout/item_block_call" />
+        </FrameLayout>
+
+    </LinearLayout>
+</androidx.core.widget.NestedScrollView><!--</androidx.coordinatorlayout.widget.CoordinatorLayout>-->

@@ -1,0 +1,5 @@
+include ':app', ':common', ':commonframesequence', ':vcard', ':chips', ':photoviewer', ':colorpicker'
+//include ':app',':chips',
+
+
+rootProject.name = "Block Call Now"

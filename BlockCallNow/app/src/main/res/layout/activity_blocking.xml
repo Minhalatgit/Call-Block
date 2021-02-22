@@ -1,0 +1,218 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".ui.BlockingActivity">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <ImageView
+                android:id="@+id/iv_back"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/bg_back"
+                tools:ignore="ContentDescription" />
+
+            <TextView
+                android:id="@+id/tv_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="@dimen/_10sdp"
+                android:text="@string/label_blocking"
+                android:textColor="#000"
+                android:textSize="@dimen/_15ssp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+        </androidx.appcompat.widget.Toolbar>
+
+        <RelativeLayout
+            android:id="@+id/rl_calls"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/_10sdp"
+            android:visibility="gone"
+            app:layout_constraintTop_toBottomOf="@+id/toolbar">
+
+            <TextView
+                android:id="@+id/tv_calls"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="sans-serif-medium"
+                android:text="@string/label_calls"
+                android:textColor="#000"
+                android:textSize="@dimen/_12ssp"
+                tools:ignore="RelativeOverlap" />
+
+            <TextView
+                android:id="@+id/tv_enable"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/tv_calls"
+                android:layout_marginTop="@dimen/_5sdp"
+                android:text="@string/label_enable_blocked_list"
+                android:textColor="#000"
+                android:textSize="@dimen/_12ssp" />
+
+            <com.google.android.material.switchmaterial.SwitchMaterial
+                android:id="@+id/sw"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:thumb="@drawable/custom_thumb"
+                app:track="@drawable/custom_track" />
+
+        </RelativeLayout>
+
+        <androidx.appcompat.widget.AppCompatCheckBox
+            android:id="@+id/cb_private_numbers"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/_10sdp"
+            android:background="@null"
+            android:button="@null"
+            android:drawableEnd="?android:attr/listChoiceIndicatorMultiple"
+            android:text="@string/label_block_private_numbers"
+            android:textColor="#000"
+            android:textSize="@dimen/_12ssp"
+            app:layout_constraintTop_toBottomOf="@+id/rl_calls" />
+
+        <androidx.appcompat.widget.AppCompatCheckBox
+            android:id="@+id/cb_unknown_number"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/_10sdp"
+            android:background="@null"
+            android:button="@null"
+            android:drawableEnd="?android:attr/listChoiceIndicatorMultiple"
+            android:text="@string/label_block_unknown_numbers"
+            android:textColor="#000"
+            android:textSize="@dimen/_12ssp"
+            app:layout_constraintTop_toBottomOf="@+id/cb_private_numbers" />
+
+        <androidx.appcompat.widget.AppCompatCheckBox
+            android:id="@+id/cb_spam"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/_10sdp"
+            android:background="@null"
+            android:button="@null"
+            android:drawableEnd="?android:attr/listChoiceIndicatorMultiple"
+            android:text="@string/label_block_spam_likely_numbers"
+            android:textColor="#000"
+            android:textSize="@dimen/_12ssp"
+            app:layout_constraintTop_toBottomOf="@+id/cb_unknown_number" />
+
+        <androidx.appcompat.widget.AppCompatCheckBox
+            android:id="@+id/cb_international"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/_10sdp"
+            android:background="@null"
+            android:button="@null"
+            android:drawableEnd="?android:attr/listChoiceIndicatorMultiple"
+            android:text="@string/label_block_international_numbers"
+            android:textColor="#000"
+            android:textSize="@dimen/_12ssp"
+            app:layout_constraintTop_toBottomOf="@+id/cb_spam" />
+
+        <androidx.appcompat.widget.AppCompatCheckBox
+            android:id="@+id/cb_block_all_except_contacts"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/_10sdp"
+            android:background="@null"
+            android:button="@null"
+            android:drawableEnd="?android:attr/listChoiceIndicatorMultiple"
+            android:text="@string/label_block_all_calls_except_my_contacts"
+            android:textColor="#000"
+            android:textSize="@dimen/_12ssp"
+            app:layout_constraintTop_toBottomOf="@+id/cb_international" />
+
+        <androidx.appcompat.widget.AppCompatCheckBox
+            android:id="@+id/cb_block_all"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/_10sdp"
+            android:background="@null"
+            android:button="@null"
+            android:drawableEnd="?android:attr/listChoiceIndicatorMultiple"
+            android:text="@string/label_block_all_calls"
+            android:textColor="#000"
+            android:textSize="@dimen/_12ssp"
+            app:layout_constraintTop_toBottomOf="@+id/cb_block_all_except_contacts" />
+
+        <androidx.appcompat.widget.AppCompatCheckBox
+            android:id="@+id/cb_voip"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/_10sdp"
+            android:background="@null"
+            android:button="@null"
+            android:drawableEnd="?android:attr/listChoiceIndicatorMultiple"
+            android:text="@string/label_block_all_calls_while_voip_is_established"
+            android:textColor="#000"
+            android:textSize="@dimen/_12ssp"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/cb_block_all" />
+
+        <View
+            android:id="@+id/view1"
+            android:layout_width="match_parent"
+            android:layout_height="1.5dp"
+            android:layout_marginTop="@dimen/_10sdp"
+            android:background="@color/fastscroll_track_color"
+            app:layout_constraintTop_toBottomOf="@+id/cb_voip" />
+        <!--      Messages Block Setting  -->
+
+        <TextView
+            android:id="@+id/tv_msg"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/_10sdp"
+            android:fontFamily="sans-serif-medium"
+            android:text="@string/label_text_messages"
+            android:textColor="#000"
+            android:textSize="@dimen/_12ssp"
+            app:layout_constraintTop_toBottomOf="@+id/view1" />
+
+        <androidx.appcompat.widget.AppCompatCheckBox
+            android:id="@+id/cb_msg_unknown_number"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/_10sdp"
+            android:background="@null"
+            android:button="@null"
+            android:drawableEnd="?android:attr/listChoiceIndicatorMultiple"
+            android:text="@string/label_block_unknown_numbers"
+            android:textColor="#000"
+            android:textSize="@dimen/_12ssp"
+            app:layout_constraintTop_toBottomOf="@+id/tv_msg" />
+
+        <androidx.appcompat.widget.AppCompatCheckBox
+            android:id="@+id/cb_msg_non_numeric_number"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/_10sdp"
+            android:background="@null"
+            android:button="@null"
+            android:drawableEnd="?android:attr/listChoiceIndicatorMultiple"
+            android:text="@string/label_block_non_numeric_numbers"
+            android:textColor="#000"
+            android:textSize="@dimen/_12ssp"
+            app:layout_constraintTop_toBottomOf="@+id/cb_msg_unknown_number" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

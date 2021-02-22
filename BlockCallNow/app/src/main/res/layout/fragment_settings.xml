@@ -1,0 +1,237 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:paddingStart="@dimen/_15sdp"
+    android:paddingEnd="@dimen/_15sdp"
+    tools:context=".ui.menu.settings.SettingsFragment">
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/_10sdp"
+        android:text="@string/settings"
+        android:textColor="#000"
+        android:textSize="@dimen/_15ssp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <!--    <LinearLayout-->
+    <!--        android:id="@+id/ll1"-->
+    <!--        android:layout_width="match_parent"-->
+    <!--        android:layout_height="@dimen/_120sdp"-->
+    <!--        android:layout_marginTop="@dimen/_15sdp"-->
+    <!--        android:baselineAligned="false"-->
+
+    <!--        android:gravity="center"-->
+    <!--        android:orientation="horizontal"-->
+    <!--        app:layout_constraintTop_toBottomOf="@+id/textView">-->
+
+    <!--        <FrameLayout-->
+    <!--            android:id="@+id/fl_forward_action"-->
+    <!--            android:layout_width="0dp"-->
+    <!--            android:layout_height="match_parent"-->
+    <!--            android:layout_weight="1"-->
+    <!--            android:background="@drawable/bg_white_round_corner"-->
+    <!--            android:foreground="?selectableItemBackgroundBorderless"-->
+    <!--            android:padding="@dimen/_10sdp">-->
+
+    <!--            <TextView-->
+    <!--                android:layout_width="wrap_content"-->
+    <!--                android:layout_height="wrap_content"-->
+    <!--                android:layout_gravity="center"-->
+    <!--                android:drawablePadding="@dimen/_10sdp"-->
+
+    <!--                android:gravity="center"-->
+    <!--                android:text="@string/label_activate_deactivate"-->
+    <!--                android:textSize="@dimen/_13ssp"-->
+    <!--                app:drawableTopCompat="@drawable/ic_forward_action" />-->
+
+    <!--        </FrameLayout>-->
+
+    <!--        <Space-->
+    <!--            android:layout_width="@dimen/_15sdp"-->
+    <!--            android:layout_height="match_parent" />-->
+
+    <!--        <FrameLayout-->
+    <!--            android:layout_width="0dp"-->
+    <!--            android:layout_height="match_parent"-->
+    <!--            android:layout_weight="1"-->
+    <!--            android:background="@drawable/bg_white_round_corner"-->
+    <!--            android:padding="@dimen/_10sdp">-->
+
+    <!--            <TextView-->
+    <!--                android:layout_width="wrap_content"-->
+    <!--                android:layout_height="wrap_content"-->
+    <!--                android:layout_gravity="center"-->
+    <!--                android:drawablePadding="@dimen/_10sdp"-->
+    <!--                android:gravity="center"-->
+
+    <!--                android:text="@string/label_notifications"-->
+    <!--                android:textSize="@dimen/_12ssp"-->
+    <!--                app:drawableTopCompat="@drawable/ic_notif" />-->
+
+    <!--        </FrameLayout>-->
+    <!--    </LinearLayout>-->
+
+    <!--    <LinearLayout-->
+    <!--        android:id="@+id/ll12"-->
+    <!--        android:layout_width="match_parent"-->
+    <!--        android:layout_height="@dimen/_120sdp"-->
+    <!--        android:layout_marginTop="@dimen/_15sdp"-->
+    <!--        android:baselineAligned="false"-->
+
+    <!--        android:gravity="center"-->
+    <!--        android:orientation="horizontal"-->
+
+    <!--        app:layout_constraintTop_toBottomOf="@+id/ll1">-->
+
+    <!--        <FrameLayout-->
+    <!--            android:layout_width="0dp"-->
+    <!--            android:layout_height="match_parent"-->
+    <!--            android:layout_weight="1"-->
+    <!--            android:background="@drawable/bg_white_round_corner"-->
+    <!--            android:padding="@dimen/_10sdp">-->
+
+    <!--            <TextView-->
+    <!--                android:layout_width="wrap_content"-->
+    <!--                android:layout_height="wrap_content"-->
+    <!--                android:layout_gravity="center"-->
+    <!--                android:drawablePadding="@dimen/_10sdp"-->
+
+    <!--                android:gravity="center"-->
+    <!--                android:text="@string/label_support"-->
+    <!--                android:textSize="@dimen/_13ssp"-->
+    <!--                app:drawableTopCompat="@drawable/img_headphone" />-->
+
+    <!--        </FrameLayout>-->
+
+    <!--        <Space-->
+    <!--            android:layout_width="@dimen/_15sdp"-->
+    <!--            android:layout_height="match_parent" />-->
+
+    <!--        <FrameLayout-->
+    <!--            android:layout_width="0dp"-->
+    <!--            android:layout_height="match_parent"-->
+    <!--            android:layout_weight="1"-->
+    <!--            android:background="@drawable/bg_white_round_corner"-->
+    <!--            android:padding="@dimen/_10sdp">-->
+
+    <!--            <TextView-->
+    <!--                android:layout_width="wrap_content"-->
+    <!--                android:layout_height="wrap_content"-->
+    <!--                android:layout_gravity="center"-->
+    <!--                android:drawablePadding="@dimen/_10sdp"-->
+    <!--                android:gravity="center"-->
+
+    <!--                android:text="@string/label_rate_5_stars"-->
+    <!--                android:textSize="@dimen/_12ssp"-->
+    <!--                app:drawableTopCompat="@drawable/ic_stars" />-->
+
+    <!--        </FrameLayout>-->
+    <!--    </LinearLayout>-->
+
+    <TextView
+        android:id="@+id/tv_activate_option"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/_10sdp"
+        android:background="@drawable/bg_white_round"
+        android:drawablePadding="@dimen/_5sdp"
+        android:padding="@dimen/_10sdp"
+        android:text="@string/label_activate_deactivate"
+        android:textColor="#000"
+        android:textSize="@dimen/_15ssp"
+        app:drawableStartCompat="@drawable/ic_block_list"
+        app:layout_constraintTop_toBottomOf="@+id/textView" />
+
+    <TextView
+        android:id="@+id/tv_blocking"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/_10sdp"
+        android:background="@drawable/bg_white_round"
+        android:drawablePadding="@dimen/_5sdp"
+        android:padding="@dimen/_10sdp"
+        android:text="@string/label_blocking"
+        android:textColor="#000"
+        android:textSize="@dimen/_15ssp"
+        app:drawableStartCompat="@drawable/ic_partial_block"
+        app:layout_constraintTop_toBottomOf="@+id/tv_activate_option" />
+
+    <TextView
+        android:id="@+id/tv_support"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/_10sdp"
+        android:background="@drawable/bg_white_round"
+        android:drawablePadding="@dimen/_5sdp"
+        android:padding="@dimen/_10sdp"
+        android:text="@string/label_support"
+        android:textColor="#000"
+        android:textSize="@dimen/_15ssp"
+        app:drawableStartCompat="@drawable/ic_helpline"
+        app:layout_constraintTop_toBottomOf="@+id/tv_blocking" />
+
+    <TextView
+        android:id="@+id/tv_rate"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/_10sdp"
+        android:background="@drawable/bg_white_round"
+        android:drawablePadding="@dimen/_5sdp"
+        android:padding="@dimen/_10sdp"
+        android:text="@string/label_rate_5_stars"
+        android:textColor="#000"
+        android:textSize="@dimen/_15ssp"
+        app:drawableStartCompat="@drawable/ic_star"
+        app:layout_constraintTop_toBottomOf="@+id/tv_support" />
+
+    <TextView
+        android:id="@+id/tv_affiliate"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/_10sdp"
+        android:background="@drawable/bg_white_round"
+        android:drawablePadding="@dimen/_5sdp"
+        android:padding="@dimen/_10sdp"
+        android:text="@string/label_affiliate_program"
+        android:textColor="#000"
+        android:textSize="@dimen/_15ssp"
+        app:drawableStartCompat="@drawable/ic_doller"
+        app:layout_constraintTop_toBottomOf="@+id/tv_rate" />
+
+    <!--    <LinearLayout-->
+    <!--        android:layout_width="0dp"-->
+    <!--        android:layout_height="@dimen/_100sdp"-->
+    <!--        android:layout_marginTop="@dimen/_15sdp"-->
+    <!--        android:background="@drawable/bg_white_round_corner"-->
+    <!--        android:gravity="center"-->
+    <!--        android:orientation="horizontal"-->
+    <!--        android:weightSum="1"-->
+    <!--        app:layout_constraintTop_toBottomOf="@+id/textView">-->
+
+    <!--        <FrameLayout-->
+    <!--            android:layout_width="0dp"-->
+    <!--            android:layout_height="wrap_content"-->
+    <!--            android:layout_weight="@integer/config_navAnimTime">-->
+
+    <!--            <TextView-->
+    <!--                android:layout_width="wrap_content"-->
+    <!--                android:layout_height="wrap_content"-->
+    <!--                android:layout_gravity="center"-->
+    <!--                android:drawablePadding="@dimen/_10sdp"-->
+
+    <!--                android:text="@string/label_activate_deactivate"-->
+    <!--                android:textSize="@dimen/_15ssp"-->
+    <!--                app:drawableTopCompat="@drawable/ic_block_list" />-->
+
+    <!--        </FrameLayout>-->
+    <!--    </LinearLayout>-->
+
+</androidx.constraintlayout.widget.ConstraintLayout>

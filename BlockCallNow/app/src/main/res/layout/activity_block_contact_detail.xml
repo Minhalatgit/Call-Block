@@ -1,0 +1,518 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <com.google.android.material.appbar.AppBarLayout
+            android:layout_width="match_parent"
+            android:layout_height="?actionBarSize"
+            android:background="#f6f6f6"
+            app:elevation="0dp">
+
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <ImageView
+                    android:id="@+id/iv_back"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="?selectableItemBackgroundBorderless"
+                    android:src="@drawable/bg_back"
+                    tools:ignore="ContentDescription" />
+
+                <TextView
+                    android:id="@+id/tv_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:text="@string/label_add"
+                    android:textColor="#000"
+                    android:textSize="@dimen/_12ssp" />
+            </androidx.appcompat.widget.Toolbar>
+        </com.google.android.material.appbar.AppBarLayout>
+
+        <androidx.core.widget.NestedScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="#f6f6f6"
+                android:paddingBottom="@dimen/_10sdp"
+                tools:context=".ui.menu.home.BlockContactDetail">
+
+                <TextView
+                    android:id="@+id/tv_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/_10sdp"
+                    android:textColor="@color/colorBlack"
+                    android:textSize="@dimen/_15ssp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:text="John Wick" />
+                <!--                <EditText-->
+                <!--                    android:id="@+id/et_number"-->
+                <!--                    android:layout_width="match_parent"-->
+                <!--                    android:layout_height="wrap_content"-->
+                <!--                    android:layout_margin="@dimen/_10sdp"-->
+                <!--                    android:textColor="@color/colorBlack"-->
+                <!--                    android:textSize="@dimen/_15ssp"-->
+                <!--                    app:layout_constraintEnd_toEndOf="parent"-->
+
+                <!--                    app:layout_constraintStart_toStartOf="parent"-->
+                <!--                    app:layout_constraintTop_toBottomOf="@+id/tv_name"-->
+                <!--                    tools:text="1801231232132" />-->
+                <EditText
+                    android:id="@+id/et_number"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/_10sdp"
+                    android:inputType="phone"
+                    android:textColor="@color/colorBlack"
+                    android:textSize="@dimen/_15ssp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tv_name"
+                    tools:ignore="Autofill,LabelFor"
+                    tools:text="1801231232132" />
+
+
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/cb_block"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_10sdp"
+                    app:cardCornerRadius="@dimen/_15sdp"
+                    app:cardUseCompatPadding="true"
+                    app:contentPadding="@dimen/_10sdp"
+                    app:layout_constraintEnd_toStartOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/et_number">
+
+                    <RadioGroup
+                        android:id="@+id/rg_status"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <RadioButton
+                            android:id="@+id/rb_partial_block"
+                            style="@android:style/Widget.CompoundButton.CheckBox"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="@dimen/_10sdp"
+                            android:text="@string/label_partial_block"
+                            android:textColor="@color/colorBlack"
+                            android:textSize="@dimen/_14ssp" />
+
+                        <RadioButton
+                            android:id="@+id/rb_full_block"
+                            style="@android:style/Widget.CompoundButton.CheckBox"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="@dimen/_10sdp"
+                            android:text="@string/label_full_block_pro_plan"
+                            android:textColor="@color/colorBlack"
+                            android:textSize="@dimen/_14ssp" />
+
+                        <TextView
+                            android:id="@+id/tv1"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/label_this_feature_available_in_pro_plan"
+                            android:visibility="gone"
+                            tools:visibility="visible" />
+                    </RadioGroup>
+
+
+                </androidx.cardview.widget.CardView>
+
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/cv_message"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_10sdp"
+                    app:cardCornerRadius="@dimen/_15sdp"
+                    app:cardUseCompatPadding="true"
+                    app:contentPadding="@dimen/_10sdp"
+                    app:layout_constraintEnd_toStartOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/cb_block">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <RadioGroup
+                            android:id="@+id/rg_message"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical">
+
+                            <RadioButton
+                                android:id="@+id/rb_generic_msg"
+                                style="@android:style/Widget.CompoundButton.CheckBox"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginBottom="@dimen/_10sdp"
+                                android:text="@string/label_generic_message"
+                                android:textColor="@color/colorBlack"
+                                android:textSize="@dimen/_14ssp" />
+
+                            <RadioButton
+                                android:id="@+id/rb_custom_message"
+                                style="@android:style/Widget.CompoundButton.CheckBox"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="@string/label_customize_message_pro_plan"
+                                android:textColor="@color/colorBlack"
+                                android:textSize="@dimen/_14ssp" />
+                        </RadioGroup>
+
+                        <TextView
+                            android:id="@+id/tv2"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/label_this_feature_available_in_pro_plan"
+                            android:visibility="gone"
+                            tools:visibility="visible" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:text="@string/label_up_to_100_characters"
+                            android:textColor="@color/colorBlack"
+                            android:textSize="@dimen/_12ssp"
+                            android:textStyle="italic" />
+
+                        <EditText
+                            android:id="@+id/et_message"
+                            android:layout_width="match_parent"
+                            android:layout_height="@dimen/_80sdp"
+                            android:layout_marginTop="@dimen/_5sdp"
+                            android:background="@drawable/bg_gray_round_corner"
+                            android:editable="false"
+                            android:enabled="false"
+                            android:gravity="top"
+                            android:inputType="none"
+                            android:maxLength="100"
+                            android:padding="@dimen/_5sdp"
+                            android:textColor="@color/colorBlack"
+                            android:textSize="@dimen/_12ssp"
+                            tools:ignore="Autofill,LabelFor"
+                            tools:text="Testing message" />
+
+                    </LinearLayout>
+                </androidx.cardview.widget.CardView>
+
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/cv_voice"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_10sdp"
+                    app:cardCornerRadius="@dimen/_15sdp"
+                    app:cardUseCompatPadding="true"
+                    app:contentPadding="@dimen/_10sdp"
+                    app:layout_constraintEnd_toStartOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/cv_message">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/tv3"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/label_this_feature_available_in_pro_plan"
+                            android:visibility="gone"
+                            tools:visibility="visible" />
+
+                        <RadioGroup
+                            android:id="@+id/rg_voice"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal">
+
+                            <RadioButton
+                                android:id="@+id/rb_female_voice"
+                                style="@android:style/Widget.CompoundButton.CheckBox"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:text="@string/label_female_voice"
+                                android:textColor="@color/colorBlack"
+                                android:textSize="@dimen/_14ssp" />
+
+                            <RadioButton
+                                android:id="@+id/rb_male_voice"
+                                style="@android:style/Widget.CompoundButton.CheckBox"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:text="@string/label_male_voice"
+                                android:textColor="@color/colorBlack"
+                                android:textSize="@dimen/_14ssp" />
+                        </RadioGroup>
+                    </LinearLayout>
+
+                </androidx.cardview.widget.CardView>
+
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/cv_langs"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_10sdp"
+                    app:cardCornerRadius="@dimen/_15sdp"
+                    app:cardUseCompatPadding="true"
+                    app:contentPadding="@dimen/_10sdp"
+                    app:layout_constraintEnd_toStartOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/cv_voice">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/tv4"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/label_this_feature_available_in_pro_plan"
+                            android:visibility="gone"
+                            tools:visibility="visible" />
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="@dimen/_10sdp"
+                            android:orientation="horizontal">
+
+                            <RadioButton
+                                android:id="@+id/rb_eng"
+                                style="@android:style/Widget.CompoundButton.CheckBox"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:tag="en"
+                                android:text="@string/label_english"
+                                android:textColor="@color/colorBlack"
+                                android:textSize="@dimen/_14ssp" />
+
+                            <RadioButton
+                                android:id="@+id/rb_rus"
+                                style="@android:style/Widget.CompoundButton.CheckBox"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:tag="ru"
+                                android:text="@string/label_russian"
+                                android:textColor="@color/colorBlack"
+                                android:textSize="@dimen/_14ssp" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="@dimen/_10sdp"
+                            android:orientation="horizontal">
+
+                            <RadioButton
+                                android:id="@+id/rb_spanish"
+                                style="@android:style/Widget.CompoundButton.CheckBox"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:tag="es"
+                                android:text="@string/label_spanish"
+                                android:textColor="@color/colorBlack"
+                                android:textSize="@dimen/_14ssp" />
+
+                            <RadioButton
+                                android:id="@+id/rb_arabic"
+                                style="@android:style/Widget.CompoundButton.CheckBox"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:tag="ar"
+                                android:text="@string/label_arabic"
+                                android:textColor="@color/colorBlack"
+                                android:textSize="@dimen/_14ssp" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal">
+
+                            <RadioButton
+                                android:id="@+id/rb_french"
+                                style="@android:style/Widget.CompoundButton.CheckBox"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:tag="fr"
+                                android:text="@string/label_french"
+                                android:textColor="@color/colorBlack"
+                                android:textSize="@dimen/_14ssp" />
+
+                            <RadioButton
+                                android:id="@+id/rb_chinese"
+                                style="@android:style/Widget.CompoundButton.CheckBox"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:tag="chi"
+                                android:text="@string/label_chinese"
+                                android:textColor="@color/colorBlack"
+                                android:textSize="@dimen/_14ssp" />
+                        </LinearLayout>
+                    </LinearLayout>
+
+                </androidx.cardview.widget.CardView>
+
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/cv_audio"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_10sdp"
+                    android:visibility="gone"
+                    app:cardCornerRadius="@dimen/_15sdp"
+                    app:cardUseCompatPadding="true"
+                    app:contentPadding="@dimen/_10sdp"
+                    app:layout_constraintEnd_toStartOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/cv_langs">
+
+                    <LinearLayout
+                        android:id="@+id/ll_record"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:visibility="visible"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="@dimen/_10sdp"
+                            android:gravity="center"
+                            android:text="@string/msg_tap_to_record_custom_audio_for_this_contact"
+                            android:textColor="#000"
+                            android:textSize="@dimen/_15ssp" />
+
+                        <com.google.android.material.floatingactionbutton.FloatingActionButton
+                            android:id="@+id/fab_mic"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:layout_marginBottom="@dimen/_10sdp"
+                            android:src="@drawable/ic_mic_none" />
+
+                        <Chronometer
+                            android:id="@+id/chronometer"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center" />
+                    </LinearLayout>
+
+                    <RelativeLayout
+                        android:id="@+id/rl"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:visibility="gone"
+                        tools:visibility="visible">
+
+                        <TextView
+                            android:id="@+id/tv_msg"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="@dimen/_10sdp"
+                            android:text="@string/lable_custom_recorded_message"
+                            android:textSize="@dimen/_15ssp"
+                            tools:ignore="RelativeOverlap" />
+
+                        <ImageView
+                            android:id="@+id/iv_play_pause"
+                            android:layout_width="@dimen/_24sdp"
+                            android:layout_height="@dimen/_24sdp"
+                            android:layout_below="@+id/tv_msg"
+                            android:layout_marginEnd="@dimen/_10sdp"
+                            android:background="?selectableItemBackgroundBorderless"
+                            android:src="@drawable/ic_play"
+                            tools:ignore="ContentDescription" />
+
+                        <ProgressBar
+                            android:id="@+id/pb"
+                            android:layout_width="@dimen/_24sdp"
+                            android:layout_height="@dimen/_24sdp"
+                            android:layout_below="@+id/tv_msg"
+                            android:indeterminateTint="@color/colorPrimaryDark"
+                            android:visibility="gone" />
+
+                        <!--            <androidx.appcompat.widget.AppCompatSeekBar-->
+                        <!--                android:id="@+id/seekbar"-->
+                        <!--                android:layout_width="match_parent"-->
+                        <!--                android:layout_height="wrap_content"-->
+                        <!--                android:layout_below="@+id/tv_msg"-->
+                        <!--                android:layout_alignBottom="@+id/iv_play_pause"-->
+                        <!--                android:layout_toEndOf="@+id/iv_play_pause"-->
+                        <!--                android:visibility="gone" />-->
+
+                        <Chronometer
+                            android:id="@+id/chronometer_player"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@+id/tv_msg"
+                            android:layout_alignTop="@+id/iv_play_pause"
+                            android:layout_alignBottom="@+id/iv_play_pause"
+                            android:layout_toEndOf="@+id/iv_play_pause"
+                            android:gravity="center" />
+
+                        <ImageView
+                            android:id="@+id/iv_delete"
+                            android:layout_width="@dimen/_24sdp"
+                            android:layout_height="@dimen/_24sdp"
+                            android:layout_alignParentEnd="true"
+                            android:background="?selectableItemBackgroundBorderless"
+                            android:src="@drawable/ic_delete"
+                            tools:ignore="ContentDescription" />
+                    </RelativeLayout>
+                </androidx.cardview.widget.CardView>
+
+                <Button
+                    android:id="@+id/btn_submit"
+                    style="@style/BtnPrimary"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/_10sdp"
+                    android:text="@string/label_block_contact"
+                    android:textAllCaps="false"
+                    app:layout_constraintTop_toBottomOf="@+id/cv_audio" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </androidx.core.widget.NestedScrollView>
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+</layout>

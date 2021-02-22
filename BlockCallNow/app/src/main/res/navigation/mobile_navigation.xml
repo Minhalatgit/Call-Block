@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mobile_navigation"
+    app:startDestination="@+id/nav_blocked_list">
+
+    <fragment
+        android:id="@+id/nav_blocked_list"
+        android:name="com.blockcallnow.ui.menu.home.BlockedListFragment"
+        android:label="@string/menu_blocked_list"
+        tools:layout="@layout/fragment_blocked_list" />
+    <fragment
+        android:id="@+id/nav_logs"
+        android:name="com.blockcallnow.ui.menu.logs.LogsFragment"
+        android:label="@string/menu_logs"
+        tools:layout="@layout/fragment_logs" />
+    <fragment
+        android:id="@+id/nav_settings"
+        android:name="com.blockcallnow.ui.menu.settings.SettingsFragment"
+        android:label="@string/label_setting"
+        tools:layout="@layout/fragment_settings" />
+    <activity
+        android:id="@+id/nav_messages"
+        android:name="com.android.messaging.ui.conversationlist.ConversationListActivity"
+        android:label="@string/menu_messages"
+        tools:layout="@layout/conversation_fragment" />
+<!--    <activity-->
+<!--        android:id="@+id/nav_slideshow"-->
+<!--        android:name="com.blockcallnow.ui.menu.home.ui.slideshow.SlideshowFragment"-->
+<!--        android:label="@string/menu_slideshow"-->
+<!--        tools:layout="@layout/fragment_slideshow" />-->
+</navigation>

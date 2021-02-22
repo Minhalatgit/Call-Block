@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/iv_profile"
+        android:layout_width="@dimen/_65sdp"
+        android:layout_height="@dimen/_65sdp"
+        android:layout_centerVertical="true"
+        android:layout_marginEnd="@dimen/_10sdp"
+        tools:src="@drawable/img_permission" />
+
+    <LinearLayout
+        android:id="@+id/ll"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_toStartOf="@+id/iv_unblock"
+        android:layout_toEndOf="@+id/iv_profile"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/tv_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            android:textColor="#bdbdbd"
+            android:textSize="@dimen/_12ssp"
+            tools:ignore="RelativeOverlap"
+            tools:text="02 Feb, 06:45 PM" />
+
+        <TextView
+            android:id="@+id/tv_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#000"
+            android:textSize="@dimen/_15ssp"
+            android:textStyle="bold"
+            tools:text="Eliel Joel" />
+
+        <TextView
+            android:id="@+id/tv_phone_no"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#000"
+            android:textSize="@dimen/_15ssp"
+            tools:text="+1532654897" />
+
+        <TextView
+            android:id="@+id/tv_block_status"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_5sdp"
+            android:textColor="#000"
+            android:textSize="@dimen/_15ssp"
+            android:textStyle="bold"
+            tools:text="Partial Block" />
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/iv_unblock"
+        android:layout_width="@dimen/_25sdp"
+        android:layout_height="@dimen/_25sdp"
+        android:layout_alignParentEnd="true"
+        android:layout_centerVertical="true"
+        android:src="@drawable/bg_red_close"
+        tools:ignore="ContentDescription" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_3sdp"
+        android:layout_below="@+id/ll"
+        android:layout_marginTop="@dimen/_5sdp"
+        android:background="#e2e2e2" />
+</RelativeLayout>
