@@ -34,7 +34,7 @@ class CallService : CallScreeningService() {
         LogUtil.e(TAG, "onScreenCall")
 
         val user = LoginPref.getLoginObject(this)
-        if (user == null || user.is_expired) {
+        if (user == null) {
             return
         }
 
@@ -76,49 +76,6 @@ class CallService : CallScreeningService() {
                 }
             }
         }
-//        rejectAndUpdate(phoneNumber,response,callDetails,app)
-//        val phoneNumberUtil = PhoneNumberUtil.createInstance(this)
-//        try {
-//            val formattedNUmber = phoneNumberUtil.parseAndKeepRawInput(phoneNumber, "en")
-//            Log.e("countryCode ", formattedNUmber.countryCode.toString())
-//            Log.e("nationalNumber ", formattedNUmber.nationalNumber.toString())
-//        } catch (e: NumberParseException) {
-//            Log.e("CallService", "parseAndKeepRawInput $e")
-//
-//        }
-//
-//
-//
-//        Log.e("CallBouncer", "Call screening service triggered " + callDetails?.handle.toString())
-//        Log.e(
-//            "CallBouncer",
-//            "Call screening service triggered format " + PhoneNumberUtils.formatNumber(
-//                callDetails?.handle?.schemeSpecificPart,
-//                ""
-//            )
-//        )
-//        Log.e(
-//            "CallBouncer",
-//            "Call screening service triggered " + Uri.decode(callDetails?.handle?.schemeSpecificPart)
-//        )
-//        Log.e(
-//            "CallBouncer",
-//            "Call screening service triggered " + callDetails?.handle?.schemeSpecificPart
-//        )
-//        Log.e(
-//            "CallBouncer",
-//            "Call screening service triggered isGlobalPhoneNumber " + PhoneNumberUtils.isGlobalPhoneNumber(
-//                callDetails?.handle?.schemeSpecificPart
-//            )
-//        )
-//        Log.e(
-//            "CallBouncer",
-//            "Call screening service triggered " + Uri.decode(callDetails?.handle.toString())
-//        )
-//        Log.e(
-//            "CallBouncer",
-//            "Call screening service triggered " + Uri.decode(callDetails?.handle?.encodedPath)
-//        )
     }
 
     private fun checkForSpam(
@@ -130,63 +87,35 @@ class CallService : CallScreeningService() {
         LogUtil.e(TAG, "checkForSpam")
 
         val api: WebServices = BlockCallApplication.getAppContext().api2
-        val response =
-//            api.getPhoneNoDetail("https://api.callcontrol.com/api/2015-11-01/Reputation/$phoneNumber?api_key=demo")
-//            api.getPhoneNoDetail("https://api.callcontrol.com/api/2015-11-01/Reputation/17275567300?api_key=demo")
-//                .enqueue(object : retrofit2.Callback<PhoneNoDetailResponse> {
-//                    override fun onFailure(
-//                        call: retrofit2.Call<PhoneNoDetailResponse>,
-//                        t: Throwable
-//                    ) {
-//                        LogUtil.e(TAG, "onFailure $t")
-//                    }
-//
-//                    override fun onResponse(
-//                        call: retrofit2.Call<PhoneNoDetailResponse>,
-//                        response: Response<PhoneNoDetailResponse>
-//                    ) {
-////                        LogUtil.e(TAG, "response " + Gson().toJson(response))
-//                        if (response.isSuccessful) {
-//                            if (response.body() != null && response.body()?.isSpam == true) {
-////                                rejectAndUpdate(phoneNumber!!, builder, callDetails, app)
-//                                rejectCall(builder, callDetails, phoneNumber)
-//                            } else {
-//                                LogUtil.e(TAG, "number not spam form api")
-//                            }
-//                        } else {
-//                            LogUtil.e(TAG, "response not success")
-//                        }
-//                    }
-//                })
-            api.getPhoneNoDetail(
-                "https://dataapi.youmail.com/api/v2/phone/$phoneNumber",
-                "173852c93f1a7335969fabf51794af843f59e2fa8d069d29036e6a5eaacab736717ed88e638947ce",
-                "be88ca2b9dc6493286f44c30718a20c0"
-            ).enqueue(object : retrofit2.Callback<PhoneNoDetailResponse> {
-                override fun onFailure(
-                    call: retrofit2.Call<PhoneNoDetailResponse>,
-                    t: Throwable
-                ) {
-                    LogUtil.e(TAG, "onFailure $t")
-                }
+        val response = api.getPhoneNoDetail(
+            "https://dataapi.youmail.com/api/v2/phone/$phoneNumber",
+            "173852c93f1a7335969fabf51794af843f59e2fa8d069d29036e6a5eaacab736717ed88e638947ce",
+            "be88ca2b9dc6493286f44c30718a20c0"
+        ).enqueue(object : retrofit2.Callback<PhoneNoDetailResponse> {
+            override fun onFailure(
+                call: retrofit2.Call<PhoneNoDetailResponse>,
+                t: Throwable
+            ) {
+                LogUtil.e(TAG, "onFailure $t")
+            }
 
-                override fun onResponse(
-                    call: retrofit2.Call<PhoneNoDetailResponse>,
-                    response: Response<PhoneNoDetailResponse>
-                ) {
+            override fun onResponse(
+                call: retrofit2.Call<PhoneNoDetailResponse>,
+                response: Response<PhoneNoDetailResponse>
+            ) {
 //                        LogUtil.e(TAG, "response " + Gson().toJson(response))
-                    if (response.isSuccessful) {
-                        if (response.body() != null && response.body()?.spamRisk != null && response.body()?.spamRisk?.level == 2) {
+                if (response.isSuccessful) {
+                    if (response.body() != null && response.body()?.spamRisk != null && response.body()?.spamRisk?.level == 2) {
 //                                rejectAndUpdate(phoneNumber!!, builder, callDetails, app)
-                            rejectCall(builder, callDetails, phoneNumber)
-                        } else {
-                            LogUtil.e(TAG, "number not spam form api")
-                        }
+                        rejectCall(builder, callDetails, phoneNumber)
                     } else {
-                        LogUtil.e(TAG, "response not success ")
+                        LogUtil.e(TAG, "number not spam form api")
                     }
+                } else {
+                    LogUtil.e(TAG, "response not success ")
                 }
-            })
+            }
+        })
 
         LogUtil.e(TAG, "exit checkForSpam")
     }

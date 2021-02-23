@@ -130,16 +130,15 @@ class Utils {
             var phoneNumber = phoneNo
             val phoneNumberUtil = PhoneNumberUtil.createInstance(context)
             try {
-                val formattedNUmber = phoneNumberUtil.parseAndKeepRawInput(phoneNumber, "en")
-                LogUtil.e("countryCode ", formattedNUmber.countryCode.toString())
-                LogUtil.e("nationalNumber ", formattedNUmber.nationalNumber.toString())
-                return formattedNUmber.nationalNumber.toString()
+                val formattedNumber = phoneNumberUtil.parseAndKeepRawInput(phoneNumber, "en")
+                LogUtil.e("countryCode ", formattedNumber.countryCode.toString())
+                LogUtil.e("nationalNumber ", formattedNumber.nationalNumber.toString())
+                return formattedNumber.nationalNumber.toString()
             } catch (e: NumberParseException) {
                 LogUtil.e("Utils", "parseAndKeepRawInput $e")
-
             }
             phoneNumber = phoneNumber.replace("\\D+".toRegex(), "")
-            LogUtil.e(TAG, "phoneNumber is not with country code " + phoneNumber)
+            LogUtil.e(TAG, "phoneNumber is not with country code $phoneNumber")
             if (phoneNumber.startsWith("0") || phoneNumber.startsWith("1")) {
                 LogUtil.e(TAG, "number starts with 0 or 1 ")
                 val number = phoneNumber.substring(1, phoneNumber.length)
@@ -149,7 +148,7 @@ class Utils {
             } else if (phoneNumber.startsWith("92")) {
                 LogUtil.e(TAG, "number starts with 92")
                 val number = phoneNumber.substring(2, phoneNumber.length)
-                LogUtil.e(TAG, "return number  $number")
+                LogUtil.e(TAG, "return number $number")
                 return number
             }
             return phoneNumber

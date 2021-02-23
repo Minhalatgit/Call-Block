@@ -88,12 +88,6 @@ class MainActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        LogUtil.e(
-            TAG,
-            "Pattern.matches(\"[a-z]\", address.toLowerCase()) " + Pattern.compile("[a-z]")
-                .matcher("Al Khidmat".toLowerCase(Locale.ROOT))
-                .find()
-        )
 
         blockViewModel = ViewModelProvider(this).get(BlockViewModel::class.java)
         blockViewModel.blockNavEvent.observe(this, blockNoObserver)
@@ -150,21 +144,6 @@ class MainActivity : BaseActivity() {
         tvName.text = userDetail?.name
 
         navView.setupWithNavController(navController)
-//        navView.setNavigationItemSelectedListener { item ->
-//            if (item.itemId == R.id.nav_logout) {
-//                PrefManager.getSharedPreferences(mContext).edit().clear().apply()
-//                startActivity(
-//                    Intent(mContext, LoginActivity::class.java).addFlags(
-//                        Intent.FLAG_ACTIVITY_CLEAR_TASK
-//                    ).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-//                )
-//                finish()
-//
-//            } else {
-//                navController.navigate(item.itemId)
-//            }
-//            true
-//        }
 
         bottom_app_bar.navigationIcon =
             scaledDrawableResources(R.drawable.ic_home, R.dimen._25sdp, R.dimen._25sdp)
@@ -251,7 +230,7 @@ class MainActivity : BaseActivity() {
 
         builder.setPositiveButton("OK", null)
 
-        builder.setNegativeButton("Cancel") { dialog, which -> dialog.cancel() }
+        builder.setNegativeButton("Cancel") { dialog, _ -> dialog.cancel() }
 
         val dialog = builder.create()
 
@@ -262,8 +241,7 @@ class MainActivity : BaseActivity() {
                 if (phoneNo.isBlank()) {
                     toast("Phone no can't be empty")
 //                } else if (phoneNo.startsWith("+0") || !phoneNo.startsWith("+") &&
-                } else if (!Pattern.compile("^\\+[1-9]").matcher(phoneNo).find()
-                ) {
+                } else if (!Pattern.compile("^\\+[1-9]").matcher(phoneNo).find()) {
                     toast("Please enter valid phone number with country code")
                 } else {
                     selectedPhoneNo = phoneNo
@@ -273,21 +251,6 @@ class MainActivity : BaseActivity() {
             }
         }
         dialog.show()
-    }
-
-    fun hideFAB() {
-        bottom_app_bar?.fabCradleMargin = 0F
-        bottom_app_bar?.fabCradleRoundedCornerRadius = 0F
-        fab?.visibility = GONE
-
-//    app:fabCradleMargin="0dp"
-//    app:fabCradleRoundedCornerRadius="@dimen/_70sdp"
-    }
-
-    fun showFAB() {
-        bottom_app_bar?.fabCradleMargin = 0F
-        bottom_app_bar?.fabCradleRoundedCornerRadius = resources.getDimension(R.dimen._70sdp)
-        fab?.visibility = VISIBLE
     }
 
     private fun scaledDrawableResources(

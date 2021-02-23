@@ -90,7 +90,6 @@
                     tools:ignore="Autofill,LabelFor"
                     tools:text="1801231232132" />
 
-
                 <androidx.cardview.widget.CardView
                     android:id="@+id/cb_block"
                     android:layout_width="match_parent"

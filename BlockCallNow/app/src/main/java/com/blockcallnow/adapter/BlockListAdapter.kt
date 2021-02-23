@@ -11,7 +11,7 @@ import com.bumptech.glide.Glide
 import kotlinx.android.synthetic.main.item_block_call.view.*
 
 class BlockListAdapter :
-        RecyclerView.Adapter<BlockListAdapter.VH>() {
+    RecyclerView.Adapter<BlockListAdapter.VH>() {
     inner class VH(itemView: View) : RecyclerView.ViewHolder(itemView)
 
     var contactsList: MutableList<BlockContact>? = null
@@ -19,7 +19,7 @@ class BlockListAdapter :
     var listener: UnBlockListener? = null
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VH {
         return VH(
-                LayoutInflater.from(parent.context).inflate(R.layout.item_block_call, parent, false)
+            LayoutInflater.from(parent.context).inflate(R.layout.item_block_call, parent, false)
         )
     }
 
@@ -30,20 +30,20 @@ class BlockListAdapter :
     override fun onBindViewHolder(holder: VH, position: Int) {
         val contact = contactsList?.get(holder.adapterPosition)
         contact?.blockStatus?.let {
-            holder.itemView.tv_block_status?.text = "$it Block"
+            holder.itemView.tv_block_status?.text = "$it Block".capitalize()
         }
 
         holder.itemView.tv_name?.text = contact?.name ?: "Unknown"
         holder.itemView.tv_phone_no?.text = contact?.number
         Glide.with(holder.itemView.iv_profile)
-                .load(contact?.uri)
-                .placeholder(R.drawable.img_dummy)
-                .error(R.drawable.img_dummy)
-                .into(holder.itemView.iv_profile)
+            .load(contact?.uri)
+            .placeholder(R.drawable.img_dummy)
+            .error(R.drawable.img_dummy)
+            .into(holder.itemView.iv_profile)
         holder.itemView.iv_unblock?.setOnClickListener {
             listener?.onUnBlock(contact)
         }
-        holder.itemView?.setOnClickListener {
+        holder.itemView.setOnClickListener {
             listener?.showDetail(contact)
         }
     }

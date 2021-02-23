@@ -1,7 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><!--<androidx.coordinatorlayout.widget.CoordinatorLayout -->
-<!--    android:layout_width="match_parent"-->
-<!--    android:layout_height="wrap_content">-->
-
+<?xml version="1.0" encoding="utf-8"?>
 <androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -68,17 +65,6 @@
                 app:layout_constraintTop_toTopOf="parent"
                 tools:ignore="ContentDescription" />
 
-            <!--        <ImageView-->
-            <!--            android:id="@+id/imageView11"-->
-            <!--            android:layout_width="wrap_content"-->
-            <!--            android:layout_height="wrap_content"-->
-            <!--            android:layout_marginStart="8dp"-->
-            <!--            android:layout_marginTop="12dp"-->
-            <!--            -->
-            <!--            android:src="@drawable/ic_block_list"-->
-            <!--            app:layout_constraintStart_toStartOf="0"-->
-            <!--            app:layout_constraintTop_toTopOf="0" />-->
-
             <TextView
                 android:id="@+id/tv_plan_msg"
                 android:layout_width="match_parent"
@@ -128,36 +114,6 @@
                 app:layout_constraintEnd_toEndOf="parent" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <!--    <androidx.cardview.widget.CardView-->
-        <!--        android:id="@+id/cb_block"-->
-        <!--        android:layout_width="match_parent"-->
-        <!--        android:layout_height="wrap_content"-->
-        <!--        android:layout_marginTop="@dimen/_10sdp"-->
-        <!--        app:cardBackgroundColor="#1880FF"-->
-        <!--        app:cardCornerRadius="@dimen/_15sdp"-->
-        <!--        app:cardUseCompatPadding="true"-->
-        <!--        app:contentPadding="@dimen/_10sdp">-->
-
-        <!--        <FrameLayout-->
-        <!--            android:layout_width="match_parent"-->
-        <!--            android:layout_height="wrap_content">-->
-
-        <!--            <ImageView-->
-        <!--                android:layout_width="wrap_content"-->
-        <!--                android:layout_height="wrap_content"-->
-        <!--                android:layout_marginTop="32dp"-->
-        <!--                android:scaleType="fitXY"-->
-        <!--                android:src="@drawable/ic_drawer_wave"-->
-        <!--                app:layout_constraintBottom_toBottomOf="0"-->
-        <!--                app:layout_constraintEnd_toEndOf="0"-->
-        <!--                app:layout_constraintStart_toStartOf="0"-->
-        <!--                app:layout_constraintTop_toTopOf="0" />-->
-
-        <!--        </FrameLayout>-->
-
-
-        <!--    </androidx.cardview.widget.CardView>-->
-
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
@@ -199,26 +155,14 @@
             android:text="@string/msg_please_click_button_to_add_number_to_the_block_list"
             android:textSize="@dimen/_14ssp" />
 
-        <FrameLayout
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_block_list"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <ProgressBar
-                android:id="@+id/pb"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:visibility="gone" />
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rv_block_list"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/_5sdp"
-                android:nestedScrollingEnabled="false"
-                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                tools:listitem="@layout/item_block_call" />
-        </FrameLayout>
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_5sdp"
+            android:nestedScrollingEnabled="false"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            tools:listitem="@layout/item_block_call" />
 
     </LinearLayout>
-</androidx.core.widget.NestedScrollView><!--</androidx.coordinatorlayout.widget.CoordinatorLayout>-->
+</androidx.core.widget.NestedScrollView>

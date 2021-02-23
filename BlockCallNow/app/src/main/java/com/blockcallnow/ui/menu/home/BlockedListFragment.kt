@@ -47,10 +47,9 @@ class BlockedListFragment : BaseFragment() {
     }
 
     override fun onCreateView(
-            inflater: LayoutInflater, container: ViewGroup?,
-            savedInstanceState: Bundle?
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_blocked_list, container, false)
     }
 
@@ -72,12 +71,12 @@ class BlockedListFragment : BaseFragment() {
 
                             cl_plan_detail?.visibility = View.VISIBLE
                             tv_plan_msg.text =
-                                    getString(R.string.msg_your_plan_has_expired_please_upgrade_to_use_full_functionality)
+                                getString(R.string.msg_your_plan_has_expired_please_upgrade_to_use_full_functionality)
                             tv_protection.text = getString(R.string.label_disabled)
                         } else if (userDetail?.paywhirl_plan_id == Utils.PLAN_TRIAL) {
                             cl_plan_detail?.visibility = View.VISIBLE
                             tv_plan_msg.text =
-                                    "You are on trial period. Please upgrade to unlock pro features."
+                                "You are on trial period. Please upgrade to unlock pro features."
                             tv_protection.text = "Enabled"
                         }
                         getData()
@@ -106,67 +105,21 @@ class BlockedListFragment : BaseFragment() {
             }
         }
     }
-//    fun requestContactDetail() {
-//        val pickContact = Intent(Intent.ACTION_PICK, ContactsContract.Contacts.CONTENT_URI);
-//        pickContact.type = ContactsContract.CommonDataKinds.Phone.CONTENT_TYPE
-//        startActivityForResult(pickContact, RC_CONTACT);
-//    }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (resultCode == RESULT_OK && requestCode == RC_CONTACT_CHANGE) {
             getData()
         }
-//        if (resultCode == RESULT_OK && requestCode == RC_CONTACT) {
-//
-//
-//            val contactData: Uri? = data?.data
-//            contactData?.let {
-//
-//
-//                val cursor: Cursor? =
-//                    context?.contentResolver?.query(contactData, null, null, null, null)
-//                cursor?.let {
-//                    if (cursor.moveToFirst()) {
-//                        val phoneIndex: Int =
-//                            cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER)
-//                        val contactIdIdx: Int = cursor.getColumnIndex(Phone._ID)
-//                        val nameIdx: Int = cursor.getColumnIndex(Phone.DISPLAY_NAME)
-//                        val namePrimaryIdx: Int = cursor.getColumnIndex(Phone.DISPLAY_NAME_PRIMARY)
-//                        val photoThumbIdx: Int = cursor.getColumnIndex(Phone.PHOTO_THUMBNAIL_URI)
-//                        val photoUriIdx: Int = cursor.getColumnIndex(Phone.PHOTO_URI)
-//
-//
-//                        val num: String = cursor.getString(phoneIndex)
-//                        val id: String = cursor.getString(contactIdIdx)
-//                        val name: String = cursor.getString(nameIdx)
-//                        val namePrimary: String = cursor.getString(namePrimaryIdx)
-//                        if (cursor.getType(photoUriIdx) == FIELD_TYPE_STRING) {
-//                            val photoUri: String = cursor.getString(photoUriIdx)
-//                            LogUtil.e(TAG, "photoUri $photoUri")
-//                        }
-//
-//                        LogUtil.e(TAG, "num $num")
-//                        LogUtil.e(TAG, "id $id")
-//                        LogUtil.e(TAG, "name $name")
-//                        LogUtil.e(TAG, "namePrimary $namePrimary")
-////                        LogUtil.e(TAG, "photoThumb $photoThumb")
-//
-//                    }
-//                    cursor.close()
-//                }
-//            }
-//        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-//        rv_block_list.adapter = RVAdaper()
-        tv_name?.text = userDetail?.name
+        tv_name?.text = userDetail?.name?.capitalize()
         btn_upgrade?.setOnClickListener {
             Utils.openLink(
-                    mContext,
-                    userDetail?.renewal_url ?: "https://www.blockcallsnow.com/pricing/"
+                mContext,
+                userDetail?.renewal_url ?: "https://www.blockcallsnow.com/pricing/"
             )
         }
         rv_block_list?.isNestedScrollingEnabled = false
@@ -176,23 +129,10 @@ class BlockedListFragment : BaseFragment() {
 
         rv_block_list?.adapter = adapter
         getUserProfile()
-
-//        activity?.let {
-//            if (it is MainActivity)
-//                it.showFAB()
-//        }
     }
 
     private fun getUserProfile() {
         blockViewModel.getUserProfile(token)
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-//        activity?.let {
-//            if (it is MainActivity)
-//                it.hideFAB()
-//        }
     }
 
     fun getData() {
@@ -221,21 +161,21 @@ class BlockedListFragment : BaseFragment() {
 
             blockContact?.let {
                 AlertDialog.Builder(mContext)
-                        .setMessage("You are about to unblock " + it.blockNumber + ". Are you sure?")
-                        .setPositiveButton("Yes") { dialog, which -> unblock(it) }
-                        .setNegativeButton("Cancel", null)
-                        .create().show()
+                    .setMessage("You are about to unblock " + it.blockNumber + ". Are you sure?")
+                    .setPositiveButton("Yes") { dialog, which -> unblock(it) }
+                    .setNegativeButton("Cancel", null)
+                    .create().show()
             }
         }
 
         override fun showDetail(blockContact: BlockContact?) {
             startActivityForResult(
-                    Intent(mContext, BlockContactDetail::class.java)
-                            .putExtra("name", blockContact?.name ?: "Unknown")
-                            .putExtra("phone", blockContact?.number)
-                            .putExtra("block_number", blockContact?.blockNumber)
-                            .putExtra("isEdit", true)
-                    , RC_CONTACT_CHANGE
+                Intent(mContext, BlockContactDetail::class.java)
+                    .putExtra("name", blockContact?.name ?: "Unknown")
+                    .putExtra("phone", blockContact?.number)
+                    .putExtra("block_number", blockContact?.blockNumber)
+                    .putExtra("isEdit", true)
+                , RC_CONTACT_CHANGE
             )
         }
     }
@@ -246,11 +186,10 @@ class BlockedListFragment : BaseFragment() {
     }
 
     companion object {
-
         @JvmStatic
         fun newInstance() =
-                BlockedListFragment().apply {
-                }
+            BlockedListFragment().apply {
+            }
     }
 
     private val blockNos = Observer<BaseNavEvent<BlockNoListResponse?>> {

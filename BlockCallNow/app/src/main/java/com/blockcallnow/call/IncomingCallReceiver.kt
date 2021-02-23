@@ -8,6 +8,7 @@ import android.content.Intent
 import android.os.Build
 import android.telecom.TelecomManager
 import android.telephony.TelephonyManager
+import androidx.annotation.RequiresApi
 import androidx.lifecycle.MutableLiveData
 import com.android.internal.telephony.ITelephony
 import com.blockcallnow.app.BlockCallApplication
@@ -48,39 +49,30 @@ class IncomingCallReceiver : BroadcastReceiver() {
         contactDao = app.db.contactDao()
 
         val user = LoginPref.getLoginObject(context)
-        if (user == null || user.is_expired) {
+        if (user == null) {
             LogUtil.e(TAG, "user is null")
             return
         }
 
-        TelephonyManager.ACTION_PHONE_STATE_CHANGED == intent.action
-        val telephonyService: ITelephony
-
         try {
             val state = intent.getStringExtra(TelephonyManager.EXTRA_STATE)
-            val phoneNumber =
-                intent.getStringExtra(TelephonyManager.EXTRA_INCOMING_NUMBER)
+            var phoneNumber = intent.getStringExtra(TelephonyManager.EXTRA_INCOMING_NUMBER)
 //            val phoneNumber = intent.extras!!.getString(TelephonyManager.EXTRA_INCOMING_NUMBER)
 
             /* swy: we can receive two notifications; the first one doesn't
                         have EXTRA_INCOMING_NUMBER, so just skip it */
 
             if (state.equals(TelephonyManager.EXTRA_STATE_RINGING, ignoreCase = true)) {
-                val tm =
-                    context.getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
+                val tm = context.getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
                 if (phoneNumber == null) {
-                    LogUtil.e(TAG, "phoneNumber is $phoneNumber")
                     return
                 } else {
-                    LogUtil.e(TAG, "phoneNumber is $phoneNumber")
+                    LogUtil.e(TAG, "Block num : ${Utils.getBlockNumber(context, phoneNumber)}")
+                    phoneNumber = Utils.getBlockNumber(context, phoneNumber)
                 }
 
                 if (contactDao.getBlockContactFromNumber(phoneNumber) != null) {
-                    LogUtil.e(
-                        TAG,
-                        "Number is present is db ${contactDao.getBlockContactFromNumber(phoneNumber)}"
-                    )
-                    rejectAndUpdate(context, phoneNumber, app, tm)
+                    rejectAndUpdate(phoneNumber, tm)
                 } else {
                     LogUtil.e(TAG, "Number is not present in db")
                     if (BlockCallsPref.getBlockAllOption(context)) {
@@ -94,11 +86,11 @@ class IncomingCallReceiver : BroadcastReceiver() {
                     } else {
                         if (BlockCallsPref.getUnknownNum(context)) {
                             if (!Utils.contactExists(context, phoneNumber)) {
-                                rejectAndUpdate(context, phoneNumber, app, tm)
+                                rejectAndUpdate(phoneNumber, tm)
                             }
                         } else if (Utils.isInternationalNumber(mContext, phoneNumber)) {
                             if (BlockCallsPref.getInternationalOption(mContext)) {
-                                rejectAndUpdate(context, phoneNumber, app, tm)
+                                rejectAndUpdate(phoneNumber, tm)
                             }
                         }
                     }
@@ -115,22 +107,12 @@ class IncomingCallReceiver : BroadcastReceiver() {
         }
     }
 
-    private fun rejectAndUpdate(
-        context: Context,
-        phoneNumber: String,
-        app: BlockCallApplication,
-        tm: TelephonyManager
-    ) {
+    private fun rejectAndUpdate(phoneNumber: String, tm: TelephonyManager) {
         LogUtil.e(TAG, "rejectAndUpdate")
-        val blockNumber = Utils.getBlockNumber(context, phoneNumber)
 
-        val blockContact = contactDao.getBlockContactFromNumber(blockNumber)
+        val blockContact = contactDao.getBlockContactFromNumber(phoneNumber)
         blockContact?.let {
-
-            contactDao.updateBlockContact(
-                System.currentTimeMillis(),
-                blockContact.timesCalled + 1
-            )
+            contactDao.updateBlockContact(System.currentTimeMillis(), blockContact.timesCalled + 1)
         }
         rejectCall(tm, phoneNumber)
     }
@@ -156,7 +138,6 @@ class IncomingCallReceiver : BroadcastReceiver() {
                     call: retrofit2.Call<PhoneNoDetailResponse>,
                     response: Response<PhoneNoDetailResponse>
                 ) {
-//                        LogUtil.e(TAG, "response " + Gson().toJson(response))
                     if (response.isSuccessful) {
                         if (response.body() != null && response.body()?.spamRisk != null && response.body()?.spamRisk?.level == 2) {
                             rejectCall(tm, phoneNumber)
@@ -168,33 +149,6 @@ class IncomingCallReceiver : BroadcastReceiver() {
                     }
                 }
             })
-//            api.getPhoneNoDetail("https://api.callcontrol.com/api/2015-11-01/Reputation/$phoneNumber?api_key=demo")
-//        val response =
-//            api.getPhoneNoDetail("https://api.callcontrol.com/api/2015-11-01/Reputation/17275567300?api_key=demo")
-//                .enqueue(object : retrofit2.Callback<PhoneNoDetailResponse> {
-//                    override fun onFailure(
-//                        call: retrofit2.Call<PhoneNoDetailResponse>,
-//                        t: Throwable
-//                    ) {
-//                        LogUtil.e(TAG, "onFailure $t")
-//                    }
-//
-//                    override fun onResponse(
-//                        call: retrofit2.Call<PhoneNoDetailResponse>,
-//                        response: Response<PhoneNoDetailResponse>
-//                    ) {
-////                        LogUtil.e(TAG, "response " + Gson().toJson(response))
-//                        if (response.isSuccessful) {
-//                            if (response.body() != null && response.body()?.isSpam == true) {
-//                                rejectCall(tm, phoneNumber)
-//                            } else {
-//                                LogUtil.e(TAG, "number not spam form api")
-//                            }
-//                        } else {
-//                            LogUtil.e(TAG, "response not success")
-//                        }
-//                    }
-//                })
         LogUtil.e(TAG, "exit checkForSpam")
     }
 
@@ -205,42 +159,26 @@ class IncomingCallReceiver : BroadcastReceiver() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
             val telManager = mContext.getSystemService(TELECOM_SERVICE) as TelecomManager
             try {
-                telManager.endCall()
-                LogUtil.e(TAG, "Invoked 'endCall' on Tel Manager")
+                if (telManager.endCall()) {
+                    LogUtil.e(TAG, "Call rejected")
+                } else {
+                    LogUtil.e(TAG, "Call not rejected")
+                }
 
             } catch (e: java.lang.Exception) {
                 e.printStackTrace()
                 LogUtil.e(TAG, "Couldn't end call with Tel Manager $e")
             }
         } else {
-
             try {
-//                    val m: Method = tm.javaClass.getDeclaredMethod("getITelephony")
-//                    m.setAccessible(true)
-//                    telephonyService = m.invoke(tm) as ITelephony
-//                    val telephonyServiceClass =
-//                        Class.forName(telephonyService.javaClass.name)
-//                    val endCallMethod =
-//                        telephonyServiceClass.getDeclaredMethod("endCall")
-//                    endCallMethod.invoke(telephonyService)
                 val c = Class.forName(tm.javaClass.name)
                 val m = c.getDeclaredMethod("getITelephony")
                 m.isAccessible = true
                 val telephonyService = m.invoke(tm)
-                val telephonyServiceClass =
-                    Class.forName(telephonyService.javaClass.name)
-                val endCallMethod =
-                    telephonyServiceClass.getDeclaredMethod("endCall")
+                val telephonyServiceClass = Class.forName(telephonyService.javaClass.name)
+                val endCallMethod = telephonyServiceClass.getDeclaredMethod("endCall")
                 endCallMethod.invoke(telephonyService)
                 LogUtil.e(TAG, "endCallMethod invoked")
-//                    if (number != null) {
-//                        telephonyService.endCall()
-//                        Toast.makeText(
-//                            context,
-//                            "Ending the call from: $number",
-//                            Toast.LENGTH_SHORT
-//                        ).show()
-//                    }
             } catch (e: Exception) {
                 e.printStackTrace()
                 LogUtil.e(TAG, "exception while invoking $e")
