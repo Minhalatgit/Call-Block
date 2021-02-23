@@ -13,6 +13,8 @@ import io.michaelrocks.libphonenumber.android.NumberParseException
 import io.michaelrocks.libphonenumber.android.PhoneNumberUtil
 import omrecorder.AudioRecordConfig
 import omrecorder.PullableSource
+import java.text.SimpleDateFormat
+import java.util.*
 
 class Utils {
     companion object {
@@ -155,6 +157,13 @@ class Utils {
 
         fun openLink(context: Context, url: String) {
             context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
+        }
+
+        fun getDateTime(timeInMillis: Long): String? {
+            val formatter = SimpleDateFormat("d MMM, hh:mm a")
+            val calendar = Calendar.getInstance()
+            calendar.timeInMillis = timeInMillis
+            return formatter.format(calendar.time)
         }
     }
 }

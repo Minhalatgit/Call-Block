@@ -19,6 +19,7 @@ import com.blockcallnow.data.network.WebServices
 import com.blockcallnow.data.preference.BlockCallsPref
 import com.blockcallnow.data.preference.LoginPref
 import com.blockcallnow.data.room.BlockContactDao
+import com.blockcallnow.data.room.LogContact
 import com.blockcallnow.util.LogUtil
 import com.blockcallnow.util.Utils
 import io.reactivex.rxjava3.disposables.CompositeDisposable
@@ -56,7 +57,8 @@ class IncomingCallReceiver : BroadcastReceiver() {
 
         try {
             val state = intent.getStringExtra(TelephonyManager.EXTRA_STATE)
-            var phoneNumber = intent.getStringExtra(TelephonyManager.EXTRA_INCOMING_NUMBER)
+            val phoneNumber = intent.getStringExtra(TelephonyManager.EXTRA_INCOMING_NUMBER)
+            var blockNumber: String
 
             if (state.equals(TelephonyManager.EXTRA_STATE_RINGING, ignoreCase = true)) {
                 val tm = context.getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
@@ -64,29 +66,29 @@ class IncomingCallReceiver : BroadcastReceiver() {
                     return
                 } else {
                     LogUtil.e(TAG, "Block num: ${Utils.getBlockNumber(context, phoneNumber)}")
-                    phoneNumber = Utils.getBlockNumber(context, phoneNumber)
+                    blockNumber = Utils.getBlockNumber(context, phoneNumber)
                 }
 
-                if (contactDao.getBlockContactFromNumber(phoneNumber) != null) {
-                    rejectAndUpdate(phoneNumber, tm)
+                if (contactDao.getBlockContactFromNumber(blockNumber) != null) {
+                    rejectAndUpdate(phoneNumber, blockNumber, tm)
                 } else {
                     LogUtil.e(TAG, "Number is not present in db")
                     if (BlockCallsPref.getBlockAllOption(context)) {
-                        rejectCall(tm, phoneNumber)
+                        rejectCall(tm, phoneNumber, blockNumber)
                     } else if (phoneNumber.isNullOrEmpty() || phoneNumber == "-1" || phoneNumber == "-2") {
                         if (BlockCallsPref.getPvtNumOption(context)) {
-                            rejectCall(tm, phoneNumber)
+                            rejectCall(tm, phoneNumber, blockNumber)
                         }
                     } else if (BlockCallsPref.getSpamOption(mContext)) {
-                        checkForSpam(tm, phoneNumber)
+                        checkForSpam(tm, phoneNumber, blockNumber)
                     } else {
                         if (BlockCallsPref.getUnknownNum(context)) {
                             if (!Utils.contactExists(context, phoneNumber)) {
-                                rejectAndUpdate(phoneNumber, tm)
+                                rejectAndUpdate(phoneNumber, blockNumber, tm)
                             }
                         } else if (Utils.isInternationalNumber(mContext, phoneNumber)) {
                             if (BlockCallsPref.getInternationalOption(mContext)) {
-                                rejectAndUpdate(phoneNumber, tm)
+                                rejectAndUpdate(phoneNumber, blockNumber, tm)
                             }
                         }
                     }
@@ -103,17 +105,17 @@ class IncomingCallReceiver : BroadcastReceiver() {
         }
     }
 
-    private fun rejectAndUpdate(phoneNumber: String, tm: TelephonyManager) {
+    private fun rejectAndUpdate(phoneNumber: String, blockNumber: String, tm: TelephonyManager) {
         LogUtil.e(TAG, "rejectAndUpdate")
 
-        val blockContact = contactDao.getBlockContactFromNumber(phoneNumber)
+        val blockContact = contactDao.getBlockContactFromNumber(blockNumber)
         blockContact?.let {
             contactDao.updateBlockContact(System.currentTimeMillis(), blockContact.timesCalled + 1)
         }
-        rejectCall(tm, phoneNumber)
+        rejectCall(tm, phoneNumber, blockNumber)
     }
 
-    private fun checkForSpam(tm: TelephonyManager, phoneNumber: String) {
+    private fun checkForSpam(tm: TelephonyManager, phoneNumber: String, blockNumber: String) {
         LogUtil.e(TAG, "checkForSpam")
 
         val api: WebServices = BlockCallApplication.getAppContext().api2
@@ -136,7 +138,7 @@ class IncomingCallReceiver : BroadcastReceiver() {
                 ) {
                     if (response.isSuccessful) {
                         if (response.body() != null && response.body()?.spamRisk != null && response.body()?.spamRisk?.level == 2) {
-                            rejectCall(tm, phoneNumber)
+                            rejectCall(tm, phoneNumber, blockNumber)
                         } else {
                             LogUtil.e(TAG, "number not spam from api")
                         }
@@ -149,8 +151,16 @@ class IncomingCallReceiver : BroadcastReceiver() {
     }
 
     @SuppressLint("MissingPermission")
-    private fun rejectCall(tm: TelephonyManager, phoneNumber: String) {
+    private fun rejectCall(tm: TelephonyManager, phoneNumber: String, blockNumber: String) {
         addToHistory(phoneNumber)
+        contactDao.insertLog(
+            LogContact(
+                id = 0,
+                name = null,
+                phoneNumber = phoneNumber,
+                isCall = true
+            )
+        )
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
             val telManager = mContext.getSystemService(TELECOM_SERVICE) as TelecomManager
             try {

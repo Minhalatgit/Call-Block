@@ -7,10 +7,11 @@ import android.view.View
 import android.view.ViewGroup
 import com.blockcallnow.R
 import com.blockcallnow.databinding.FragmentLogsBinding
+import com.blockcallnow.ui.base.BaseFragment
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 
-class LogsFragment : Fragment() {
+class LogsFragment : BaseFragment() {
 
     private lateinit var binding: FragmentLogsBinding
 

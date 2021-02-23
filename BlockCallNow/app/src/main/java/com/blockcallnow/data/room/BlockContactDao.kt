@@ -1,5 +1,6 @@
 package com.blockcallnow.data.room
 
+import androidx.lifecycle.LiveData
 import androidx.room.*
 
 @Dao
@@ -25,13 +26,18 @@ interface BlockContactDao {
     @Query("DELETE FROM block_contacts")
     fun clearTable()
 
-//    @Insert
-//    fun insertLog()
-//
-//    @Delete
-//    fun deleteLog()
-//
-//    @Query("")
-//    fun deleteAllLogs()
+    @Insert
+    fun insertLog(logContact: LogContact)
 
+    @Query("DELETE FROM call_log_table WHERE is_call = 1")
+    fun deleteCallLogs()
+
+    @Query("DELETE FROM call_log_table WHERE is_call = 0")
+    fun deleteMessageLogs()
+
+    @Query("DELETE FROM call_log_table")
+    fun deleteAllLogs()
+
+    @Query("SELECT * FROM call_log_table WHERE is_call=:isCall ORDER BY time_stamp DESC")
+    fun getLogs(isCall: Boolean): LiveData<List<LogContact>>
 }
