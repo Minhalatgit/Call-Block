@@ -172,8 +172,7 @@ class MainActivity : BaseActivity() {
         var isAvailable = false
         val telMgr =
             mContext.getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
-        val simState = telMgr.simState
-        when (simState) {
+        when (telMgr.simState) {
             TelephonyManager.SIM_STATE_ABSENT -> {
             }
             TelephonyManager.SIM_STATE_NETWORK_LOCKED -> {
@@ -190,9 +189,8 @@ class MainActivity : BaseActivity() {
     }
 
     fun isSimSupport(): Boolean {
-        val tm: TelephonyManager =
-            getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager //gets the current TelephonyManager
-        return !(tm.simState == TelephonyManager.SIM_STATE_ABSENT)
+        val tm: TelephonyManager = getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager //gets the current TelephonyManager
+        return tm.simState != TelephonyManager.SIM_STATE_ABSENT
     }
 
     private fun requestAppPermissions() {

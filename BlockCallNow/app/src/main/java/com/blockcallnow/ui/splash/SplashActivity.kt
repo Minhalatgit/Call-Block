@@ -3,6 +3,7 @@ package com.blockcallnow.ui.splash
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
+import android.os.Looper
 import androidx.appcompat.app.AppCompatActivity
 import com.blockcallnow.R
 import com.blockcallnow.data.preference.LoginPref
@@ -13,16 +14,18 @@ class SplashActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_splash)
-        Handler().postDelayed({
+        Handler(Looper.getMainLooper()).postDelayed({
             LoginPref.getLoginObject(this)?.let {
 
-                startActivity(Intent(this, MainActivity::class.java)
+                startActivity(
+                    Intent(this, MainActivity::class.java)
                         .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
-                        .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP))
+                        .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                )
             } ?: run {
                 startActivity(Intent(this, LoginActivity::class.java))
             }
             finish()
-        }, 2500)
+        }, 1500)
     }
 }

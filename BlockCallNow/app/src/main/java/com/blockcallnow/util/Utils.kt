@@ -14,27 +14,26 @@ import io.michaelrocks.libphonenumber.android.PhoneNumberUtil
 import omrecorder.AudioRecordConfig
 import omrecorder.PullableSource
 
-
 class Utils {
     companion object {
 
-        val PARTIAL_BLOCK: String = "partial"
-        val FULL_BLOCK: String = "full"
-        val PLAN_TRIAL = 1
-        val PLAN_STAND = 134321
-        val PLAN_PRO = 119832
+        const val PARTIAL_BLOCK: String = "partial"
+        const val FULL_BLOCK: String = "full"
+        const val PLAN_TRIAL = 1
+        const val PLAN_STAND = 134321
+        const val PLAN_PRO = 119832
 
         fun isInternationalNumber(context: Context, phoneNumber: String): Boolean {
             val phoneNumberUtil = PhoneNumberUtil.createInstance(context)
             try {
                 val formattedNUmber = phoneNumberUtil.parseAndKeepRawInput(phoneNumber, "en")
                 LogUtil.e(
-                        "isInternationalNumber countryCode ",
-                        formattedNUmber.countryCode.toString()
+                    "isInternationalNumber countryCode ",
+                    formattedNUmber.countryCode.toString()
                 )
                 LogUtil.e(
-                        "isInternationalNumber nationalNumber ",
-                        formattedNUmber.nationalNumber.toString()
+                    "isInternationalNumber nationalNumber ",
+                    formattedNUmber.nationalNumber.toString()
                 )
                 val region = phoneNumberUtil.getRegionCodeForNumber(formattedNUmber)
                 LogUtil.e("isInternationalNumber region ", region)
@@ -49,13 +48,13 @@ class Utils {
         fun contactExists(context: Context, number: String?): Boolean {
             /// number is the phone number
             val lookupUri = Uri.withAppendedPath(
-                    PhoneLookup.CONTENT_FILTER_URI,
-                    Uri.encode(number)
+                PhoneLookup.CONTENT_FILTER_URI,
+                Uri.encode(number)
             )
             val mPhoneNumberProjection =
-                    arrayOf(PhoneLookup._ID, PhoneLookup.NUMBER, PhoneLookup.DISPLAY_NAME)
+                arrayOf(PhoneLookup._ID, PhoneLookup.NUMBER, PhoneLookup.DISPLAY_NAME)
             val cur =
-                    context.contentResolver.query(lookupUri, mPhoneNumberProjection, null, null, null)
+                context.contentResolver.query(lookupUri, mPhoneNumberProjection, null, null, null)
             try {
                 if (cur!!.moveToFirst()) {
                     LogUtil.e(TAG, "contact exists")
@@ -69,10 +68,10 @@ class Utils {
 
         fun getMic(): PullableSource.Default {
             return PullableSource.Default(
-                    AudioRecordConfig.Default(
-                            MediaRecorder.AudioSource.MIC, AudioFormat.ENCODING_PCM_16BIT,
-                            AudioFormat.CHANNEL_IN_MONO, 44100
-                    )
+                AudioRecordConfig.Default(
+                    MediaRecorder.AudioSource.MIC, AudioFormat.ENCODING_PCM_16BIT,
+                    AudioFormat.CHANNEL_IN_MONO, 44100
+                )
             )
         }
 
@@ -84,15 +83,15 @@ class Utils {
         fun cursorToBlockContact(context: Context, cursor: Cursor, status: String): BlockContact {
 
             val phoneIndex: Int =
-                    cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER)
+                cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER)
             val contactIdIdx: Int =
-                    cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone._ID)
+                cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone._ID)
             val nameIdx: Int =
-                    cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME)
+                cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME)
             val namePrimaryIdx: Int =
-                    cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME_PRIMARY)
+                cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME_PRIMARY)
             val photoUriIdx: Int =
-                    cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.PHOTO_URI)
+                cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.PHOTO_URI)
 
             val number: String = cursor.getString(phoneIndex)
             val id: String = cursor.getString(contactIdIdx)
@@ -110,14 +109,14 @@ class Utils {
             LogUtil.e(TAG, "name $name")
             LogUtil.e(TAG, "namePrimary $namePrimary")
             return BlockContact(
-                    0,
-                    name,
-                    number,
-                    getBlockNumber(context, number),
-                    status,
-                    photoUri,
-                    0,
-                    0
+                0,
+                name,
+                number,
+                getBlockNumber(context, number),
+                status,
+                photoUri,
+                0,
+                0
             )
         }
 

@@ -57,17 +57,13 @@ class IncomingCallReceiver : BroadcastReceiver() {
         try {
             val state = intent.getStringExtra(TelephonyManager.EXTRA_STATE)
             var phoneNumber = intent.getStringExtra(TelephonyManager.EXTRA_INCOMING_NUMBER)
-//            val phoneNumber = intent.extras!!.getString(TelephonyManager.EXTRA_INCOMING_NUMBER)
-
-            /* swy: we can receive two notifications; the first one doesn't
-                        have EXTRA_INCOMING_NUMBER, so just skip it */
 
             if (state.equals(TelephonyManager.EXTRA_STATE_RINGING, ignoreCase = true)) {
                 val tm = context.getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
                 if (phoneNumber == null) {
                     return
                 } else {
-                    LogUtil.e(TAG, "Block num : ${Utils.getBlockNumber(context, phoneNumber)}")
+                    LogUtil.e(TAG, "Block num: ${Utils.getBlockNumber(context, phoneNumber)}")
                     phoneNumber = Utils.getBlockNumber(context, phoneNumber)
                 }
 
@@ -154,7 +150,6 @@ class IncomingCallReceiver : BroadcastReceiver() {
 
     @SuppressLint("MissingPermission")
     private fun rejectCall(tm: TelephonyManager, phoneNumber: String) {
-        contactDao
         addToHistory(phoneNumber)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
             val telManager = mContext.getSystemService(TELECOM_SERVICE) as TelecomManager
