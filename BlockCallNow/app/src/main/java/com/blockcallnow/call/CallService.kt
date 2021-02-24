@@ -13,6 +13,7 @@ import com.blockcallnow.data.network.WebServices
 import com.blockcallnow.data.preference.BlockCallsPref
 import com.blockcallnow.data.preference.LoginPref
 import com.blockcallnow.data.room.BlockContactDao
+import com.blockcallnow.data.room.LogContact
 import com.blockcallnow.util.LogUtil
 import com.blockcallnow.util.Utils
 import io.reactivex.rxjava3.disposables.CompositeDisposable
@@ -40,39 +41,37 @@ class CallService : CallScreeningService() {
 
         if (callDetails.callDirection != Call.Details.DIRECTION_INCOMING)
             return
+
         val app = application as BlockCallApplication
 
         dao = app.db.contactDao()
         val phoneNumber = callDetails.handle?.schemeSpecificPart
+        val blockNumber = Utils.getBlockNumber(this, phoneNumber!!)
 
-        LogUtil.e(TAG, "phoneNumber $phoneNumber")
+        LogUtil.e(TAG, "phoneNumber $phoneNumber block number $blockNumber")
 
         val response = CallResponse.Builder()
 
-        if (!phoneNumber.isNullOrEmpty() && dao.getBlockContactFromNumber(
-                Utils.getBlockNumber(
-                    this,
-                    phoneNumber
-                )
-            ) != null
-        ) rejectAndUpdate(phoneNumber, response, callDetails, app)
-        else if (BlockCallsPref.getBlockAllOption(this)) {
-            LogUtil.e(TAG, "block all ")
-            rejectCall(response, callDetails, phoneNumber)
+        if (!phoneNumber.isNullOrEmpty() && dao.getBlockContactFromNumber(blockNumber) != null) {
+            LogUtil.e(TAG, "Number is present in db")
+            rejectAndUpdate(phoneNumber, response, callDetails, dao)
+        } else if (BlockCallsPref.getBlockAllOption(this)) {
+            LogUtil.e(TAG, "block all")
+            rejectCall(response, callDetails, phoneNumber, dao)
         } else if (phoneNumber.isNullOrEmpty() || phoneNumber == "-1" || phoneNumber == "-2") {
             if (BlockCallsPref.getPvtNumOption(this)) {
-                rejectCall(response, callDetails, phoneNumber)
+                rejectCall(response, callDetails, phoneNumber, dao)
             }
         } else if (BlockCallsPref.getSpamOption(this)) {
             checkForSpam(response, callDetails, phoneNumber, app)
         } else {
             if (BlockCallsPref.getUnknownNum(this)) {
                 if (!Utils.contactExists(this, phoneNumber)) {
-                    rejectAndUpdate(phoneNumber, response, callDetails, app)
+                    rejectAndUpdate(phoneNumber, response, callDetails, dao)
                 }
             } else if (Utils.isInternationalNumber(this, phoneNumber)) {
                 if (BlockCallsPref.getInternationalOption(this)) {
-                    rejectAndUpdate(phoneNumber, response, callDetails, app)
+                    rejectAndUpdate(phoneNumber, response, callDetails, dao)
                 }
             }
         }
@@ -107,7 +106,7 @@ class CallService : CallScreeningService() {
                 if (response.isSuccessful) {
                     if (response.body() != null && response.body()?.spamRisk != null && response.body()?.spamRisk?.level == 2) {
 //                                rejectAndUpdate(phoneNumber!!, builder, callDetails, app)
-                        rejectCall(builder, callDetails, phoneNumber)
+                        rejectCall(builder, callDetails, phoneNumber, dao)
                     } else {
                         LogUtil.e(TAG, "number not spam form api")
                     }
@@ -124,27 +123,44 @@ class CallService : CallScreeningService() {
         phoneNumber: String,
         response: CallResponse.Builder,
         callDetails: Call.Details?,
-        app: BlockCallApplication
+        dao: BlockContactDao
     ) {
         val blockNumber = Utils.getBlockNumber(this, phoneNumber)
-        val dao = app.db.contactDao()
         val blockContact = dao.getBlockContactFromNumber(blockNumber)
         blockContact?.let {
-
             dao.updateBlockContact(System.currentTimeMillis(), blockContact.timesCalled + 1)
         }
         response.setDisallowCall(true)
         response.setRejectCall(true)
 
         respondToCall(callDetails!!, response.build())
+
+        dao.insertLog(
+            LogContact(
+                id = 0,
+                name = null,
+                phoneNumber = phoneNumber,
+                isCall = true
+            )
+        )
+
         addToHistory(phoneNumber)
     }
 
     fun rejectCall(
         response: CallResponse.Builder,
         callDetails: Call.Details?,
-        phoneNumber: String?
+        phoneNumber: String?,
+        dao: BlockContactDao
     ) {
+        dao.insertLog(
+            LogContact(
+                id = 0,
+                name = null,
+                phoneNumber = phoneNumber!!,
+                isCall = true
+            )
+        )
         response.setDisallowCall(true)
         response.setRejectCall(true)
         respondToCall(callDetails!!, response.build())

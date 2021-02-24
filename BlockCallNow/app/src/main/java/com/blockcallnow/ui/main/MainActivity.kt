@@ -22,8 +22,6 @@ import android.text.InputType
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
-import android.view.View.GONE
-import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.ImageView
@@ -31,6 +29,7 @@ import android.widget.TextView
 import androidx.annotation.DimenRes
 import androidx.annotation.DrawableRes
 import androidx.annotation.RequiresApi
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -61,9 +60,7 @@ import com.google.gson.Gson
 import com.livinglifetechway.quickpermissions_kotlin.runWithPermissions
 import kotlinx.android.synthetic.main.app_bar_main.*
 import kotlinx.android.synthetic.main.layout_block_options.*
-import java.util.*
 import java.util.regex.Pattern
-
 
 class MainActivity : BaseActivity() {
 
@@ -91,9 +88,7 @@ class MainActivity : BaseActivity() {
 
         blockViewModel = ViewModelProvider(this).get(BlockViewModel::class.java)
         blockViewModel.blockNavEvent.observe(this, blockNoObserver)
-//        val toolbar: Toolbar = findViewById(R.id.toolbar)
-//        setSupportActionBar(toolbar)
-//        supportActionBar?.setHomeAsUpIndicator(null)
+
         val drawerLayout: DrawerLayout = findViewById(R.id.drawer_layout)
         val navView: NavigationView = findViewById(R.id.nav_view)
         val navController = findNavController(R.id.nav_host_fragment)
@@ -189,7 +184,8 @@ class MainActivity : BaseActivity() {
     }
 
     fun isSimSupport(): Boolean {
-        val tm: TelephonyManager = getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager //gets the current TelephonyManager
+        val tm: TelephonyManager =
+            getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager //gets the current TelephonyManager
         return tm.simState != TelephonyManager.SIM_STATE_ABSENT
     }
 
@@ -538,6 +534,7 @@ class MainActivity : BaseActivity() {
     fun logout(item: MenuItem) {
         PrefManager.getSharedPreferences(mContext).edit().clear().apply()
         myApp.db.contactDao().clearTable()
+        myApp.db.contactDao().deleteAllLogs()
         startActivity(
             Intent(mContext, LoginActivity::class.java)
                 .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)

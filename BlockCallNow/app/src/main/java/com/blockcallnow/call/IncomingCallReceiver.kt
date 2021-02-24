@@ -40,9 +40,9 @@ class IncomingCallReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
         LogUtil.e(TAG, "onReceive Incoming")
 
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-//            return
-//        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            return
+        }
 
         mContext = context
         val app = context.applicationContext as BlockCallApplication
@@ -74,10 +74,10 @@ class IncomingCallReceiver : BroadcastReceiver() {
                 } else {
                     LogUtil.e(TAG, "Number is not present in db")
                     if (BlockCallsPref.getBlockAllOption(context)) {
-                        rejectCall(tm, phoneNumber, blockNumber)
+                        rejectCall(tm, phoneNumber)
                     } else if (phoneNumber.isNullOrEmpty() || phoneNumber == "-1" || phoneNumber == "-2") {
                         if (BlockCallsPref.getPvtNumOption(context)) {
-                            rejectCall(tm, phoneNumber, blockNumber)
+                            rejectCall(tm, phoneNumber)
                         }
                     } else if (BlockCallsPref.getSpamOption(mContext)) {
                         checkForSpam(tm, phoneNumber, blockNumber)
@@ -112,7 +112,7 @@ class IncomingCallReceiver : BroadcastReceiver() {
         blockContact?.let {
             contactDao.updateBlockContact(System.currentTimeMillis(), blockContact.timesCalled + 1)
         }
-        rejectCall(tm, phoneNumber, blockNumber)
+        rejectCall(tm, phoneNumber)
     }
 
     private fun checkForSpam(tm: TelephonyManager, phoneNumber: String, blockNumber: String) {
@@ -138,7 +138,7 @@ class IncomingCallReceiver : BroadcastReceiver() {
                 ) {
                     if (response.isSuccessful) {
                         if (response.body() != null && response.body()?.spamRisk != null && response.body()?.spamRisk?.level == 2) {
-                            rejectCall(tm, phoneNumber, blockNumber)
+                            rejectCall(tm, phoneNumber)
                         } else {
                             LogUtil.e(TAG, "number not spam from api")
                         }
@@ -151,7 +151,7 @@ class IncomingCallReceiver : BroadcastReceiver() {
     }
 
     @SuppressLint("MissingPermission")
-    private fun rejectCall(tm: TelephonyManager, phoneNumber: String, blockNumber: String) {
+    private fun rejectCall(tm: TelephonyManager, phoneNumber: String) {
         addToHistory(phoneNumber)
         contactDao.insertLog(
             LogContact(
