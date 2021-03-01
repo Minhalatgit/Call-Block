@@ -19,7 +19,7 @@ import com.blockcallnow.util.Utils
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import retrofit2.Response
 
-@RequiresApi(Build.VERSION_CODES.N)
+@RequiresApi(Build.VERSION_CODES.Q)
 class CallService : CallScreeningService() {
 
     val TAG: String = CallService::class.java.simpleName

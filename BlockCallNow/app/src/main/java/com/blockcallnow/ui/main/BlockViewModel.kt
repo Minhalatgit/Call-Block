@@ -2,12 +2,12 @@ package com.blockcallnow.ui.main
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.android.messaging.util.LogUtil
 import com.blockcallnow.data.event.BaseNavEvent
 import com.blockcallnow.data.model.*
 import com.blockcallnow.data.room.AppDatabase
 import com.blockcallnow.data.room.BlockContact
 import com.blockcallnow.ui.base.BaseViewModel
+import com.blockcallnow.util.LogUtil
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.functions.Action

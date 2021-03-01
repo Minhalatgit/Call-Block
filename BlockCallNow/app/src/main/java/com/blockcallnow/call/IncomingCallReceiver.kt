@@ -10,7 +10,6 @@ import android.telecom.TelecomManager
 import android.telephony.TelephonyManager
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.MutableLiveData
-import com.android.internal.telephony.ITelephony
 import com.blockcallnow.app.BlockCallApplication
 import com.blockcallnow.data.event.BaseNavEvent
 import com.blockcallnow.data.model.PhoneNoDetailResponse
@@ -40,7 +39,7 @@ class IncomingCallReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
         LogUtil.e(TAG, "onReceive Incoming")
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             return
         }
 
