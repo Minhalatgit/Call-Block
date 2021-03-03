@@ -38,6 +38,9 @@ class BlockCallApplication : Application(), Thread.UncaughtExceptionHandler {
     val api2 by lazy {
         WebFactory.getApiService2()
     }
+    val twilioApi by lazy {
+        WebFactory.getTwilioService()
+    }
 
     val db: AppDatabase by lazy {
         Room.databaseBuilder(

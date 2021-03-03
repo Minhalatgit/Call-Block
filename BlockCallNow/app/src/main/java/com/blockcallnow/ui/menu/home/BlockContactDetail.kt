@@ -13,6 +13,7 @@ import android.view.View.*
 import android.widget.CompoundButton
 import android.widget.RadioButton
 import androidx.core.content.ContextCompat
+import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.blockcallnow.R
@@ -21,6 +22,7 @@ import com.blockcallnow.data.model.BlockNoDetail
 import com.blockcallnow.data.model.BlockNoDetails
 import com.blockcallnow.data.model.UploadAudioResponse
 import com.blockcallnow.data.room.BlockContact
+import com.blockcallnow.databinding.ActivityBlockContactDetailBinding
 import com.blockcallnow.ui.base.BaseActivity
 import com.blockcallnow.ui.main.BlockViewModel
 import com.blockcallnow.util.FileUtils
@@ -42,11 +44,11 @@ import java.util.regex.Pattern
 
 
 class BlockContactDetail : BaseActivity(),
-        MediaPlayer.OnCompletionListener,
-        CompoundButton.OnCheckedChangeListener {
+    MediaPlayer.OnCompletionListener,
+    CompoundButton.OnCheckedChangeListener {
 
     private val TAG: String = "BlockContactDetail"
-    private val binding: com.blockcallnow.databinding.ActivityBlockContactDetailBinding by binding(R.layout.activity_block_contact_detail)
+    lateinit var binding: ActivityBlockContactDetailBinding
     lateinit var blockViewModel: BlockViewModel
     private var destFile: File? = null
     private lateinit var player: MediaPlayer
@@ -64,6 +66,8 @@ class BlockContactDetail : BaseActivity(),
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_block_contact_detail)
 
         blockViewModel = ViewModelProvider(this).get(BlockViewModel::class.java)
         blockViewModel.uploadNavEvent.observe(this, uploadEvent)
@@ -229,12 +233,12 @@ class BlockContactDetail : BaseActivity(),
             val msg: String? = if (msgType == 1) null else binding.etMessage.text.toString()
             val lang = rbSelectionLang?.tag.toString()
             blockViewModel.blockNo(
-                    token,
-                    phoneNo,
-                    blockNumber,
-                    name,
-                    blockStatus,
-                    voice, msgType, lang, msg
+                token,
+                phoneNo,
+                blockNumber,
+                name,
+                blockStatus,
+                voice, msgType, lang, msg
             )
         } else if (blockStatusSelection == R.id.rb_full_block) {
             blockStatus = FULL_BLOCK
@@ -259,12 +263,12 @@ class BlockContactDetail : BaseActivity(),
             val msg: String? = if (msgType == 1) null else binding.etMessage.text.toString()
             val lang = rbSelectionLang?.tag.toString()
             blockViewModel.blockNo(
-                    token,
-                    phoneNo,
-                    blockNumber,
-                    name,
-                    blockStatus,
-                    voice, msgType, lang, msg
+                token,
+                phoneNo,
+                blockNumber,
+                name,
+                blockStatus,
+                voice, msgType, lang, msg
             )
         }
     }
@@ -335,13 +339,13 @@ class BlockContactDetail : BaseActivity(),
     }
 
     private fun recordPermission() =
-            runWithPermissions(
-                    Manifest.permission.RECORD_AUDIO,
-                    Manifest.permission.READ_EXTERNAL_STORAGE,
-                    Manifest.permission.WRITE_EXTERNAL_STORAGE
-            ) {
-                startRecording()
-            }
+        runWithPermissions(
+            Manifest.permission.RECORD_AUDIO,
+            Manifest.permission.READ_EXTERNAL_STORAGE,
+            Manifest.permission.WRITE_EXTERNAL_STORAGE
+        ) {
+            startRecording()
+        }
 
     private fun startRecording() {
 //        destFile = File(
@@ -350,7 +354,7 @@ class BlockContactDetail : BaseActivity(),
 //        )
         destFile = FileUtils.createWAVFile(mContext, System.currentTimeMillis().toString())
         recorder = OmRecorder.wav(
-                PullTransport.Default(Utils.getMic()), destFile
+            PullTransport.Default(Utils.getMic()), destFile
         )
         isRecording = true
         recorder?.startRecording()
@@ -375,7 +379,7 @@ class BlockContactDetail : BaseActivity(),
         binding.fabMic.setImageResource(R.drawable.ic_mic_none)
 
         binding.fabMic.backgroundTintList =
-                ColorStateList.valueOf(ContextCompat.getColor(mContext, R.color.colorAccent))
+            ColorStateList.valueOf(ContextCompat.getColor(mContext, R.color.colorAccent))
         showPlayerView(null, Uri.fromFile(destFile))
     }
 
@@ -623,7 +627,7 @@ class BlockContactDetail : BaseActivity(),
         binding.fabMic.setImageResource(R.drawable.ic_mic_none)
         binding.chronometer.base = SystemClock.elapsedRealtime()
         binding.fabMic.backgroundTintList =
-                ColorStateList.valueOf(ContextCompat.getColor(mContext, R.color.colorAccent))
+            ColorStateList.valueOf(ContextCompat.getColor(mContext, R.color.colorAccent))
     }
 
     private fun showPlayerView(fileUrl: String?, uri: Uri?) {
@@ -631,7 +635,7 @@ class BlockContactDetail : BaseActivity(),
         binding.llRecord.visibility = GONE
         binding.fabMic.setImageResource(R.drawable.ic_mic_none)
         binding.fabMic.backgroundTintList =
-                ColorStateList.valueOf(ContextCompat.getColor(mContext, R.color.colorAccent))
+            ColorStateList.valueOf(ContextCompat.getColor(mContext, R.color.colorAccent))
         initPlayer(fileUrl, uri)
     }
 

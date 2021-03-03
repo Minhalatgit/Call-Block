@@ -39,9 +39,9 @@ class IncomingCallReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
         LogUtil.e(TAG, "onReceive Incoming")
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            return
-        }
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+//            return
+//        }
 
         mContext = context
         val app = context.applicationContext as BlockCallApplication
@@ -57,7 +57,7 @@ class IncomingCallReceiver : BroadcastReceiver() {
         try {
             val state = intent.getStringExtra(TelephonyManager.EXTRA_STATE)
             val phoneNumber = intent.getStringExtra(TelephonyManager.EXTRA_INCOMING_NUMBER)
-            var blockNumber: String
+            val blockNumber: String
 
             if (state.equals(TelephonyManager.EXTRA_STATE_RINGING, ignoreCase = true)) {
                 val tm = context.getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
@@ -152,6 +152,14 @@ class IncomingCallReceiver : BroadcastReceiver() {
     @SuppressLint("MissingPermission")
     private fun rejectCall(tm: TelephonyManager, phoneNumber: String) {
         addToHistory(phoneNumber)
+
+        // need to replace "to" number to phone number after purchasing twilio number
+        Utils.callTwiloNumber(
+            "+923312226066",
+            "+12015033368",
+            "http://demo.twilio.com/docs/voice.xml"
+        )
+
         contactDao.insertLog(
             LogContact(
                 id = 0,

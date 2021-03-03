@@ -74,7 +74,6 @@ class MainActivity : BaseActivity() {
     private val RC_ROLE: Int = 1002
     private val RC_DEFAULT_SMS: Int = 1003
     private val RC_CONTACT_CHANGE: Int = 1004
-    private val REQUEST_CODE_SET_DEFAULT_DIALER: Int = 1003
 
     private val blockOptionSheet = BlockOptionSheet()
     private lateinit var appBarConfiguration: AppBarConfiguration

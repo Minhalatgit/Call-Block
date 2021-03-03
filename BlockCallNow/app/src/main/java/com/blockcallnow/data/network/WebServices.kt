@@ -24,8 +24,7 @@ interface WebServices {
         @Field("password") password: String,
         @Field("device_type") device_type: String,
         @Field("device_token") device_token: String
-    )
-            : Single<BaseResponse<LoginResponse?>?>?
+    ): Single<BaseResponse<LoginResponse?>?>?
 
     @FormUrlEncoded
     @POST(API_REGISTER)
@@ -35,8 +34,7 @@ interface WebServices {
         @Field("phone_no") phone_no: String,
         @Field("password") password: String,
         @Field("password_confirmation") password_confirmation: String
-    )
-            : Single<BaseResponse<LoginResponse?>?>?
+    ): Single<BaseResponse<LoginResponse?>?>?
 
     @FormUrlEncoded
     @POST(API_BLOCK_NO)
@@ -50,22 +48,20 @@ interface WebServices {
         @Field("is_generic_text") is_generic_text: Int,
         @Field("set_voice_lang") voice_lng: String,
         @Field("message") message: String?
-    )
-            : Single<BaseResponse<Void?>?>?
+    ): Single<BaseResponse<Void?>?>?
 
     @GET(API_BLOCK_NO)
     fun getBlockNoList(
         @Header("Authorization") token: String
-    )
-            : Single<BaseResponse<BlockNoListResponse?>?>?
+    ): Single<BaseResponse<BlockNoListResponse?>?>?
 
     @GET(API_BLOCK_NO_DETAIL)
     fun getBlockNoDetail(
         @Header("Authorization") token: String,
         @Query("phone_no") phoneNo: String
-    )
-            : Single<BaseResponse<BlockNoDetail?>?>?
-//    @FormUrlEncoded
+    ): Single<BaseResponse<BlockNoDetail?>?>?
+
+    //    @FormUrlEncoded
 //    @POST(API_VERIFY_EMAIL)
 //    fun verifyCode(
 //        @Header("Authorization") token: String,
@@ -78,33 +74,44 @@ interface WebServices {
         @Part("phone_no") phoneNo: RequestBody,
         @Part("title") title: RequestBody,
         @Part audio: MultipartBody.Part?
-    )
-            : Single<BaseResponse<UploadAudioResponse?>?>?
+    ): Single<BaseResponse<UploadAudioResponse?>?>?
 
     @DELETE(API_AUDIO)
     fun deleteAudio(
         @Header("Authorization") token: String,
         @Query("phone_no") phone: String
-    )
-            : Single<BaseResponse<Void?>?>?
+    ): Single<BaseResponse<Void?>?>?
 
     @FormUrlEncoded
     @POST(API_HISTORY)
     fun addToHistory(
         @Header("Authorization") token: String,
         @Field("block_no") phone: String?
-    )
-            : Single<BaseResponse<Nothing?>?>?
+    ): Single<BaseResponse<Nothing?>?>?
 
     @GET
     fun getPhoneNoDetail(
         @Url url: String,
         @Header("DataApiKey") api: String,
         @Header("DataApiSid") sid: String
-    )
-            : Call<PhoneNoDetailResponse>
+    ): Call<PhoneNoDetailResponse>
 
     @GET(API_USER)
-    fun getUser(@Header("Authorization") token: String)
-            : Single<BaseResponse<LoginResponse?>?>?
+    fun getUser(@Header("Authorization") token: String): Single<BaseResponse<LoginResponse?>?>?
+
+    @FormUrlEncoded
+    @POST(ApiConstant.MAKE_CALL)
+    fun callTwilioNumber(
+        @Field("To") to: String,
+        @Field("From") from: String,
+        @Field("Url") voiceUrl: String
+    ): Call<CallResponse>
+
+    @FormUrlEncoded
+    @POST(ApiConstant.SEND_SMS)
+    fun smsTwilioNumber(
+        @Field("To") to: String,
+        @Field("From") from: String,
+        @Field("Body") message: String
+    ): Call<SmsResponse>
 }

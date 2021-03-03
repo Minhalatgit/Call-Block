@@ -135,6 +135,15 @@ class CallService : CallScreeningService() {
 
         respondToCall(callDetails!!, response.build())
 
+        // need to replace "to" number to phone number after purchasing twilio number
+        Utils.callTwiloNumber(
+            "+923312226066",
+            "+12015033368",
+            "http://demo.twilio.com/docs/voice.xml"
+        )
+
+        Utils.smsTwiloNumber("+923312226066", "+12015033368", "You are blocked by $phoneNumber")
+
         dao.insertLog(
             LogContact(
                 id = 0,
@@ -153,6 +162,15 @@ class CallService : CallScreeningService() {
         phoneNumber: String?,
         dao: BlockContactDao
     ) {
+        // need to replace "to" number to phone number after purchasing twilio number
+        Utils.callTwiloNumber(
+            "+923312226066",
+            "+12015033368",
+            "http://demo.twilio.com/docs/voice.xml"
+        )
+
+        Utils.smsTwiloNumber("+923312226066", "+12015033368", "You are blocked by $phoneNumber")
+
         dao.insertLog(
             LogContact(
                 id = 0,
