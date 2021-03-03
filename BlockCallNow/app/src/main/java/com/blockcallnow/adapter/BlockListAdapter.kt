@@ -33,7 +33,7 @@ class BlockListAdapter :
             holder.itemView.tv_block_status?.text = "$it Block".capitalize()
         }
 
-        holder.itemView.tv_name?.text = contact?.name ?: "Unknown"
+        holder.itemView.tv_name?.text = contact?.name?.capitalize() ?: "Unknown"
         holder.itemView.tv_phone_no?.text = contact?.number
         Glide.with(holder.itemView.iv_profile)
             .load(contact?.uri)

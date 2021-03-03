@@ -7,17 +7,10 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <Button
-            android:id="@+id/clear"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Clear" />
-
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/callLogs"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_below="@+id/clear"
             tools:listitem="@layout/call_log_item" />
 
     </RelativeLayout>

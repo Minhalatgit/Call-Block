@@ -32,10 +32,6 @@ class CallLogsFragment : BaseFragment() {
             callLogs.adapter = LogAdapter(it)
         })
 
-        binding.clear.setOnClickListener {
-            myApp.db.contactDao().deleteCallLogs()
-        }
-
         return binding.root
     }
 }

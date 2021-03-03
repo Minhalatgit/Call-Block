@@ -219,16 +219,18 @@ public final class SmsReceiver extends BroadcastReceiver {
         UserDetail user = LoginPref.INSTANCE.getLoginObject(context);
         if (user != null) {
             BlockContactDao dao = BlockCallApplication.Companion.getAppContext().getDb().contactDao();
-            if (dao.getBlockContactFromNumber(Utils.Companion.getBlockNumber(context, address)) != null) {
+            String blockNumber = Utils.Companion.getBlockNumber(context, address);
+            String name = user.getName();
+            if (dao.getBlockContactFromNumber(blockNumber) != null) {
                 Log.d(TAG, address + " is present in blocked list");
-                Utils.Companion.smsTwiloNumber("+923312226066", "+12015033368", "You are blocked by " + address);
+                //Utils.Companion.smsTwiloNumber("+923312226066", "+12015033368", "You are blocked by " + name);
                 dao.insertLog(new LogContact(0, dao.getNameFromNumber(Utils.Companion.getBlockNumber(context, address)), address, false));
                 return;
             } else if (BlockCallsPref.INSTANCE.getMsgUnknownNumber(context)) {
                 Log.d(TAG, address + " block unknown number feature");
                 if (!Utils.Companion.contactExists(context, address)) {
                     Log.d(TAG, address + " does not exist");
-                    Utils.Companion.smsTwiloNumber("+923312226066", "+12015033368", "You are blocked by " + address);
+                    Utils.Companion.smsTwiloNumber("+923312226066", "+12015033368", "You are blocked by " + name);
                     dao.insertLog(new LogContact(0, dao.getNameFromNumber(Utils.Companion.getBlockNumber(context, address)), address, false));
                     return;
                 }
@@ -236,7 +238,7 @@ public final class SmsReceiver extends BroadcastReceiver {
                 if (Pattern.compile(
                         "[a-z]").matcher(address.toLowerCase(Locale.ROOT)).find()) {
                     LogUtil.e(TAG, "the number is non numeric");
-                    Utils.Companion.smsTwiloNumber("+923312226066", "+12015033368", "You are blocked by " + address);
+                    Utils.Companion.smsTwiloNumber("+923312226066", "+12015033368", "You are blocked by " + name);
                     dao.insertLog(new LogContact(0, dao.getNameFromNumber(Utils.Companion.getBlockNumber(context, address)), address, false));
                     return;
                 }

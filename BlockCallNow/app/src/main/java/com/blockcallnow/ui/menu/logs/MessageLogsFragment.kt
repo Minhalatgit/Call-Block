@@ -35,10 +35,6 @@ class MessageLogsFragment : BaseFragment() {
             messageLogs.adapter = LogAdapter(it)
         })
 
-        binding.clear.setOnClickListener {
-            myApp.db.contactDao().deleteMessageLogs()
-        }
-
         return binding.root
     }
 }
