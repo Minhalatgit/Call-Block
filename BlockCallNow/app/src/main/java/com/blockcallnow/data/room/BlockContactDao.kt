@@ -20,6 +20,9 @@ interface BlockContactDao {
     @Query("UPDATE block_contacts set  ` times_called` = :timesCalled , last_call = :lastCall")
     fun updateBlockContact(lastCall: Long, timesCalled: Int)
 
+    @Query("SELECT name FROM block_contacts where block_number=:number")
+    fun getNameFromNumber(number: String): String?
+
     @Delete
     fun deleteContact(contact: BlockContact)
 

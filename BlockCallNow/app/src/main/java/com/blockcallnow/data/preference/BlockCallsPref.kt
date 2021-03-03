@@ -36,8 +36,7 @@ object BlockCallsPref {
     }
 
     fun setMsgNonNumericNUmber(context: Context, isEnable: Boolean) {
-        getSharedPreferencesEditor(context).putBoolean(KEY_MSG_NON_NUMERIC, isEnable)
-            .commit()
+        getSharedPreferencesEditor(context).putBoolean(KEY_MSG_NON_NUMERIC, isEnable).commit()
     }
 
     fun getMsgNonNumericNUmber(context: Context): Boolean {

@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.blockcallnow.databinding.FragmentCallLogsBinding
 import com.blockcallnow.ui.base.BaseFragment
+import com.blockcallnow.util.LogUtil
 
 class CallLogsFragment : BaseFragment() {
 

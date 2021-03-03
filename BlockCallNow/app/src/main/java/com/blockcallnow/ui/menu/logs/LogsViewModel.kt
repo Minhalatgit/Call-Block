@@ -8,11 +8,6 @@ import com.blockcallnow.data.room.LogContact
 
 class LogsViewModel : ViewModel() {
 
-    private val _logList = MutableLiveData<List<LogContact>>()
-    val logList: LiveData<List<LogContact>>
-        get() = _logList
-
-
     fun getCallLogs(db: AppDatabase): LiveData<List<LogContact>> {
         return db.contactDao().getLogs(true)
     }

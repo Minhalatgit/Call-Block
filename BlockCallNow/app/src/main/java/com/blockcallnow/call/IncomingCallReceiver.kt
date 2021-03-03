@@ -163,7 +163,7 @@ class IncomingCallReceiver : BroadcastReceiver() {
         contactDao.insertLog(
             LogContact(
                 id = 0,
-                name = null,
+                name = contactDao.getNameFromNumber(Utils.getBlockNumber(mContext, phoneNumber)),
                 phoneNumber = phoneNumber,
                 isCall = true
             )

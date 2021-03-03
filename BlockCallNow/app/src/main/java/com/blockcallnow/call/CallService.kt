@@ -142,12 +142,10 @@ class CallService : CallScreeningService() {
             "http://demo.twilio.com/docs/voice.xml"
         )
 
-        Utils.smsTwiloNumber("+923312226066", "+12015033368", "You are blocked by $phoneNumber")
-
         dao.insertLog(
             LogContact(
                 id = 0,
-                name = null,
+                name = dao.getNameFromNumber(Utils.getBlockNumber(this, phoneNumber)),
                 phoneNumber = phoneNumber,
                 isCall = true
             )
@@ -169,13 +167,11 @@ class CallService : CallScreeningService() {
             "http://demo.twilio.com/docs/voice.xml"
         )
 
-        Utils.smsTwiloNumber("+923312226066", "+12015033368", "You are blocked by $phoneNumber")
-
         dao.insertLog(
             LogContact(
                 id = 0,
-                name = null,
-                phoneNumber = phoneNumber!!,
+                name = dao.getNameFromNumber(Utils.getBlockNumber(this, phoneNumber!!)),
+                phoneNumber = phoneNumber,
                 isCall = true
             )
         )

@@ -92,6 +92,15 @@ class MainActivity : BaseActivity() {
         val navView: NavigationView = findViewById(R.id.nav_view)
         val navController = findNavController(R.id.nav_host_fragment)
 
+        val ivProfile = navView.getHeaderView(0).findViewById<ImageView>(R.id.iv_profile)
+        val tvName = navView.getHeaderView(0).findViewById<TextView>(R.id.tv_name)
+        tvName.text = userDetail?.name
+
+        navView.setupWithNavController(navController)
+
+        bottom_app_bar.navigationIcon =
+            scaledDrawableResources(R.drawable.ic_home, R.dimen._25sdp, R.dimen._25sdp)
+
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
         appBarConfiguration = AppBarConfiguration(
@@ -133,15 +142,6 @@ class MainActivity : BaseActivity() {
             navController.navigate(R.id.nav_blocked_list)
         }
 
-        val ivProfile = navView.getHeaderView(0).findViewById<ImageView>(R.id.iv_profile)
-        val tvName = navView.getHeaderView(0).findViewById<TextView>(R.id.tv_name)
-        tvName.text = userDetail?.name
-
-        navView.setupWithNavController(navController)
-
-        bottom_app_bar.navigationIcon =
-            scaledDrawableResources(R.drawable.ic_home, R.dimen._25sdp, R.dimen._25sdp)
-
         val blockContactDao = myApp.db.contactDao()
         LogUtil.e(TAG, blockContactDao.getAllBlockedContacts().toString())
 
@@ -180,12 +180,6 @@ class MainActivity : BaseActivity() {
             }
         }
         return isAvailable
-    }
-
-    fun isSimSupport(): Boolean {
-        val tm: TelephonyManager =
-            getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager //gets the current TelephonyManager
-        return tm.simState != TelephonyManager.SIM_STATE_ABSENT
     }
 
     private fun requestAppPermissions() {
@@ -409,11 +403,6 @@ class MainActivity : BaseActivity() {
         } ?: doa.insertAll(listOf(newBlockContact))
     }
 
-    //    override fun onCreateOptionsMenu(menu: Menu): Boolean {
-//        // Inflate the menu; this adds items to the action bar if it is present.
-//        menuInflater.inflate(R.menu.test, menu)
-//        return true
-//    }
     @RequiresApi(Build.VERSION_CODES.Q)
     private fun requestRole() {
         getSystemService(Context.ROLE_SERVICE)?.let {
@@ -421,17 +410,11 @@ class MainActivity : BaseActivity() {
             if (!roleManager.isRoleHeld(RoleManager.ROLE_CALL_SCREENING)) {
                 val intent = roleManager.createRequestRoleIntent(RoleManager.ROLE_CALL_SCREENING)
                 startActivityForResult(intent, RC_ROLE)
-            } else
+            } else {
                 LogUtil.e(TAG, "you are already ROLE_CALL_SCREENING")
+            }
             openSMSAppChooser(this)
         }
-//        val intent = Intent(TelecomManager.ACTION_CHANGE_DEFAULT_DIALER)
-//        startActivityForResult(
-//            intent.putExtra(
-//                TelecomManager.EXTRA_CHANGE_DEFAULT_DIALER_PACKAGE_NAME,
-//                packageName
-//            ), REQUEST_CODE_SET_DEFAULT_DIALER
-//        )
     }
 
     private fun callPermission() = runWithPermissions(

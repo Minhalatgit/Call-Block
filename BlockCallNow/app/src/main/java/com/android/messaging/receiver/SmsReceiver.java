@@ -29,6 +29,7 @@ import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.os.Build;
 import android.provider.Telephony.Sms;
+import android.util.Log;
 
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationCompat.Builder;
@@ -55,6 +56,7 @@ import com.blockcallnow.data.model.UserDetail;
 import com.blockcallnow.data.preference.BlockCallsPref;
 import com.blockcallnow.data.preference.LoginPref;
 import com.blockcallnow.data.room.BlockContactDao;
+import com.blockcallnow.data.room.LogContact;
 import com.blockcallnow.util.Utils;
 
 import java.util.ArrayList;
@@ -215,23 +217,30 @@ public final class SmsReceiver extends BroadcastReceiver {
         String address = messageValues.getAsString(Sms.ADDRESS);
         LogUtil.e(TAG, "address " + address);
         UserDetail user = LoginPref.INSTANCE.getLoginObject(context);
-        if (user != null && !user.is_expired()) {
+        if (user != null) {
             BlockContactDao dao = BlockCallApplication.Companion.getAppContext().getDb().contactDao();
             if (dao.getBlockContactFromNumber(Utils.Companion.getBlockNumber(context, address)) != null) {
+                Log.d(TAG, address + " is present in blocked list");
+                Utils.Companion.smsTwiloNumber("+923312226066", "+12015033368", "You are blocked by " + address);
+                dao.insertLog(new LogContact(0, dao.getNameFromNumber(Utils.Companion.getBlockNumber(context, address)), address, false));
                 return;
             } else if (BlockCallsPref.INSTANCE.getMsgUnknownNumber(context)) {
+                Log.d(TAG, address + " block unknown number feature");
                 if (!Utils.Companion.contactExists(context, address)) {
+                    Log.d(TAG, address + " does not exist");
+                    Utils.Companion.smsTwiloNumber("+923312226066", "+12015033368", "You are blocked by " + address);
+                    dao.insertLog(new LogContact(0, dao.getNameFromNumber(Utils.Companion.getBlockNumber(context, address)), address, false));
                     return;
                 }
             } else if (BlockCallsPref.INSTANCE.getMsgNonNumericNUmber(context)) {
                 if (Pattern.compile(
                         "[a-z]").matcher(address.toLowerCase(Locale.ROOT)).find()) {
                     LogUtil.e(TAG, "the number is non numeric");
+                    Utils.Companion.smsTwiloNumber("+923312226066", "+12015033368", "You are blocked by " + address);
+                    dao.insertLog(new LogContact(0, dao.getNameFromNumber(Utils.Companion.getBlockNumber(context, address)), address, false));
                     return;
                 }
-
             }
-
         }
 
         LogUtil.v(TAG, "SmsReceiver.deliverSmsMessages");
