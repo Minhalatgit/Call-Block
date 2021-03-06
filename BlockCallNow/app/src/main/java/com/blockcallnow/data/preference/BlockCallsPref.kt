@@ -27,8 +27,7 @@ object BlockCallsPref {
 //
 //    }
     fun setMsgUnknownNumber(context: Context, isEnable: Boolean) {
-        getSharedPreferencesEditor(context).putBoolean(KEY_MSG_UNKNOWN_NUM, isEnable)
-            .commit()
+        getSharedPreferencesEditor(context).putBoolean(KEY_MSG_UNKNOWN_NUM, isEnable).commit()
     }
 
     fun getMsgUnknownNumber(context: Context): Boolean {
@@ -44,8 +43,7 @@ object BlockCallsPref {
     }
 
     fun setPvtNumOption(context: Context, isEnable: Boolean) {
-        getSharedPreferencesEditor(context).putBoolean(KEY_PVT_NUM, isEnable)
-            .commit()
+        getSharedPreferencesEditor(context).putBoolean(KEY_PVT_NUM, isEnable).commit()
     }
 
     fun getPvtNumOption(context: Context): Boolean {
@@ -53,8 +51,7 @@ object BlockCallsPref {
     }
 
     fun setUnknownNum(context: Context, isEnable: Boolean) {
-        getSharedPreferencesEditor(context).putBoolean(KEY_UNKNOWN_NUM, isEnable)
-            .commit()
+        getSharedPreferencesEditor(context).putBoolean(KEY_UNKNOWN_NUM, isEnable).commit()
     }
 
     fun getUnknownNum(context: Context): Boolean {
@@ -62,8 +59,7 @@ object BlockCallsPref {
     }
 
     fun setSpamOption(context: Context, isEnable: Boolean) {
-        getSharedPreferencesEditor(context).putBoolean(KEY_SPAM, isEnable)
-            .commit()
+        getSharedPreferencesEditor(context).putBoolean(KEY_SPAM, isEnable).commit()
     }
 
     fun getSpamOption(context: Context): Boolean {
@@ -71,8 +67,7 @@ object BlockCallsPref {
     }
 
     fun setInternationalOption(context: Context, isEnable: Boolean) {
-        getSharedPreferencesEditor(context).putBoolean(KEY_INTERNATIONAL_NUM, isEnable)
-            .commit()
+        getSharedPreferencesEditor(context).putBoolean(KEY_INTERNATIONAL_NUM, isEnable).commit()
     }
 
     fun getInternationalOption(context: Context): Boolean {
@@ -89,8 +84,7 @@ object BlockCallsPref {
     }
 
     fun setBlockAllOption(context: Context, isEnable: Boolean) {
-        getSharedPreferencesEditor(context).putBoolean(KEY_BLOCK_ALL, isEnable)
-            .commit()
+        getSharedPreferencesEditor(context).putBoolean(KEY_BLOCK_ALL, isEnable).commit()
     }
 
     fun getBlockAllOption(context: Context): Boolean {

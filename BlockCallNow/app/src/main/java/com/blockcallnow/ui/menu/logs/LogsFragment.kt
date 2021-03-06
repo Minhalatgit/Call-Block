@@ -1,6 +1,7 @@
 package com.blockcallnow.ui.menu.logs
 
 import android.os.Bundle
+import android.util.Log
 import android.view.*
 import androidx.fragment.app.Fragment
 import com.blockcallnow.R
@@ -19,6 +20,7 @@ class LogsFragment : BaseFragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
+        Log.d("LogsFragment", "onCreate: ")
     }
 
     override fun onCreateView(
@@ -26,6 +28,7 @@ class LogsFragment : BaseFragment() {
         savedInstanceState: Bundle?
     ): View? {
         binding = FragmentLogsBinding.inflate(inflater, container, false)
+        Log.d("LogsFragment", "onCreateView: ")
 
         val list = arrayListOf("Calls", "Messages")
         binding.pager.adapter = LogsViewPagerAdapter(list, requireActivity())
@@ -41,6 +44,7 @@ class LogsFragment : BaseFragment() {
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        Log.d("LogsFragment", "onCreateOptionsMenu: ")
         inflater.inflate(R.menu.logs_menu, menu)
         super.onCreateOptionsMenu(menu, inflater)
     }

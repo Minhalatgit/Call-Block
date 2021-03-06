@@ -69,49 +69,49 @@ class BlockViewModel : BaseViewModel() {
     }
 
     fun blockNo(
-            token: String,
-            phone: String?,
-            formattedNo: String,
-            name: String?,
-            status: String,
-            voiceGender: String,
-            isGenericText: Int,
-            lang: String,
-            message: String?
+        token: String,
+        phone: String?,
+        formattedNo: String,
+        name: String?,
+        status: String,
+        voiceGender: String,
+        isGenericText: Int,
+        lang: String,
+        message: String?
     ) {
         makeRequest(
-                api.blockNo(
-                        token,
-                        phone,
-                        name,
-                        formattedNo,
-                        status.toLowerCase(Locale.getDefault()),
-                        voiceGender,
-                        isGenericText,
-                        lang,
-                        message
-                ), navEvent
+            api.blockNo(
+                token,
+                phone,
+                name,
+                formattedNo,
+                status.toLowerCase(Locale.getDefault()),
+                voiceGender,
+                isGenericText,
+                lang,
+                message
+            ), navEvent
         )
     }
 
     fun unblock(token: String, phoneNo: String?) {
         makeRequest(
-                api.blockNo(token, phoneNo, null, null, "unblock", "M", 0, "en", null),
-                unblockEvent
+            api.blockNo(token, phoneNo, null, null, "unblock", "M", 0, "en", null),
+            unblockEvent
         )
     }
 
     fun uploadAudio(token: String, phoneNo: String, file: File) {
         makeRequest(
-                api.uploadAudio(
-                        token, phoneNo.toRequestBody(), file.name.toRequestBody(),
+            api.uploadAudio(
+                token, phoneNo.toRequestBody(), file.name.toRequestBody(),
 
-                        MultipartBody.Part.createFormData(
-                                "file",
-                                file.name,
-                                file.asRequestBody("*/*".toMediaTypeOrNull())
-                        )
-                ), uploadEvent
+                MultipartBody.Part.createFormData(
+                    "file",
+                    file.name,
+                    file.asRequestBody("*/*".toMediaTypeOrNull())
+                )
+            ), uploadEvent
         )
     }
 
@@ -123,34 +123,34 @@ class BlockViewModel : BaseViewModel() {
         val list = ArrayList<BlockContact>()
         mDisposable.add(
 
-                Observable.fromIterable(blockList)
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribeOn(Schedulers.computation())
-                        .doOnSubscribe {
-                            blockNoListEvent.value = BaseNavEvent.StartLoading()
-                        }
-                        .doOnNext {
+            Observable.fromIterable(blockList)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.computation())
+                .doOnSubscribe {
+                    blockNoListEvent.value = BaseNavEvent.StartLoading()
+                }
+                .doOnNext {
 
-                            list.add(
-                                    BlockContact(
-                                            0,
-                                            it.name,
-                                            it.phoneNo,
-                                            it.formatted_phone_no,
-                                            it.status ?: "",
-                                            null,
-                                            0,
-                                            0
-                                    )
-                            )
-                        }
-                        .subscribe(Functions.emptyConsumer(),
-                                Consumer<Throwable> {
-                                    LogUtil.e("BlockViewModel", "error while saving data to db ")
-                                }, Action {
-                            db.contactDao().insertAll(list)
-                            blockNoDBListEvent.value = list
-                        })
+                    list.add(
+                        BlockContact(
+                            0,
+                            it.name,
+                            it.phoneNo,
+                            it.formatted_phone_no,
+                            it.status ?: "",
+                            null,
+                            0,
+                            0
+                        )
+                    )
+                }
+                .subscribe(Functions.emptyConsumer(),
+                    Consumer<Throwable> {
+                        LogUtil.e("BlockViewModel", "error while saving data to db ")
+                    }, Action {
+                        db.contactDao().insertAll(list)
+                        blockNoDBListEvent.value = list
+                    })
         )
     }
 }

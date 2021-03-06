@@ -9,11 +9,11 @@ import android.net.Uri
 import android.os.Bundle
 import android.os.SystemClock
 import android.text.InputType
+import android.util.Log
 import android.view.View.*
 import android.widget.CompoundButton
 import android.widget.RadioButton
 import androidx.core.content.ContextCompat
-import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.blockcallnow.R
@@ -42,18 +42,18 @@ import omrecorder.Recorder
 import java.io.File
 import java.util.regex.Pattern
 
-
 class BlockContactDetail : BaseActivity(),
     MediaPlayer.OnCompletionListener,
     CompoundButton.OnCheckedChangeListener {
 
     private val TAG: String = "BlockContactDetail"
-    lateinit var binding: ActivityBlockContactDetailBinding
     lateinit var blockViewModel: BlockViewModel
+
     private var destFile: File? = null
     private lateinit var player: MediaPlayer
     private var recorder: Recorder? = null
     private var isRecording: Boolean = false
+
     lateinit var phoneNo: String
     lateinit var name: String
     lateinit var blockNumber: String
@@ -64,16 +64,17 @@ class BlockContactDetail : BaseActivity(),
     //    val audioRecorder = NaraeAudioRecorder()
     var rbSelectionLang: RadioButton? = null
 
+    private val binding: ActivityBlockContactDetailBinding by binding(R.layout.activity_block_contact_detail)
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_block_contact_detail)
 
         blockViewModel = ViewModelProvider(this).get(BlockViewModel::class.java)
         blockViewModel.uploadNavEvent.observe(this, uploadEvent)
         blockViewModel.deleteAudioNavEvent.observe(this, deleteEvent)
         blockViewModel.detailNavEvent.observe(this, detailEvent)
         blockViewModel.blockNavEvent.observe(this, blockNoObserver)
+
         name = intent?.getStringExtra("name") ?: ""
         phoneNo = intent?.getStringExtra("phone") ?: ""
         blockNumber = intent?.getStringExtra("block_number") ?: ""
@@ -98,6 +99,7 @@ class BlockContactDetail : BaseActivity(),
                 binding.etMessage.inputType = 0
             }
             setPref()
+
             binding.rgStatus.check(R.id.rb_partial_block)
             binding.rbPartialBlock.isChecked = true
             binding.rgMessage.check(R.id.rb_generic_msg)
@@ -134,7 +136,6 @@ class BlockContactDetail : BaseActivity(),
         binding.toolbar.iv_back?.setOnClickListener {
             onBackPressed()
         }
-
         binding.fabMic.setOnClickListener {
             if (isRecording) {
                 stopRecording()
@@ -148,9 +149,8 @@ class BlockContactDetail : BaseActivity(),
             showRecordingView()
         }
         binding.rgStatus.setOnCheckedChangeListener { group, checkId ->
-            LogUtil.e(TAG, "Block Status  Radio group changes")
+            LogUtil.e(TAG, "Block Status Radio group changes")
             when (checkId) {
-
                 R.id.rb_partial_block -> {
                     blockStatus = PARTIAL_BLOCK
 //                    binding.rbCustomMessage.isEnabled = false
@@ -159,7 +159,6 @@ class BlockContactDetail : BaseActivity(),
                     binding.cvAudio.visibility = GONE
                     binding.cvVoice.visibility = VISIBLE
                     binding.cvLangs.visibility = VISIBLE
-
                 }
                 R.id.rb_full_block -> {
                     blockStatus = FULL_BLOCK
@@ -168,7 +167,6 @@ class BlockContactDetail : BaseActivity(),
                     binding.cvLangs.visibility = GONE
                     binding.cvAudio.visibility = VISIBLE
                 }
-
             }
         }
         binding.rgMessage.setOnCheckedChangeListener { group, checkedId ->
@@ -206,70 +204,74 @@ class BlockContactDetail : BaseActivity(),
             return
         }
         val blockStatusSelection = binding.rgStatus.checkedRadioButtonId
-        if (blockStatusSelection == -1) {
-            toast("Please select block status")
-            return
-        } else if (blockStatusSelection == R.id.rb_partial_block) {
-            blockStatus = PARTIAL_BLOCK
-            if (!binding.rbMaleVoice.isChecked && !binding.rbFemaleVoice.isChecked) {
-                toast("Please select voice")
+        when (blockStatusSelection) {
+            -1 -> {
+                toast("Please select block status")
                 return
             }
-            if (!binding.rbGenericMsg.isChecked && !binding.rbCustomMessage.isChecked) {
-                toast("Please select message")
-                return
-            }
-            if (binding.rbCustomMessage.isChecked && binding.etMessage.text.isBlank()) {
-                toast("Please write custom message up to 100 characters")
-                return
-            }
-            if (rbSelectionLang == null) {
-                toast("Please select a language.")
-                return
-            }
+            R.id.rb_partial_block -> {
+                blockStatus = PARTIAL_BLOCK
+                if (!binding.rbMaleVoice.isChecked && !binding.rbFemaleVoice.isChecked) {
+                    toast("Please select voice")
+                    return
+                }
+                if (!binding.rbGenericMsg.isChecked && !binding.rbCustomMessage.isChecked) {
+                    toast("Please select message")
+                    return
+                }
+                if (binding.rbCustomMessage.isChecked && binding.etMessage.text.isBlank()) {
+                    toast("Please write custom message up to 100 characters")
+                    return
+                }
+                if (rbSelectionLang == null) {
+                    toast("Please select a language")
+                    return
+                }
 
-            val voice = if (binding.rbMaleVoice.isChecked) "M" else "F"
-            val msgType = if (binding.rbGenericMsg.isChecked) 1 else 0
-            val msg: String? = if (msgType == 1) null else binding.etMessage.text.toString()
-            val lang = rbSelectionLang?.tag.toString()
-            blockViewModel.blockNo(
-                token,
-                phoneNo,
-                blockNumber,
-                name,
-                blockStatus,
-                voice, msgType, lang, msg
-            )
-        } else if (blockStatusSelection == R.id.rb_full_block) {
-            blockStatus = FULL_BLOCK
-            if (!binding.rbGenericMsg.isChecked && !binding.rbCustomMessage.isChecked) {
-                toast("Please select message")
-                return
+                val voice = if (binding.rbMaleVoice.isChecked) "M" else "F"
+                val msgType = if (binding.rbGenericMsg.isChecked) 1 else 0
+                val msg: String? = if (msgType == 1) null else binding.etMessage.text.toString()
+                val lang = rbSelectionLang?.tag.toString()
+                blockViewModel.blockNo(
+                    token,
+                    phoneNo,
+                    blockNumber,
+                    name,
+                    blockStatus,
+                    voice, msgType, lang, msg
+                )
             }
-            if (binding.rbCustomMessage.isChecked && binding.etMessage.text.isBlank()) {
-                toast("Please write custom message up to 100 characters")
-                return
+            R.id.rb_full_block -> {
+                blockStatus = FULL_BLOCK
+                if (!binding.rbGenericMsg.isChecked && !binding.rbCustomMessage.isChecked) {
+                    toast("Please select message")
+                    return
+                }
+                if (binding.rbCustomMessage.isChecked && binding.etMessage.text.isBlank()) {
+                    toast("Please write custom message up to 100 characters")
+                    return
+                }
+                if (binding.llRecord.visibility == VISIBLE && destFile == null) {
+                    toast("Please record custom audio message")
+                    return
+                }
+                if (isRecording) {
+                    toast("Please stop recording")
+                    return
+                }
+                val voice = if (binding.rbMaleVoice.isChecked) "M" else "F"
+                val msgType = if (binding.rbGenericMsg.isChecked) 1 else 0
+                val msg: String? = if (msgType == 1) null else binding.etMessage.text.toString()
+                val lang = rbSelectionLang?.tag.toString()
+                blockViewModel.blockNo(
+                    token,
+                    phoneNo,
+                    blockNumber,
+                    name,
+                    blockStatus,
+                    voice, msgType, lang, msg
+                )
             }
-            if (binding.llRecord.visibility == VISIBLE && destFile == null) {
-                toast("Please record custom audio message")
-                return
-            }
-            if (isRecording) {
-                toast("Please stop recording")
-                return
-            }
-            val voice = if (binding.rbMaleVoice.isChecked) "M" else "F"
-            val msgType = if (binding.rbGenericMsg.isChecked) 1 else 0
-            val msg: String? = if (msgType == 1) null else binding.etMessage.text.toString()
-            val lang = rbSelectionLang?.tag.toString()
-            blockViewModel.blockNo(
-                token,
-                phoneNo,
-                blockNumber,
-                name,
-                blockStatus,
-                voice, msgType, lang, msg
-            )
         }
     }
 
@@ -297,10 +299,6 @@ class BlockContactDetail : BaseActivity(),
     }
 
     private fun initPlayer(path: String?, uri: Uri?) {
-        try {
-
-        } catch (e: java.lang.Exception) {
-        }
         player = MediaPlayer()
         player.setOnCompletionListener(this)
 //        player.setOnBufferingUpdateListener { mp, percent ->
@@ -335,6 +333,7 @@ class BlockContactDetail : BaseActivity(),
             binding.pb.visibility = VISIBLE
             binding.ivPlayPause.visibility = INVISIBLE
         } catch (e: Exception) {
+            Log.e(TAG, "startPlaying: ${e.message}")
         }
     }
 
@@ -398,6 +397,62 @@ class BlockContactDetail : BaseActivity(),
             player.stop()
 //        recorder?.stopRecording()
         super.onStop()
+    }
+
+    private val blockNoObserver = Observer<BaseNavEvent<Void?>> {
+        when (it) {
+            is BaseNavEvent.StartLoading -> {
+                dialog.show(mContext)
+            }
+            is BaseNavEvent.StopLoading -> {
+                dialog.dialog.cancel()
+            }
+            is BaseNavEvent.Success -> {
+
+                if (blockStatus == "full" && destFile != null) {
+
+                    blockViewModel.uploadAudio(token, phoneNo, destFile!!)
+
+                } else {
+                    blockContact(phoneNo, blockNumber, blockStatus, photoUri)
+                    setResult(Activity.RESULT_OK)
+                    finish()
+                }
+            }
+
+            is BaseNavEvent.Error -> {
+                it.message?.let {
+                    toast(it)
+                }
+            }
+            is BaseNavEvent.ShowMessage -> {
+                it.message?.let {
+                    toast(it)
+                }
+            }
+            is BaseNavEvent.JsonParseException -> {
+                it.throwable?.message?.let { it1 -> toast(it1) }
+            }
+            is BaseNavEvent.NetWorkException -> {
+                it.throwable?.message?.let { it1 -> toast(it1) }
+            }
+            is BaseNavEvent.UnKnownException -> {
+                it.throwable?.message?.let { it1 -> toast(it1) }
+            }
+        }
+    }
+
+    private fun blockContact(number: String, blockNumber: String, status: String, uri: String?) {
+        val doa = myApp.db.contactDao()
+//        val blockNumber = Utils.getBlockNumber(mContext, number)
+        val oldContact = doa.getBlockContactFromNumber(blockNumber)
+        val newBlockContact = BlockContact(0, name, number, blockNumber, status, uri, 0, 0)
+        oldContact?.let {
+            it.name = newBlockContact.name
+            it.uri = newBlockContact.uri
+            it.blockStatus = status
+            doa.updateBlockContact(it)
+        } ?: doa.insertAll(listOf(newBlockContact))
     }
 
     private val uploadEvent = Observer<BaseNavEvent<UploadAudioResponse?>> {
@@ -494,6 +549,7 @@ class BlockContactDetail : BaseActivity(),
                             binding.cvVoice.visibility = GONE
                             binding.cvLangs.visibility = GONE
                             detail.audio?.fileUrl?.let { fileUrl ->
+                                Log.d(TAG, "Audio file is $fileUrl ")
                                 showPlayerView(fileUrl, null)
                             } ?: run {
                                 showRecordingView()
@@ -637,63 +693,6 @@ class BlockContactDetail : BaseActivity(),
         binding.fabMic.backgroundTintList =
             ColorStateList.valueOf(ContextCompat.getColor(mContext, R.color.colorAccent))
         initPlayer(fileUrl, uri)
-    }
-
-    private val blockNoObserver = Observer<BaseNavEvent<Void?>> {
-        when (it) {
-            is BaseNavEvent.StartLoading -> {
-                dialog.show(mContext)
-            }
-            is BaseNavEvent.StopLoading -> {
-                dialog.dialog.cancel()
-            }
-            is BaseNavEvent.Success -> {
-
-                if (blockStatus == "full" && destFile != null) {
-
-                    blockViewModel.uploadAudio(token, phoneNo, destFile!!)
-
-                } else {
-                    blockContact(phoneNo, blockNumber, blockStatus, photoUri)
-                    setResult(Activity.RESULT_OK)
-                    finish()
-                }
-            }
-
-            is BaseNavEvent.Error -> {
-                it.message?.let {
-                    toast(it)
-                }
-            }
-            is BaseNavEvent.ShowMessage -> {
-                it.message?.let {
-                    toast(it)
-                }
-            }
-            is BaseNavEvent.JsonParseException -> {
-                it.throwable?.message?.let { it1 -> toast(it1) }
-            }
-            is BaseNavEvent.NetWorkException -> {
-                it.throwable?.message?.let { it1 -> toast(it1) }
-            }
-            is BaseNavEvent.UnKnownException -> {
-                it.throwable?.message?.let { it1 -> toast(it1) }
-            }
-        }
-    }
-
-    private fun blockContact(number: String, blockNumber: String, status: String, uri: String?) {
-
-        val doa = myApp.db.contactDao()
-//        val blockNumber = Utils.getBlockNumber(mContext, number)
-        val oldContact = doa.getBlockContactFromNumber(blockNumber)
-        val newBlockContact = BlockContact(0, name, number, blockNumber, status, uri, 0, 0)
-        oldContact?.let {
-            it.name = newBlockContact.name
-            it.uri = newBlockContact.uri
-            it.blockStatus = status
-            doa.updateBlockContact(it)
-        } ?: doa.insertAll(listOf(newBlockContact))
     }
 
 //    private fun blockContact(data: Uri?, status: String) {

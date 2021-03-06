@@ -15,32 +15,36 @@ class BlockingActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        binding.toolbar.iv_back?.setOnClickListener { onBackPressed() }
-//      binding.sw.isChecked = BlockCallsPref.getCallListEnable(mContext)
-        binding.cbPrivateNumbers.isChecked = BlockCallsPref.getPvtNumOption(mContext)
-        binding.cbUnknownNumber.isChecked = BlockCallsPref.getUnknownNum(mContext)
-        binding.cbSpam.isChecked = BlockCallsPref.getSpamOption(mContext)
-        binding.cbInternational.isChecked = BlockCallsPref.getInternationalOption(mContext)
-        binding.cbBlockAllExceptContacts.isChecked =
-            BlockCallsPref.getBlockAllExceptContactsOption(mContext)
-        binding.cbBlockAll.isChecked = BlockCallsPref.getBlockAllOption(mContext)
-        binding.cbVoip.isChecked = BlockCallsPref.getBlockAllVoipConnected(mContext)
+        binding.apply {
+            toolbar.iv_back?.setOnClickListener { onBackPressed() }
+            //sw.isChecked = BlockCallsPref.getCallListEnable(mContext)
+            cbPrivateNumbers.isChecked = BlockCallsPref.getPvtNumOption(mContext)
+            cbUnknownNumber.isChecked = BlockCallsPref.getUnknownNum(mContext)
+            cbSpam.isChecked = BlockCallsPref.getSpamOption(mContext)
+            cbInternational.isChecked = BlockCallsPref.getInternationalOption(mContext)
+            cbBlockAllExceptContacts.isChecked =
+                BlockCallsPref.getBlockAllExceptContactsOption(mContext)
+            cbBlockAll.isChecked = BlockCallsPref.getBlockAllOption(mContext)
+            cbVoip.isChecked = BlockCallsPref.getBlockAllVoipConnected(mContext)
 
-        //Messages
-        binding.cbMsgUnknownNumber.isChecked = BlockCallsPref.getMsgUnknownNumber(mContext)
-        binding.cbMsgNonNumericNumber.isChecked = BlockCallsPref.getMsgNonNumericNUmber(mContext)
+            //Messages
+            cbMsgUnknownNumber.isChecked = BlockCallsPref.getMsgUnknownNumber(mContext)
+            cbMsgNonNumericNumber.isChecked = BlockCallsPref.getMsgNonNumericNUmber(mContext)
 
-        binding.sw.setOnCheckedChangeListener(listener)
-        binding.cbPrivateNumbers.setOnCheckedChangeListener(listener)
-        binding.cbUnknownNumber.setOnCheckedChangeListener(listener)
-        binding.cbSpam.setOnCheckedChangeListener(listener)
-        binding.cbInternational.setOnCheckedChangeListener(listener)
-        binding.cbBlockAllExceptContacts.setOnCheckedChangeListener(listener)
-        binding.cbBlockAll.setOnCheckedChangeListener(listener)
-        binding.cbVoip.setOnCheckedChangeListener(listener)
-        //Messages
-        binding.cbMsgNonNumericNumber.setOnCheckedChangeListener(listener)
-        binding.cbMsgUnknownNumber.setOnCheckedChangeListener(listener)
+            //Call listener
+            sw.setOnCheckedChangeListener(listener)
+            cbPrivateNumbers.setOnCheckedChangeListener(listener)
+            cbUnknownNumber.setOnCheckedChangeListener(listener)
+            cbSpam.setOnCheckedChangeListener(listener)
+            cbInternational.setOnCheckedChangeListener(listener)
+            cbBlockAllExceptContacts.setOnCheckedChangeListener(listener)
+            cbBlockAll.setOnCheckedChangeListener(listener)
+            cbVoip.setOnCheckedChangeListener(listener)
+
+            //Messages listener
+            cbMsgNonNumericNumber.setOnCheckedChangeListener(listener)
+            cbMsgUnknownNumber.setOnCheckedChangeListener(listener)
+        }
     }
 
     val listener = CompoundButton.OnCheckedChangeListener { buttonView, isChecked ->
