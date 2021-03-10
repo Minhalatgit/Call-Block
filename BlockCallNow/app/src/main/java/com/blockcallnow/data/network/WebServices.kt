@@ -61,6 +61,12 @@ interface WebServices {
         @Query("phone_no") phoneNo: String
     ): Single<BaseResponse<BlockNoDetail?>?>?
 
+    @GET(API_BLOCK_NO_DETAIL)
+    fun getBlockNoDetailForAudio(
+        @Header("Authorization") token: String,
+        @Query("phone_no") phoneNo: String
+    ): Call<BaseResponse<BlockNoDetail>>
+
     //    @FormUrlEncoded
 //    @POST(API_VERIFY_EMAIL)
 //    fun verifyCode(

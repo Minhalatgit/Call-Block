@@ -52,8 +52,8 @@ class BlockContactDetail : BaseActivity(),
     private var destFile: File? = null
     private lateinit var player: MediaPlayer
     private var recorder: Recorder? = null
-    private var isRecording: Boolean = false
 
+    private var isRecording: Boolean = false
     lateinit var phoneNo: String
     lateinit var name: String
     lateinit var blockNumber: String
@@ -61,7 +61,6 @@ class BlockContactDetail : BaseActivity(),
     var photoUri: String? = null
     var isEdit = false
 
-    //    val audioRecorder = NaraeAudioRecorder()
     var rbSelectionLang: RadioButton? = null
 
     private val binding: ActivityBlockContactDetailBinding by binding(R.layout.activity_block_contact_detail)
@@ -80,6 +79,8 @@ class BlockContactDetail : BaseActivity(),
         blockNumber = intent?.getStringExtra("block_number") ?: ""
         photoUri = intent?.getStringExtra("uri") ?: ""
         isEdit = intent?.getBooleanExtra("isEdit", false) ?: false
+
+        Log.d(TAG, "onCreate: $phoneNo")
 
         if (isEdit) {
             binding.toolbar.tv_title?.text = "Edit Contact"
@@ -148,7 +149,7 @@ class BlockContactDetail : BaseActivity(),
             destFile = null
             showRecordingView()
         }
-        binding.rgStatus.setOnCheckedChangeListener { group, checkId ->
+        binding.rgStatus.setOnCheckedChangeListener { _, checkId ->
             LogUtil.e(TAG, "Block Status Radio group changes")
             when (checkId) {
                 R.id.rb_partial_block -> {
@@ -169,7 +170,7 @@ class BlockContactDetail : BaseActivity(),
                 }
             }
         }
-        binding.rgMessage.setOnCheckedChangeListener { group, checkedId ->
+        binding.rgMessage.setOnCheckedChangeListener { _, checkedId ->
             LogUtil.e(TAG, "Message Radio group changes")
             when (checkedId) {
                 R.id.rb_custom_message -> {
@@ -203,8 +204,7 @@ class BlockContactDetail : BaseActivity(),
             toast("Invalid Phone number. Please enter phone number with country code")
             return
         }
-        val blockStatusSelection = binding.rgStatus.checkedRadioButtonId
-        when (blockStatusSelection) {
+        when (binding.rgStatus.checkedRadioButtonId) {
             -1 -> {
                 toast("Please select block status")
                 return
@@ -347,10 +347,6 @@ class BlockContactDetail : BaseActivity(),
         }
 
     private fun startRecording() {
-//        destFile = File(
-//            Environment.getExternalStorageDirectory(),
-//            "/BlockNow/" + System.currentTimeMillis() + ".wav"
-//        )
         destFile = FileUtils.createWAVFile(mContext, System.currentTimeMillis().toString())
         recorder = OmRecorder.wav(
             PullTransport.Default(Utils.getMic()), destFile
@@ -370,11 +366,9 @@ class BlockContactDetail : BaseActivity(),
             e.printStackTrace()
         }
 
-//        audioRecorder.stopRecording()
         binding.chronometer.stop()
         isRecording = false
 
-//        blockViewModel.uploadAudio(token, phoneNo, destFile)
         binding.fabMic.setImageResource(R.drawable.ic_mic_none)
 
         binding.fabMic.backgroundTintList =
@@ -395,7 +389,6 @@ class BlockContactDetail : BaseActivity(),
     override fun onStop() {
         if (::player.isInitialized && player.isPlaying)
             player.stop()
-//        recorder?.stopRecording()
         super.onStop()
     }
 
@@ -544,6 +537,8 @@ class BlockContactDetail : BaseActivity(),
 
                 it.data?.data?.let { detail ->
 
+                    Log.d(TAG, "Block contact detail $detail")
+
                     detail.blockNoDetails?.let {
                         if (it.status == "full") {
                             binding.cvVoice.visibility = GONE
@@ -587,6 +582,7 @@ class BlockContactDetail : BaseActivity(),
     }
 
     private fun setContactInfo(block: BlockNoDetails) {
+        Log.d(TAG, "setContactInfo: $block")
         binding.tvName.text = block.name
         binding.etNumber.setText(block.phoneNo)
 //        if (phoneNo.startsWith("+0")|| !phoneNo.startsWith("+")){

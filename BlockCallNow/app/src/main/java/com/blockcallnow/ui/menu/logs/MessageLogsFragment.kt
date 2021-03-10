@@ -1,7 +1,6 @@
 package com.blockcallnow.ui.menu.logs
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,7 +9,6 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.blockcallnow.databinding.FragmentCallLogsBinding
-import com.blockcallnow.databinding.FragmentMessageLogsBinding
 import com.blockcallnow.ui.base.BaseFragment
 import com.blockcallnow.util.LogUtil
 
@@ -32,6 +30,11 @@ class MessageLogsFragment : BaseFragment() {
 
         viewModel.getMessageLogs(myApp.db).observe(viewLifecycleOwner, Observer {
             LogUtil.e("CallLogsFragment", it.toString())
+            if (it.isEmpty()) {
+                binding.noLogs.visibility = View.VISIBLE
+            } else {
+                binding.noLogs.visibility = View.GONE
+            }
             messageLogs.adapter = LogAdapter(it)
         })
 

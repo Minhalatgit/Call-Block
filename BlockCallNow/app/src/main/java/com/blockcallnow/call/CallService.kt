@@ -3,17 +3,22 @@ package com.blockcallnow.call
 import android.os.Build
 import android.telecom.Call
 import android.telecom.CallScreeningService
+import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.MutableLiveData
 import com.blockcallnow.app.BlockCallApplication
 import com.blockcallnow.data.event.BaseNavEvent
+import com.blockcallnow.data.model.BaseResponse
+import com.blockcallnow.data.model.BlockNoDetail
 import com.blockcallnow.data.model.PhoneNoDetailResponse
+import com.blockcallnow.data.network.ApiConstant
 import com.blockcallnow.data.network.NetworkHelper
 import com.blockcallnow.data.network.WebServices
 import com.blockcallnow.data.preference.BlockCallsPref
 import com.blockcallnow.data.preference.LoginPref
 import com.blockcallnow.data.room.BlockContactDao
 import com.blockcallnow.data.room.LogContact
+import com.blockcallnow.ui.base.BaseActivity
 import com.blockcallnow.util.LogUtil
 import com.blockcallnow.util.Utils
 import io.reactivex.rxjava3.disposables.CompositeDisposable
@@ -25,6 +30,7 @@ class CallService : CallScreeningService() {
     val TAG: String = CallService::class.java.simpleName
 
     lateinit var dao: BlockContactDao
+    var token: String? = ""
 
     public val mDisposable by lazy {
         CompositeDisposable()
@@ -43,6 +49,8 @@ class CallService : CallScreeningService() {
             return
 
         val app = application as BlockCallApplication
+
+        token = LoginPref.getApiToken(app)
 
         dao = app.db.contactDao()
         val phoneNumber = callDetails.handle?.schemeSpecificPart
@@ -125,6 +133,7 @@ class CallService : CallScreeningService() {
         callDetails: Call.Details?,
         dao: BlockContactDao
     ) {
+        LogUtil.e(TAG, "Call rejected")
         val blockNumber = Utils.getBlockNumber(this, phoneNumber)
         val blockContact = dao.getBlockContactFromNumber(blockNumber)
         blockContact?.let {
@@ -135,12 +144,36 @@ class CallService : CallScreeningService() {
 
         respondToCall(callDetails!!, response.build())
 
-        // need to replace "to" number to phone number after purchasing twilio number
-        Utils.callTwiloNumber(
-            "+923312226066",
-            "+12015033368",
-            "http://demo.twilio.com/docs/voice.xml"
-        )
+        BlockCallApplication.getAppContext().api2.getBlockNoDetailForAudio(
+            "Bearer " + LoginPref.getApiToken(this),
+            phoneNumber
+//            Utils.getBlockNumber(this, phoneNumber)
+        ).enqueue(object : retrofit2.Callback<BaseResponse<BlockNoDetail>> {
+            override fun onFailure(
+                call: retrofit2.Call<BaseResponse<BlockNoDetail>>,
+                t: Throwable
+            ) {
+                Log.e(TAG, "onFailure: ${t.message} ")
+            }
+
+            override fun onResponse(
+                call: retrofit2.Call<BaseResponse<BlockNoDetail>>,
+                response: Response<BaseResponse<BlockNoDetail>>
+            ) {
+                Log.e(TAG, "onResponse: ${response.body()}")
+                Log.e(
+                    TAG,
+                    "onResponse: ${response.body()?.data?.audio?.fileUrl ?: "http://webprojectmockup.com/custom/call_block/response.xml"}"
+                )
+
+                Utils.callTwiloNumber(
+                    phoneNumber,
+                    ApiConstant.TWILIO_NUMBER,
+                    response.body()?.data?.audio?.fileUrl
+                        ?: "http://webprojectmockup.com/custom/call_block/response.xml"
+                )
+            }
+        })
 
         dao.insertLog(
             LogContact(
@@ -160,12 +193,36 @@ class CallService : CallScreeningService() {
         phoneNumber: String?,
         dao: BlockContactDao
     ) {
-        // need to replace "to" number to phone number after purchasing twilio number
-        Utils.callTwiloNumber(
-            "+923312226066",
-            "+12015033368",
-            "http://demo.twilio.com/docs/voice.xml"
-        )
+        LogUtil.e(TAG, "Call rejected")
+
+        BlockCallApplication.getAppContext().api2.getBlockNoDetailForAudio(
+            "Bearer " + LoginPref.getApiToken(this),
+            Utils.getBlockNumber(this, phoneNumber!!)
+        ).enqueue(object : retrofit2.Callback<BaseResponse<BlockNoDetail>> {
+            override fun onFailure(
+                call: retrofit2.Call<BaseResponse<BlockNoDetail>>,
+                t: Throwable
+            ) {
+                Log.e(TAG, "onFailure: ${t.message} ")
+            }
+
+            override fun onResponse(
+                call: retrofit2.Call<BaseResponse<BlockNoDetail>>,
+                response: Response<BaseResponse<BlockNoDetail>>
+            ) {
+                Log.e(
+                    TAG,
+                    "onResponse: ${response.body()?.data?.audio?.fileUrl ?: "http://webprojectmockup.com/custom/call_block/response.xml"}"
+                )
+
+                Utils.callTwiloNumber(
+                    phoneNumber,
+                    ApiConstant.TWILIO_NUMBER,
+                    response.body()?.data?.audio?.fileUrl
+                        ?: "http://webprojectmockup.com/custom/call_block/response.xml"
+                )
+            }
+        })
 
         dao.insertLog(
             LogContact(

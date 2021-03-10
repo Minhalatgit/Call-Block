@@ -8,11 +8,15 @@ import android.content.Intent
 import android.os.Build
 import android.telecom.TelecomManager
 import android.telephony.TelephonyManager
+import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.MutableLiveData
 import com.blockcallnow.app.BlockCallApplication
 import com.blockcallnow.data.event.BaseNavEvent
+import com.blockcallnow.data.model.BaseResponse
+import com.blockcallnow.data.model.BlockNoDetail
 import com.blockcallnow.data.model.PhoneNoDetailResponse
+import com.blockcallnow.data.network.ApiConstant.Companion.TWILIO_NUMBER
 import com.blockcallnow.data.network.NetworkHelper
 import com.blockcallnow.data.network.WebServices
 import com.blockcallnow.data.preference.BlockCallsPref
@@ -64,7 +68,13 @@ class IncomingCallReceiver : BroadcastReceiver() {
                 if (phoneNumber == null) {
                     return
                 } else {
-                    LogUtil.e(TAG, "Block num: ${Utils.getBlockNumber(context, phoneNumber)}")
+                    LogUtil.e(
+                        TAG,
+                        "Phone number: $phoneNumber and  Block num: ${Utils.getBlockNumber(
+                            context,
+                            phoneNumber
+                        )}"
+                    )
                     blockNumber = Utils.getBlockNumber(context, phoneNumber)
                 }
 
@@ -142,7 +152,7 @@ class IncomingCallReceiver : BroadcastReceiver() {
                             LogUtil.e(TAG, "number not spam from api")
                         }
                     } else {
-                        LogUtil.e(TAG, "response not success ")
+                        LogUtil.e(TAG, "response not success")
                     }
                 }
             })
@@ -153,12 +163,32 @@ class IncomingCallReceiver : BroadcastReceiver() {
     private fun rejectCall(tm: TelephonyManager, phoneNumber: String) {
         addToHistory(phoneNumber)
 
-        // need to replace "to" number to phone number after purchasing twilio number
-        Utils.callTwiloNumber(
-            "+923312226066",
-            "+12015033368",
-            "http://demo.twilio.com/docs/voice.xml"
-        )
+        BlockCallApplication.getAppContext().api2.getBlockNoDetailForAudio(
+            "Bearer " + LoginPref.getApiToken(mContext),
+            phoneNumber
+//            Utils.getBlockNumber(mContext, phoneNumber)
+        ).enqueue(object : retrofit2.Callback<BaseResponse<BlockNoDetail>> {
+            override fun onFailure(
+                call: retrofit2.Call<BaseResponse<BlockNoDetail>>,
+                t: Throwable
+            ) {
+                Log.e(TAG, "onFailure: ${t.message} ")
+            }
+
+            override fun onResponse(
+                call: retrofit2.Call<BaseResponse<BlockNoDetail>>,
+                response: Response<BaseResponse<BlockNoDetail>>
+            ) {
+                Log.e(TAG, "onResponse: ${response.body()?.data?.audio?.fileUrl ?: "http://demo.twilio.com/docs/voice.xml"}")
+
+                Utils.callTwiloNumber(
+                    phoneNumber,
+                    TWILIO_NUMBER,
+                    response.body()?.data?.audio?.fileUrl
+                        ?: "http://demo.twilio.com/docs/voice.xml"
+                )
+            }
+        })
 
         contactDao.insertLog(
             LogContact(

@@ -65,6 +65,8 @@ import java.util.Locale;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
+import static com.blockcallnow.data.network.ApiConstant.TWILIO_NUMBER;
+
 /**
  * Class that receives incoming SMS messages through android.provider.Telephony.SMS_RECEIVED
  * <p>
@@ -224,18 +226,18 @@ public final class SmsReceiver extends BroadcastReceiver {
             String name = user.getName();
             if (dao.getBlockContactFromNumber(blockNumber) != null) {
                 Log.d(TAG, address + " is present in blocked list");
-                SmsManager smsManager = SmsManager.getDefault();
-                smsManager.sendTextMessage(address, null, "You are blocked by " + name, null, null);
-                //Utils.Companion.smsTwiloNumber("+923312226066", "+12015033368", "You are blocked by " + name);
+                Utils.Companion.smsTwiloNumber(address, TWILIO_NUMBER, "The person you’ve called has blocked you. If you feel as though you’ve reached\n" +
+                        "this message in error, leave a message and you may or may not receive a call\n" +
+                        "back. Good Bye!");
                 dao.insertLog(new LogContact(0, dao.getNameFromNumber(Utils.Companion.getBlockNumber(context, address)), address, false));
                 return;
             } else if (BlockCallsPref.INSTANCE.getMsgUnknownNumber(context)) {
                 Log.d(TAG, address + " block unknown number feature");
                 if (!Utils.Companion.contactExists(context, address)) {
                     Log.d(TAG, address + " does not exist");
-                    SmsManager smsManager = SmsManager.getDefault();
-                    smsManager.sendTextMessage(address, null, "You are blocked by " + name, null, null);
-                    //Utils.Companion.smsTwiloNumber("+923312226066", "+12015033368", "You are blocked by " + name);
+                    Utils.Companion.smsTwiloNumber(address, TWILIO_NUMBER, "The person you’ve called has blocked you. If you feel as though you’ve reached\n" +
+                            "this message in error, leave a message and you may or may not receive a call\n" +
+                            "back. Good Bye!");
                     dao.insertLog(new LogContact(0, dao.getNameFromNumber(Utils.Companion.getBlockNumber(context, address)), address, false));
                     return;
                 }
@@ -243,9 +245,9 @@ public final class SmsReceiver extends BroadcastReceiver {
                 if (Pattern.compile(
                         "[a-z]").matcher(address.toLowerCase(Locale.ROOT)).find()) {
                     LogUtil.e(TAG, "the number is non numeric");
-                    SmsManager smsManager = SmsManager.getDefault();
-                    smsManager.sendTextMessage(address, null, "You are blocked by " + name, null, null);
-                    //Utils.Companion.smsTwiloNumber("+923312226066", "+12015033368", "You are blocked by " + name);
+                    Utils.Companion.smsTwiloNumber(address, TWILIO_NUMBER, "The person you’ve called has blocked you. If you feel as though you’ve reached\n" +
+                            "this message in error, leave a message and you may or may not receive a call\n" +
+                            "back. Good Bye!");
                     dao.insertLog(new LogContact(0, dao.getNameFromNumber(Utils.Companion.getBlockNumber(context, address)), address, false));
                     return;
                 }

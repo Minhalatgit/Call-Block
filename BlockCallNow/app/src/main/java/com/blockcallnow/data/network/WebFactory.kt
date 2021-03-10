@@ -63,8 +63,8 @@ class WebFactory {
                 // password: auth token
                 .addInterceptor(
                     BasicAuthInterceptor(
-                        TWILIO_ACCOUNT_SID,
-                        TWILIO_AUTH_TOKEN
+                        "ACc215d55fa3243b7699d2fdae7a30cdfe",
+                        "1c88f7b927baebe07d41125428f1c4b4"
                     )
                 )
                 .readTimeout(60, TimeUnit.SECONDS)

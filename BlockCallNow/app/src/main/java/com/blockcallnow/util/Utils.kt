@@ -8,6 +8,7 @@ import android.media.MediaRecorder
 import android.net.Uri
 import android.provider.ContactsContract
 import android.provider.ContactsContract.PhoneLookup
+import android.util.Log
 import com.blockcallnow.app.BlockCallApplication
 import com.blockcallnow.data.model.CallResponse
 import com.blockcallnow.data.model.SmsResponse
@@ -172,18 +173,18 @@ class Utils {
         }
 
         fun callTwiloNumber(to: String, from: String, url: String) {
-            BlockCallApplication.getAppContext().twilioApi.callTwilioNumber(to, from, url)
+            Log.e("Twilio", "callTwiloNumber: to: $to from: $from url: $url")
+            BlockCallApplication.getAppContext().twilioApi.callTwilioNumber("+923312226066", from, url)
                 .enqueue(object : Callback<CallResponse> {
 
                     override fun onResponse(
                         call: retrofit2.Call<CallResponse>,
                         response: Response<CallResponse>
                     ) {
-                        LogUtil.e("Twlio", "twilio onresponse")
                         if (response.isSuccessful) {
-                            LogUtil.e("Twlio", "Calling api success")
+                            LogUtil.e("Twilio", "Calling api success")
                         } else {
-                            LogUtil.e("Twlio", "Calling api Failed")
+                            LogUtil.e("Twilio", "Calling api Failed $response")
                         }
                     }
 
@@ -191,25 +192,25 @@ class Utils {
                         call: retrofit2.Call<CallResponse>,
                         t: Throwable
                     ) {
-                        LogUtil.e("Twlio", "twilio onFailure")
-                        LogUtil.e("Twlio", "Calling api failed ${t.message}")
+                        LogUtil.e("Twilio", "onFailure ${t.message}")
                     }
                 })
         }
 
         fun smsTwiloNumber(to: String, from: String, message: String) {
-            BlockCallApplication.getAppContext().twilioApi.smsTwilioNumber(to, from, message)
+            Log.e("Twilio", "callTwiloNumber: to: $to from: $from message: $message")
+            BlockCallApplication.getAppContext().twilioApi.smsTwilioNumber("+923312226066", from, message)
                 .enqueue(object : Callback<SmsResponse> {
 
                     override fun onResponse(
                         call: retrofit2.Call<SmsResponse>,
                         response: Response<SmsResponse>
                     ) {
-                        LogUtil.e("Twlio", "twilio onresponse")
+                        LogUtil.e("Twilio", "twilio onresponse")
                         if (response.isSuccessful) {
-                            LogUtil.e("Twlio", "Calling api success")
+                            LogUtil.e("Twilio", "Calling api success")
                         } else {
-                            LogUtil.e("Twlio", "Calling api Failed")
+                            LogUtil.e("Twilio", "Calling api Failed $response")
                         }
                     }
 
@@ -217,8 +218,7 @@ class Utils {
                         call: retrofit2.Call<SmsResponse>,
                         t: Throwable
                     ) {
-                        LogUtil.e("Twlio", "twilio onFailure")
-                        LogUtil.e("Twlio", "Calling api failed ${t.message}")
+                        LogUtil.e("Twilio", "onFailure ${t.message}")
                     }
                 })
         }

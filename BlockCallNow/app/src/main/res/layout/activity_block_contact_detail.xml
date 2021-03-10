@@ -64,18 +64,7 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     tools:text="John Wick" />
-                <!--                <EditText-->
-                <!--                    android:id="@+id/et_number"-->
-                <!--                    android:layout_width="match_parent"-->
-                <!--                    android:layout_height="wrap_content"-->
-                <!--                    android:layout_margin="@dimen/_10sdp"-->
-                <!--                    android:textColor="@color/colorBlack"-->
-                <!--                    android:textSize="@dimen/_15ssp"-->
-                <!--                    app:layout_constraintEnd_toEndOf="parent"-->
 
-                <!--                    app:layout_constraintStart_toStartOf="parent"-->
-                <!--                    app:layout_constraintTop_toBottomOf="@+id/tv_name"-->
-                <!--                    tools:text="1801231232132" />-->
                 <EditText
                     android:id="@+id/et_number"
                     android:layout_width="wrap_content"
@@ -394,7 +383,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/_10sdp"
-                    android:visibility="visible"
+                    android:visibility="gone"
                     app:cardCornerRadius="@dimen/_15sdp"
                     app:cardUseCompatPadding="true"
                     app:contentPadding="@dimen/_10sdp"
@@ -470,15 +459,6 @@
                             android:layout_below="@+id/tv_msg"
                             android:indeterminateTint="@color/colorPrimaryDark"
                             android:visibility="gone" />
-
-                        <!--            <androidx.appcompat.widget.AppCompatSeekBar-->
-                        <!--                android:id="@+id/seekbar"-->
-                        <!--                android:layout_width="match_parent"-->
-                        <!--                android:layout_height="wrap_content"-->
-                        <!--                android:layout_below="@+id/tv_msg"-->
-                        <!--                android:layout_alignBottom="@+id/iv_play_pause"-->
-                        <!--                android:layout_toEndOf="@+id/iv_play_pause"-->
-                        <!--                android:visibility="gone" />-->
 
                         <Chronometer
                             android:id="@+id/chronometer_player"

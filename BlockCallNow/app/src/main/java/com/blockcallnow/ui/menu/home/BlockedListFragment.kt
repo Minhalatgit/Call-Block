@@ -158,11 +158,10 @@ class BlockedListFragment : BaseFragment() {
 
     private val unblockListener = object : BlockListAdapter.UnBlockListener {
         override fun onUnBlock(blockContact: BlockContact?) {
-
             blockContact?.let {
                 AlertDialog.Builder(mContext)
                     .setMessage("You are about to unblock " + it.blockNumber + ". Are you sure?")
-                    .setPositiveButton("Yes") { dialog, which -> unblock(it) }
+                    .setPositiveButton("Yes") { _, _ -> unblock(it) }
                     .setNegativeButton("Cancel", null)
                     .create().show()
             }

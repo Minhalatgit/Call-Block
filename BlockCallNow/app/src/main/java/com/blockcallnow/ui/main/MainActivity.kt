@@ -208,7 +208,6 @@ class MainActivity : BaseActivity() {
     }
 
     private fun showInputDialog() {
-
         val builder: AlertDialog.Builder = AlertDialog.Builder(mContext)
         builder.setTitle("Enter Number")
 
@@ -292,13 +291,12 @@ class MainActivity : BaseActivity() {
             if (resultCode == Activity.RESULT_OK) {
                 updateContactList()
             } else
-                LogUtil.e(TAG, "Contact Does not change")
+                LogUtil.e(TAG, "Contact does not change")
         }
     }
 
     private fun openSMSAppChooser(context: Context?) {
         if (Build.VERSION.SDK_INT > Build.VERSION_CODES.P) {
-
             val roleManager = getSystemService(RoleManager::class.java)
             if (!roleManager.isRoleHeld(RoleManager.ROLE_SMS)) {
                 val roleRequestIntent = roleManager.createRequestRoleIntent(RoleManager.ROLE_SMS)
@@ -306,7 +304,6 @@ class MainActivity : BaseActivity() {
             } else {
                 LogUtil.e(TAG, "you are already default app")
             }
-
         } else {
             val setSmsAppIntent = Intent(Telephony.Sms.Intents.ACTION_CHANGE_DEFAULT)
             setSmsAppIntent.putExtra(Telephony.Sms.Intents.EXTRA_PACKAGE_NAME, packageName)

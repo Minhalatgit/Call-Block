@@ -27,7 +27,7 @@ class LogAdapter(private val list: List<LogContact>) :
         val logContact = list[position]
 
         holder.itemView.apply {
-            blockedUser.text = logContact.name ?: logContact.phoneNumber
+            blockedUser.text = logContact.name?.capitalize() ?: logContact.phoneNumber
             time.text = Utils.getDateTime(logContact.currentTime)
         }
     }

@@ -29,6 +29,11 @@ class CallLogsFragment : BaseFragment() {
         val viewModel = ViewModelProvider(this).get(LogsViewModel::class.java)
 
         viewModel.getCallLogs(myApp.db).observe(viewLifecycleOwner, Observer {
+            if (it.isEmpty()) {
+                binding.noLogs.visibility = View.VISIBLE
+            } else {
+                binding.noLogs.visibility = View.GONE
+            }
             callLogs.adapter = LogAdapter(it)
         })
 
