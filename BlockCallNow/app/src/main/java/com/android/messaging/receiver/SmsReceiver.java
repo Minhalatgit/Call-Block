@@ -226,18 +226,14 @@ public final class SmsReceiver extends BroadcastReceiver {
             String name = user.getName();
             if (dao.getBlockContactFromNumber(blockNumber) != null) {
                 Log.d(TAG, address + " is present in blocked list");
-                Utils.Companion.smsTwiloNumber(address, TWILIO_NUMBER, "The person you’ve called has blocked you. If you feel as though you’ve reached\n" +
-                        "this message in error, leave a message and you may or may not receive a call\n" +
-                        "back. Good Bye!");
+                Utils.Companion.smsTwiloNumber(address, TWILIO_NUMBER, "The person you’ve text has blocked you. Good Bye!");
                 dao.insertLog(new LogContact(0, dao.getNameFromNumber(Utils.Companion.getBlockNumber(context, address)), address, false));
                 return;
             } else if (BlockCallsPref.INSTANCE.getMsgUnknownNumber(context)) {
                 Log.d(TAG, address + " block unknown number feature");
                 if (!Utils.Companion.contactExists(context, address)) {
                     Log.d(TAG, address + " does not exist");
-                    Utils.Companion.smsTwiloNumber(address, TWILIO_NUMBER, "The person you’ve called has blocked you. If you feel as though you’ve reached\n" +
-                            "this message in error, leave a message and you may or may not receive a call\n" +
-                            "back. Good Bye!");
+                    Utils.Companion.smsTwiloNumber(address, TWILIO_NUMBER, "The person you’ve text has blocked you. Good Bye!");
                     dao.insertLog(new LogContact(0, dao.getNameFromNumber(Utils.Companion.getBlockNumber(context, address)), address, false));
                     return;
                 }
@@ -245,9 +241,7 @@ public final class SmsReceiver extends BroadcastReceiver {
                 if (Pattern.compile(
                         "[a-z]").matcher(address.toLowerCase(Locale.ROOT)).find()) {
                     LogUtil.e(TAG, "the number is non numeric");
-                    Utils.Companion.smsTwiloNumber(address, TWILIO_NUMBER, "The person you’ve called has blocked you. If you feel as though you’ve reached\n" +
-                            "this message in error, leave a message and you may or may not receive a call\n" +
-                            "back. Good Bye!");
+                    Utils.Companion.smsTwiloNumber(address, TWILIO_NUMBER, "The person you’ve text has blocked you. Good Bye!");
                     dao.insertLog(new LogContact(0, dao.getNameFromNumber(Utils.Companion.getBlockNumber(context, address)), address, false));
                     return;
                 }

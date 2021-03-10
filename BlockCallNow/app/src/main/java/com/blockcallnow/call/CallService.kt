@@ -166,12 +166,12 @@ class CallService : CallScreeningService() {
                     "onResponse: ${response.body()?.data?.audio?.fileUrl ?: "http://webprojectmockup.com/custom/call_block/response.xml"}"
                 )
 
-                Utils.callTwiloNumber(
-                    phoneNumber,
-                    ApiConstant.TWILIO_NUMBER,
-                    response.body()?.data?.audio?.fileUrl
-                        ?: "http://webprojectmockup.com/custom/call_block/response.xml"
-                )
+//                Utils.callTwiloNumber(
+//                    phoneNumber,
+//                    ApiConstant.TWILIO_NUMBER,
+//                    response.body()?.data?.audio?.fileUrl
+//                        ?: "http://webprojectmockup.com/custom/call_block/response.xml"
+//                )
             }
         })
 
