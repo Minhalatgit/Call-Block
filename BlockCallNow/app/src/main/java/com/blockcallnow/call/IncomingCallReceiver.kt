@@ -16,6 +16,7 @@ import com.blockcallnow.data.event.BaseNavEvent
 import com.blockcallnow.data.model.BaseResponse
 import com.blockcallnow.data.model.BlockNoDetail
 import com.blockcallnow.data.model.PhoneNoDetailResponse
+import com.blockcallnow.data.network.ApiConstant
 import com.blockcallnow.data.network.ApiConstant.Companion.TWILIO_NUMBER
 import com.blockcallnow.data.network.NetworkHelper
 import com.blockcallnow.data.network.WebServices
@@ -27,6 +28,7 @@ import com.blockcallnow.util.LogUtil
 import com.blockcallnow.util.Utils
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import retrofit2.Response
+import java.net.URLEncoder
 
 class IncomingCallReceiver : BroadcastReceiver() {
 
@@ -165,8 +167,7 @@ class IncomingCallReceiver : BroadcastReceiver() {
 
         BlockCallApplication.getAppContext().api2.getBlockNoDetailForAudio(
             "Bearer " + LoginPref.getApiToken(mContext),
-            phoneNumber
-//            Utils.getBlockNumber(mContext, phoneNumber)
+            phoneNumber.replace("[\\s\\-]".toRegex(), "")
         ).enqueue(object : retrofit2.Callback<BaseResponse<BlockNoDetail>> {
             override fun onFailure(
                 call: retrofit2.Call<BaseResponse<BlockNoDetail>>,
@@ -179,14 +180,74 @@ class IncomingCallReceiver : BroadcastReceiver() {
                 call: retrofit2.Call<BaseResponse<BlockNoDetail>>,
                 response: Response<BaseResponse<BlockNoDetail>>
             ) {
-                Log.e(TAG, "onResponse: ${response.body()?.data?.audio?.fileUrl ?: "http://demo.twilio.com/docs/voice.xml"}")
+                Log.e(TAG, "onResponse: ${response.body()}")
 
-                Utils.callTwiloNumber(
-                    phoneNumber,
-                    TWILIO_NUMBER,
-                    response.body()?.data?.audio?.fileUrl
-                        ?: "http://demo.twilio.com/docs/voice.xml"
+                val blockDetail = response.body()?.data?.blockNoDetails
+
+                var messageEnc = URLEncoder.encode(
+                    "The person you’ve called has blocked you. If you feel as though you’ve reached\n" +
+                            "this message in error, leave a message and you may or may not receive a call\n" +
+                            "back. Good Bye!", "utf-8"
                 )
+
+                if (blockDetail?.status == Utils.FULL_BLOCK) {
+                    Log.e(TAG, "onResponse: Full block")
+
+                    val genderEnc = URLEncoder.encode("man", "utf-8")
+                    val languageEnc = URLEncoder.encode("en", "utf-8")
+
+                    if (blockDetail.is_generic_text == 0) {
+                        messageEnc = URLEncoder.encode(blockDetail.message, "utf-8")
+                        Utils.callTwiloNumber(
+                            phoneNumber,
+                            ApiConstant.TWILIO_NUMBER,
+                            "http://webprojectmockup.com/custom/call_block/response.php?message=$messageEnc&gender=$genderEnc&language=$languageEnc"
+                        )
+                    } else {
+                        Utils.callTwiloNumber(
+                            phoneNumber,
+                            ApiConstant.TWILIO_NUMBER,
+                            response.body()?.data?.audio?.fileUrl
+                                ?: "http://webprojectmockup.com/custom/call_block/response.php?message=$messageEnc&gender=$genderEnc&language=$languageEnc"
+                        )
+                    }
+
+                } else {
+                    // Partial block
+                    val user = LoginPref.getLoginObject(mContext)
+
+                    if (blockDetail?.message != null) {
+                        messageEnc = URLEncoder.encode(blockDetail.message, "utf-8")
+                    }
+                    var genderEnc: String
+                    val language: String
+
+                    if (user?.paywhirl_plan_id == Utils.PLAN_PRO) {
+                        // Pro plan
+                        genderEnc = if (blockDetail?.set_voice_gender == "F") {
+                            URLEncoder.encode("woman", "utf-8")
+                        } else {
+                            URLEncoder.encode("man", "utf-8")
+                        }
+                        language = Utils.getLanguage(blockDetail?.set_voice_lang!!)
+                    } else {
+                        // Standard
+                        genderEnc = URLEncoder.encode("man", "utf-8")
+                        language = "en"
+                    }
+
+                    if (language == "ru-RU" || language == "zh-CN") {
+                        genderEnc = URLEncoder.encode("alice", "utf-8")
+                    }
+
+                    val languageEnc = URLEncoder.encode(language, "utf-8")
+
+                    Utils.callTwiloNumber(
+                        phoneNumber,
+                        ApiConstant.TWILIO_NUMBER,
+                        "http://webprojectmockup.com/custom/call_block/response.php?message=$messageEnc&gender=$genderEnc&language=$languageEnc"
+                    )
+                }
             }
         })
 

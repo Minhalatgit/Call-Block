@@ -198,7 +198,9 @@ class BlockContactDetail : BaseActivity(),
     private fun addBlockContact() {
         LogUtil.e(TAG, "binding.etMessage.isEnabled " + binding.etMessage.isEnabled)
 
-        phoneNo = binding.etNumber.text.toString()
+        phoneNo = binding.etNumber.text.toString().replace("[\\s\\-]".toRegex(), "")
+        Log.d(TAG, "addBlockContact: $phoneNo")
+
 //        if (phoneNo.startsWith("+0")|| !phoneNo.startsWith("+")) {
         if (!Pattern.compile("^\\+[1-9]").matcher(phoneNo).find()) {
             toast("Invalid Phone number. Please enter phone number with country code")
@@ -582,7 +584,7 @@ class BlockContactDetail : BaseActivity(),
     }
 
     private fun setContactInfo(block: BlockNoDetails) {
-        Log.d(TAG, "setContactInfo: $block")
+        //Log.d(TAG, "setContactInfo: $block")
         binding.tvName.text = block.name
         binding.etNumber.setText(block.phoneNo)
 //        if (phoneNo.startsWith("+0")|| !phoneNo.startsWith("+")){
@@ -718,6 +720,19 @@ class BlockContactDetail : BaseActivity(),
 //    }
 
     override fun onCheckedChanged(buttonView: CompoundButton?, isChecked: Boolean) {
+        // due to twilio lang limit
+        if (buttonView?.id == binding.rbRus.id || buttonView?.id == binding.rbChinese.id) {
+            if (isChecked) {
+                Log.d(TAG, "onCheckedChanged: Russian or chinese checked")
+                binding.rbMaleVoice.isChecked = false
+                binding.rbMaleVoice.isEnabled = false
+                binding.rbFemaleVoice.isChecked = true
+            }
+            else {
+                Log.d(TAG, "onCheckedChanged: Russian or chinese unchecked")
+                binding.rbMaleVoice.isEnabled = true
+            }
+        }
         rbSelectionLang?.isChecked = false
         rbSelectionLang = (buttonView as RadioButton)
     }

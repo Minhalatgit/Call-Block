@@ -53,6 +53,16 @@ class Utils {
             return false
         }
 
+        fun getLanguage(language: String): String {
+            return when (language) {
+                "ru" -> "ru-RU" //alice
+                "es" -> "es"
+                "fr" -> "fr"
+                "chi" -> "zh-CN" //alice
+                else -> "en"
+            }
+        }
+
         fun contactExists(context: Context, number: String?): Boolean {
             /// number is the phone number
             val lookupUri = Uri.withAppendedPath(
@@ -174,7 +184,11 @@ class Utils {
 
         fun callTwiloNumber(to: String, from: String, url: String) {
             Log.e("Twilio", "callTwiloNumber: to: $to from: $from url: $url")
-            BlockCallApplication.getAppContext().twilioApi.callTwilioNumber("+923312226066", from, url)
+            BlockCallApplication.getAppContext().twilioApi.callTwilioNumber(
+                "+923312226066",
+                from,
+                url
+            )
                 .enqueue(object : Callback<CallResponse> {
 
                     override fun onResponse(
@@ -199,7 +213,11 @@ class Utils {
 
         fun smsTwiloNumber(to: String, from: String, message: String) {
             Log.e("Twilio", "callTwiloNumber: to: $to from: $from message: $message")
-            BlockCallApplication.getAppContext().twilioApi.smsTwilioNumber("+923312226066", from, message)
+            BlockCallApplication.getAppContext().twilioApi.smsTwilioNumber(
+                "+923312226066",
+                from,
+                message
+            )
                 .enqueue(object : Callback<SmsResponse> {
 
                     override fun onResponse(
