@@ -16,6 +16,7 @@
 
 package com.android.messaging.ui.conversationlist;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -42,12 +43,19 @@ public class ConversationListActivity extends AbstractConversationListActivity {
         openSMSAppChooser();
     }
 
+
+    public boolean isDefaultSmsApp(Context context) {
+        return context.getPackageName().equalsIgnoreCase(Telephony.Sms.getDefaultSmsPackage(context));
+    }
+
     public void openSMSAppChooser() {
-        Intent setSmsAppIntent =
-                new Intent(Telephony.Sms.Intents.ACTION_CHANGE_DEFAULT);
-        setSmsAppIntent.putExtra(Telephony.Sms.Intents.EXTRA_PACKAGE_NAME,
-                getPackageName());
-        startActivityForResult(setSmsAppIntent, 10001);
+        if (!isDefaultSmsApp(this)){
+            Intent setSmsAppIntent = new Intent(Telephony.Sms.Intents.ACTION_CHANGE_DEFAULT);
+            setSmsAppIntent.putExtra(Telephony.Sms.Intents.EXTRA_PACKAGE_NAME, getPackageName());
+            startActivityForResult(setSmsAppIntent, 10001);
+        }else {
+            Log.e("ConversationList", "This app is already default sms app");
+        }
     }
 
     @Override

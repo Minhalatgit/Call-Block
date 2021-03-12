@@ -165,9 +165,11 @@ class IncomingCallReceiver : BroadcastReceiver() {
     private fun rejectCall(tm: TelephonyManager, phoneNumber: String) {
         addToHistory(phoneNumber)
 
+        Log.e(TAG, "rejectCall: ${Utils.getBlockNumber(mContext, phoneNumber)}")
+
         BlockCallApplication.getAppContext().api2.getBlockNoDetailForAudio(
             "Bearer " + LoginPref.getApiToken(mContext),
-            phoneNumber.replace("[\\s\\-]".toRegex(), "")
+            Utils.getBlockNumber(mContext, phoneNumber).replace("[\\s\\-]".toRegex(), "")
         ).enqueue(object : retrofit2.Callback<BaseResponse<BlockNoDetail>> {
             override fun onFailure(
                 call: retrofit2.Call<BaseResponse<BlockNoDetail>>,
@@ -199,14 +201,14 @@ class IncomingCallReceiver : BroadcastReceiver() {
                     if (blockDetail.is_generic_text == 0) {
                         messageEnc = URLEncoder.encode(blockDetail.message, "utf-8")
                         Utils.callTwiloNumber(
-                            phoneNumber,
-                            ApiConstant.TWILIO_NUMBER,
+                            blockDetail.phoneNo!!,
+                            TWILIO_NUMBER,
                             "http://webprojectmockup.com/custom/call_block/response.php?message=$messageEnc&gender=$genderEnc&language=$languageEnc"
                         )
                     } else {
                         Utils.callTwiloNumber(
-                            phoneNumber,
-                            ApiConstant.TWILIO_NUMBER,
+                            blockDetail.phoneNo!!,
+                            TWILIO_NUMBER,
                             response.body()?.data?.audio?.fileUrl
                                 ?: "http://webprojectmockup.com/custom/call_block/response.php?message=$messageEnc&gender=$genderEnc&language=$languageEnc"
                         )
@@ -243,8 +245,8 @@ class IncomingCallReceiver : BroadcastReceiver() {
                     val languageEnc = URLEncoder.encode(language, "utf-8")
 
                     Utils.callTwiloNumber(
-                        phoneNumber,
-                        ApiConstant.TWILIO_NUMBER,
+                        blockDetail?.phoneNo!!,
+                        TWILIO_NUMBER,
                         "http://webprojectmockup.com/custom/call_block/response.php?message=$messageEnc&gender=$genderEnc&language=$languageEnc"
                     )
                 }

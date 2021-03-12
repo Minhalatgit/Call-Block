@@ -2,12 +2,10 @@ package com.blockcallnow.ui.menu.settings
 
 import android.app.AlertDialog
 import android.content.ActivityNotFoundException
-import android.content.DialogInterface
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.text.InputType
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -21,7 +19,6 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import kotlinx.android.synthetic.main.fragment_settings.*
 import kotlinx.android.synthetic.main.layout_call_action.*
 
-
 class SettingsFragment : BaseFragment() {
 
     var busyDivert = "*67*18553605717"
@@ -34,7 +31,6 @@ class SettingsFragment : BaseFragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_settings, container, false)
     }
 
@@ -60,13 +56,12 @@ class SettingsFragment : BaseFragment() {
         }
 
         tv_support.setOnClickListener {
-            Log.d("Settings", "onViewCreated: Support")
             val emailIntent = Intent(Intent.ACTION_SEND)
             emailIntent.putExtra(Intent.EXTRA_EMAIL, arrayOf("test@example.com"))
             emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Test subject")
             emailIntent.putExtra(Intent.EXTRA_TEXT, "Test message")
             emailIntent.type = "message/rfc822"
-            startActivity(Intent.createChooser(emailIntent, "Choose an Email client :"))
+            startActivity(Intent.createChooser(emailIntent, "Contact Support:"))
         }
 
         tv_rate.setOnClickListener {
@@ -128,7 +123,6 @@ class SettingsFragment : BaseFragment() {
     }
 
     private fun showForwardDialog() {
-
         val builder: AlertDialog.Builder = AlertDialog.Builder(context)
         builder.setTitle("Enter Number")
 
@@ -136,23 +130,20 @@ class SettingsFragment : BaseFragment() {
         input.inputType = InputType.TYPE_CLASS_PHONE
         builder.setView(input)
 
-        builder.setPositiveButton("OK",
-            DialogInterface.OnClickListener { dialog, which ->
-                val phoneNo = input.text.toString()
-                if (phoneNo.isBlank()) {
-                    Toast.makeText(context, "Phone no can't be empty", Toast.LENGTH_SHORT)
-                        .show()
-                } else {
-//                    blockNumber(phoneNo)
-                    val finalNumber = busyDivert + phoneNo + Uri.encode("#")
-                    val callIntent = Intent(Intent.ACTION_CALL)
-                    callIntent.data = Uri.parse("tel:$finalNumber")
-                    startActivity(callIntent)
-                }
-            })
-        builder.setNegativeButton("Cancel",
-            DialogInterface.OnClickListener { dialog, which -> dialog.cancel() })
-
+        builder.setPositiveButton("OK") { _, _ ->
+            val phoneNo = input.text.toString()
+            if (phoneNo.isBlank()) {
+                Toast.makeText(context, "Phone no can't be empty", Toast.LENGTH_SHORT)
+                    .show()
+            } else {
+                //                    blockNumber(phoneNo)
+                val finalNumber = busyDivert + phoneNo + Uri.encode("#")
+                val callIntent = Intent(Intent.ACTION_CALL)
+                callIntent.data = Uri.parse("tel:$finalNumber")
+                startActivity(callIntent)
+            }
+        }
+        builder.setNegativeButton("Cancel") { dialog, _ -> dialog.cancel() }
         builder.show()
     }
 }

@@ -185,7 +185,7 @@ class Utils {
         fun callTwiloNumber(to: String, from: String, url: String) {
             Log.e("Twilio", "callTwiloNumber: to: $to from: $from url: $url")
             BlockCallApplication.getAppContext().twilioApi.callTwilioNumber(
-                "+923312226066",
+                to,
                 from,
                 url
             )
@@ -214,7 +214,7 @@ class Utils {
         fun smsTwiloNumber(to: String, from: String, message: String) {
             Log.e("Twilio", "callTwiloNumber: to: $to from: $from message: $message")
             BlockCallApplication.getAppContext().twilioApi.smsTwilioNumber(
-                "+923312226066",
+                to,
                 from,
                 message
             )

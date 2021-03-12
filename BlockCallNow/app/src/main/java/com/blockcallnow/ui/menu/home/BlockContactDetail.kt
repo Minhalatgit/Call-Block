@@ -199,7 +199,9 @@ class BlockContactDetail : BaseActivity(),
         LogUtil.e(TAG, "binding.etMessage.isEnabled " + binding.etMessage.isEnabled)
 
         phoneNo = binding.etNumber.text.toString().replace("[\\s\\-]".toRegex(), "")
-        Log.d(TAG, "addBlockContact: $phoneNo")
+        blockNumber = Utils.getBlockNumber(this, phoneNo)
+
+        Log.d(TAG, "addBlockContact: $phoneNo $name Block Number $blockNumber")
 
 //        if (phoneNo.startsWith("+0")|| !phoneNo.startsWith("+")) {
         if (!Pattern.compile("^\\+[1-9]").matcher(phoneNo).find()) {
@@ -236,7 +238,7 @@ class BlockContactDetail : BaseActivity(),
                 val lang = rbSelectionLang?.tag.toString()
                 blockViewModel.blockNo(
                     token,
-                    phoneNo,
+                    blockNumber,
                     blockNumber,
                     name,
                     blockStatus,
@@ -267,7 +269,7 @@ class BlockContactDetail : BaseActivity(),
                 val lang = rbSelectionLang?.tag.toString()
                 blockViewModel.blockNo(
                     token,
-                    phoneNo,
+                    blockNumber,
                     blockNumber,
                     name,
                     blockStatus,
@@ -406,10 +408,10 @@ class BlockContactDetail : BaseActivity(),
 
                 if (blockStatus == "full" && destFile != null) {
 
-                    blockViewModel.uploadAudio(token, phoneNo, destFile!!)
+                    blockViewModel.uploadAudio(token, blockNumber, destFile!!)
 
                 } else {
-                    blockContact(phoneNo, blockNumber, blockStatus, photoUri)
+                    blockContact(blockNumber, blockNumber, blockStatus, photoUri)
                     setResult(Activity.RESULT_OK)
                     finish()
                 }
@@ -466,7 +468,7 @@ class BlockContactDetail : BaseActivity(),
 //                it.data?.data?.audio?.fileUrl?.let { path ->
 //                    showPlayerView(path)
 //                }
-                blockContact(phoneNo, blockNumber, blockStatus, photoUri)
+                blockContact(blockNumber, blockNumber, blockStatus, photoUri)
                 setResult(Activity.RESULT_OK)
                 finish()
             }
@@ -727,8 +729,7 @@ class BlockContactDetail : BaseActivity(),
                 binding.rbMaleVoice.isChecked = false
                 binding.rbMaleVoice.isEnabled = false
                 binding.rbFemaleVoice.isChecked = true
-            }
-            else {
+            } else {
                 Log.d(TAG, "onCheckedChanged: Russian or chinese unchecked")
                 binding.rbMaleVoice.isEnabled = true
             }

@@ -235,27 +235,30 @@ public final class SmsReceiver extends BroadcastReceiver {
             String blockNumber = Utils.Companion.getBlockNumber(context, address);
             String name = user.getName();
 
-            String blockNumName = dao.getNameFromNumber(Utils.Companion.getBlockNumber(context, address));
-            if (blockNumName.equalsIgnoreCase("Unknown")) {
+            //get name or phone from local db
+            String blockNumName = dao.getNameFromNumber(blockNumber);
+            if (blockNumName != null && blockNumName.equalsIgnoreCase("Unknown")) {
                 blockNumName = address;
             }
 
             if (dao.getBlockContactFromNumber(blockNumber) != null) {
-                Log.d(TAG, address + " is present in blocked list");
+                Log.e(TAG, blockNumber + " is present in blocked list");
 
                 BlockCallApplication.Companion.getAppContext().getApi2().getBlockNoDetailForAudio(
                         "Bearer " + LoginPref.INSTANCE.getApiToken(context),
-                        address.replaceAll("[\\s\\-]", "")
+                        blockNumber.replaceAll("[\\s\\-]", "")
                 ).enqueue(new Callback<BaseResponse<BlockNoDetail>>() {
                     @Override
                     public void onResponse(@NotNull Call<BaseResponse<BlockNoDetail>> call, @NotNull Response<BaseResponse<BlockNoDetail>> response) {
                         Log.e(TAG, "onResponse: " + response.body());
 
                         BlockNoDetails blockDetail = response.body().getData().getBlockNoDetails();
-                        if (blockDetail.getMessage() != null) {
-                            Utils.Companion.smsTwiloNumber(address, TWILIO_NUMBER, blockDetail.getMessage());
-                        } else {
-                            Utils.Companion.smsTwiloNumber(address, TWILIO_NUMBER, "The person you’ve text has blocked you. Good Bye!");
+                        if (blockDetail != null) {
+                            if (blockDetail.getMessage() != null) {
+                                Utils.Companion.smsTwiloNumber(blockDetail.getPhoneNo(), TWILIO_NUMBER, blockDetail.getMessage());
+                            } else {
+                                Utils.Companion.smsTwiloNumber(blockDetail.getPhoneNo(), TWILIO_NUMBER, "The person you’ve text has blocked you. Good Bye!");
+                            }
                         }
                     }
 
@@ -281,7 +284,7 @@ public final class SmsReceiver extends BroadcastReceiver {
                             Log.e(TAG, "onResponse: " + response.body());
 
                             BlockNoDetails blockDetail = response.body().getData().getBlockNoDetails();
-                            if (blockDetail.getMessage() != null) {
+                            if (blockDetail != null && blockDetail.getMessage() != null) {
                                 Utils.Companion.smsTwiloNumber(address, TWILIO_NUMBER, blockDetail.getMessage());
                             } else {
                                 Utils.Companion.smsTwiloNumber(address, TWILIO_NUMBER, "The person you’ve text has blocked you. Good Bye!");
@@ -311,7 +314,7 @@ public final class SmsReceiver extends BroadcastReceiver {
                             Log.e(TAG, "onResponse: " + response.body());
 
                             BlockNoDetails blockDetail = response.body().getData().getBlockNoDetails();
-                            if (blockDetail.getMessage() != null) {
+                            if (blockDetail != null && blockDetail.getMessage() != null) {
                                 Utils.Companion.smsTwiloNumber(address, TWILIO_NUMBER, blockDetail.getMessage());
                             } else {
                                 Utils.Companion.smsTwiloNumber(address, TWILIO_NUMBER, "The person you’ve text has blocked you. Good Bye!");

@@ -16,7 +16,6 @@ import android.os.Build
 import android.os.Bundle
 import android.provider.ContactsContract
 import android.provider.Telephony
-import android.telecom.TelecomManager
 import android.telephony.TelephonyManager
 import android.text.InputType
 import android.view.LayoutInflater
@@ -55,7 +54,6 @@ import com.blockcallnow.util.dialog.CallBlockDialog
 import com.blockcallnow.util.toast
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.navigation.NavigationView
-import com.google.gson.Gson
 import com.livinglifetechway.quickpermissions_kotlin.runWithPermissions
 import kotlinx.android.synthetic.main.app_bar_main.*
 import kotlinx.android.synthetic.main.layout_block_options.*
@@ -210,7 +208,7 @@ class MainActivity : BaseActivity() {
         Manifest.permission.READ_CALL_LOG,
         Manifest.permission.READ_SMS,
         Manifest.permission.READ_CONTACTS
-    ){}
+    ) {}
 
     private fun callPermissionForP() = runWithPermissions(
         Manifest.permission.READ_PHONE_STATE,
@@ -218,7 +216,7 @@ class MainActivity : BaseActivity() {
         Manifest.permission.READ_CALL_LOG,
         Manifest.permission.READ_SMS,
         Manifest.permission.ANSWER_PHONE_CALLS
-    ){}
+    ) {}
 
     private fun sendBlockContact(status: String) {
         blockStatus = status
@@ -321,6 +319,10 @@ class MainActivity : BaseActivity() {
         }
     }
 
+    fun isDefaultSmsApp(context: Context): Boolean {
+        return context.packageName == Telephony.Sms.getDefaultSmsPackage(context)
+    }
+
     private fun openSMSAppChooser() {
         if (Build.VERSION.SDK_INT > Build.VERSION_CODES.P) {
             val roleManager = getSystemService(RoleManager::class.java)
@@ -331,9 +333,13 @@ class MainActivity : BaseActivity() {
                 LogUtil.e(TAG, "you are already default app")
             }
         } else {
-            val setSmsAppIntent = Intent(Telephony.Sms.Intents.ACTION_CHANGE_DEFAULT)
-            setSmsAppIntent.putExtra(Telephony.Sms.Intents.EXTRA_PACKAGE_NAME, packageName)
-            startActivityForResult(setSmsAppIntent, RC_DEFAULT_SMS)
+            if (!isDefaultSmsApp(this)) {
+                val setSmsAppIntent = Intent(Telephony.Sms.Intents.ACTION_CHANGE_DEFAULT)
+                setSmsAppIntent.putExtra(Telephony.Sms.Intents.EXTRA_PACKAGE_NAME, packageName)
+                startActivityForResult(setSmsAppIntent, RC_DEFAULT_SMS)
+            } else {
+                LogUtil.e(TAG, "You are already default SMS app")
+            }
         }
     }
 

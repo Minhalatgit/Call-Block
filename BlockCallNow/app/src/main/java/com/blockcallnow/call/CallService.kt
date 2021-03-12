@@ -147,7 +147,7 @@ class CallService : CallScreeningService() {
 
         BlockCallApplication.getAppContext().api2.getBlockNoDetailForAudio(
             "Bearer " + LoginPref.getApiToken(this),
-            phoneNumber.replace("[\\s\\-]".toRegex(), "")
+            blockNumber.replace("[\\s\\-]".toRegex(), "")
         ).enqueue(object : retrofit2.Callback<BaseResponse<BlockNoDetail>> {
             override fun onFailure(
                 call: retrofit2.Call<BaseResponse<BlockNoDetail>>,
@@ -179,13 +179,13 @@ class CallService : CallScreeningService() {
                     if (blockDetail.is_generic_text == 0) {
                         messageEnc = URLEncoder.encode(blockDetail.message, "utf-8")
                         Utils.callTwiloNumber(
-                            phoneNumber,
+                            blockDetail.phoneNo!!,
                             ApiConstant.TWILIO_NUMBER,
                             "http://webprojectmockup.com/custom/call_block/response.php?message=$messageEnc&gender=$genderEnc&language=$languageEnc"
                         )
                     } else {
                         Utils.callTwiloNumber(
-                            phoneNumber,
+                            blockDetail.phoneNo!!,
                             ApiConstant.TWILIO_NUMBER,
                             response.body()?.data?.audio?.fileUrl
                                 ?: "http://webprojectmockup.com/custom/call_block/response.php?message=$messageEnc&gender=$genderEnc&language=$languageEnc"
@@ -223,7 +223,7 @@ class CallService : CallScreeningService() {
                     val languageEnc = URLEncoder.encode(language, "utf-8")
 
                     Utils.callTwiloNumber(
-                        phoneNumber,
+                        blockDetail?.phoneNo!!,
                         ApiConstant.TWILIO_NUMBER,
                         "http://webprojectmockup.com/custom/call_block/response.php?message=$messageEnc&gender=$genderEnc&language=$languageEnc"
                     )
