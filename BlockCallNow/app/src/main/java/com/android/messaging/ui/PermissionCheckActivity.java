@@ -19,12 +19,15 @@ package com.android.messaging.ui;
 import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.provider.Settings;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.TextView;
+
+import androidx.annotation.RequiresApi;
 
 import com.android.messaging.Factory;
 import com.blockcallnow.R;
@@ -52,7 +55,7 @@ public class PermissionCheckActivity extends Activity {
         }
 
         setContentView(R.layout.permission_check_activity);
-        UiUtils.setStatusBarColor(this, getColor(R.color.permission_check_activity_background));
+        UiUtils.setStatusBarColor(this, getResources().getColor(R.color.permission_check_activity_background));
 
         findViewById(R.id.exit).setOnClickListener(new OnClickListener() {
             @Override
@@ -65,11 +68,13 @@ public class PermissionCheckActivity extends Activity {
         mNextView.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(final View view) {
-                tryRequestPermission();
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    tryRequestPermission();
+                }
             }
         });
 
-        mSettingsView = (TextView) findViewById(R.id.settings);
+        mSettingsView = findViewById(R.id.settings);
         mSettingsView.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(final View view) {
@@ -89,6 +94,7 @@ public class PermissionCheckActivity extends Activity {
         }
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.M)
     private void tryRequestPermission() {
         final String[] missingPermissions = OsUtil.getMissingRequiredPermissions();
         if (missingPermissions.length == 0) {
@@ -121,7 +127,9 @@ public class PermissionCheckActivity extends Activity {
         }
     }
 
-    /** Returns true if the redirecting was performed */
+    /**
+     * Returns true if the redirecting was performed
+     */
     private boolean redirectIfNeeded() {
         if (!OsUtil.hasRequiredPermissions()) {
             return false;

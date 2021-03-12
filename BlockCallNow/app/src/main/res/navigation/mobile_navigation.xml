@@ -25,9 +25,5 @@
         android:name="com.android.messaging.ui.conversationlist.ConversationListActivity"
         android:label="@string/menu_messages"
         tools:layout="@layout/conversation_fragment" />
-<!--    <activity-->
-<!--        android:id="@+id/nav_slideshow"-->
-<!--        android:name="com.blockcallnow.ui.menu.home.ui.slideshow.SlideshowFragment"-->
-<!--        android:label="@string/menu_slideshow"-->
-<!--        tools:layout="@layout/fragment_slideshow" />-->
+
 </navigation>

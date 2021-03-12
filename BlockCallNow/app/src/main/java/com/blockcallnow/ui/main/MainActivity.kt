@@ -144,10 +144,8 @@ class MainActivity : BaseActivity() {
             navController.navigate(R.id.nav_blocked_list)
         }
 
-        val blockContactDao = myApp.db.contactDao()
-        LogUtil.e(TAG, blockContactDao.getAllBlockedContacts().toString())
-
-        requestRole()
+        openSMSAppChooser()
+        requestRole() //for Android 10 and higher
         requestAppPermissions()
         callPermission()
 
@@ -155,13 +153,15 @@ class MainActivity : BaseActivity() {
             Observer {
                 sendBlockContact(it)
             })
-        LogUtil.e(TAG, "isSimAvailable " + isSimAvailable())
 
-        val callSettingsIntent = Intent(TelecomManager.ACTION_SHOW_CALL_SETTINGS)
+//        val blockContactDao = myApp.db.contactDao()
+//        LogUtil.e(TAG, blockContactDao.getAllBlockedContacts().toString())
+//        LogUtil.e(TAG, "isSimAvailable " + isSimAvailable())
+//        val callSettingsIntent = Intent(TelecomManager.ACTION_SHOW_CALL_SETTINGS)
 //        callSettingsIntent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
 //        startActivity(callSettingsIntent)
-        val info = packageManager.resolveActivity(callSettingsIntent, 0)
-        LogUtil.e(TAG, "info " + Gson().toJson(info))
+//        val info = packageManager.resolveActivity(callSettingsIntent, 0)
+//        LogUtil.e(TAG, "info " + Gson().toJson(info))
     }
 
     private fun isSimAvailable(): Boolean {
@@ -184,12 +184,41 @@ class MainActivity : BaseActivity() {
         return isAvailable
     }
 
+    @RequiresApi(Build.VERSION_CODES.Q)
+    private fun requestRole() {
+        getSystemService(Context.ROLE_SERVICE)?.let {
+            val roleManager = it as RoleManager
+            if (!roleManager.isRoleHeld(RoleManager.ROLE_CALL_SCREENING)) {
+                val intent = roleManager.createRequestRoleIntent(RoleManager.ROLE_CALL_SCREENING)
+                startActivityForResult(intent, RC_ROLE)
+            } else {
+                LogUtil.e(TAG, "you are already ROLE_CALL_SCREENING")
+            }
+        }
+    }
+
     private fun requestAppPermissions() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
             callPermissionForP()
         } else
             callPermission()
     }
+
+    private fun callPermission() = runWithPermissions(
+        Manifest.permission.READ_PHONE_STATE,
+        Manifest.permission.CALL_PHONE,
+        Manifest.permission.READ_CALL_LOG,
+        Manifest.permission.READ_SMS,
+        Manifest.permission.READ_CONTACTS
+    ){}
+
+    private fun callPermissionForP() = runWithPermissions(
+        Manifest.permission.READ_PHONE_STATE,
+        Manifest.permission.CALL_PHONE,
+        Manifest.permission.READ_CALL_LOG,
+        Manifest.permission.READ_SMS,
+        Manifest.permission.ANSWER_PHONE_CALLS
+    ){}
 
     private fun sendBlockContact(status: String) {
         blockStatus = status
@@ -272,19 +301,16 @@ class MainActivity : BaseActivity() {
         } else if (requestCode == RC_ROLE) {
             if (resultCode == Activity.RESULT_OK) {
                 LogUtil.e(TAG, "you are ROLE_CALL_SCREENING")
-                openSMSAppChooser(this)
             } else {
                 LogUtil.e(TAG, "Please allow role")
                 requestRole()
             }
         } else if (requestCode == RC_DEFAULT_SMS) {
             if (resultCode == Activity.RESULT_OK) {
-
                 LogUtil.e(TAG, "this is default app")
-
             } else {
                 LogUtil.e(TAG, "Please allow sms default app")
-//                openSMSappChooser(this)
+                openSMSAppChooser()
             }
 
         } else if (requestCode == RC_CONTACT_CHANGE) {
@@ -295,7 +321,7 @@ class MainActivity : BaseActivity() {
         }
     }
 
-    private fun openSMSAppChooser(context: Context?) {
+    private fun openSMSAppChooser() {
         if (Build.VERSION.SDK_INT > Build.VERSION_CODES.P) {
             val roleManager = getSystemService(RoleManager::class.java)
             if (!roleManager.isRoleHeld(RoleManager.ROLE_SMS)) {
@@ -309,16 +335,6 @@ class MainActivity : BaseActivity() {
             setSmsAppIntent.putExtra(Telephony.Sms.Intents.EXTRA_PACKAGE_NAME, packageName)
             startActivityForResult(setSmsAppIntent, RC_DEFAULT_SMS)
         }
-//        PackageManager packageManager = context.getPackageManager();
-//        ComponentName componentName = new ComponentName(context, DefaultSMSAppChooserActivity.class);
-//        packageManager.setComponentEnabledSetting(componentName, PackageManager.COMPONENT_ENABLED_STATE_ENABLED, PackageManager.DONT_KILL_APP);
-//
-//        Intent selector = new Intent(Intent.ACTION_MAIN);
-//        selector.addCategory(Intent.CATEGORY_APP_MESSAGING);
-//        selector.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-//        context.startActivity(selector);
-//
-//        packageManager.setComponentEnabledSetting(componentName, PackageManager.COMPONENT_ENABLED_STATE_DEFAULT, PackageManager.DONT_KILL_APP);
     }
 
     private fun showBlockOption(option: String) {
@@ -400,45 +416,6 @@ class MainActivity : BaseActivity() {
 
             doa.updateBlockContact(oldContact)
         } ?: doa.insertAll(listOf(newBlockContact))
-    }
-
-    @RequiresApi(Build.VERSION_CODES.Q)
-    private fun requestRole() {
-        getSystemService(Context.ROLE_SERVICE)?.let {
-            val roleManager = it as RoleManager
-            if (!roleManager.isRoleHeld(RoleManager.ROLE_CALL_SCREENING)) {
-                val intent = roleManager.createRequestRoleIntent(RoleManager.ROLE_CALL_SCREENING)
-                startActivityForResult(intent, RC_ROLE)
-            } else {
-                LogUtil.e(TAG, "you are already ROLE_CALL_SCREENING")
-            }
-            openSMSAppChooser(this)
-        }
-    }
-
-    private fun callPermission() = runWithPermissions(
-        Manifest.permission.READ_PHONE_STATE,
-        Manifest.permission.CALL_PHONE,
-        Manifest.permission.READ_CALL_LOG,
-        Manifest.permission.READ_SMS,
-        Manifest.permission.READ_CONTACTS
-    ) {
-        //            Toast.makeText(
-        //                this,
-        //                "Call Phone permission added",
-        //                Toast.LENGTH_SHORT
-        //            ).show();
-        // Do the stuff with permissions safely
-    }
-
-    private fun callPermissionForP() = runWithPermissions(
-        Manifest.permission.READ_PHONE_STATE,
-        Manifest.permission.CALL_PHONE,
-        Manifest.permission.READ_CALL_LOG,
-        Manifest.permission.READ_SMS,
-        Manifest.permission.ANSWER_PHONE_CALLS
-    ) {
-
     }
 
     override fun onSupportNavigateUp(): Boolean {

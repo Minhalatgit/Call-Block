@@ -251,10 +251,15 @@ class IncomingCallReceiver : BroadcastReceiver() {
             }
         })
 
+        var name = contactDao.getNameFromNumber(Utils.getBlockNumber(mContext, phoneNumber))
+        if (name.equals("Unknown", true)) {
+            name = phoneNumber
+        }
+
         contactDao.insertLog(
             LogContact(
                 id = 0,
-                name = contactDao.getNameFromNumber(Utils.getBlockNumber(mContext, phoneNumber)),
+                name = name,
                 phoneNumber = phoneNumber,
                 isCall = true
             )

@@ -16,11 +16,11 @@
 
 package com.android.messaging.ui.conversationlist;
 
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.provider.Telephony;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -39,38 +39,25 @@ public class ConversationListActivity extends AbstractConversationListActivity {
         setContentView(R.layout.conversation_list_activity);
         Trace.endSection();
         invalidateActionBar();
-        openSMSAppChooser(this);
+        openSMSAppChooser();
     }
 
-    public void openSMSAppChooser(Context context) {
+    public void openSMSAppChooser() {
         Intent setSmsAppIntent =
                 new Intent(Telephony.Sms.Intents.ACTION_CHANGE_DEFAULT);
         setSmsAppIntent.putExtra(Telephony.Sms.Intents.EXTRA_PACKAGE_NAME,
                 getPackageName());
         startActivityForResult(setSmsAppIntent, 10001);
-//        PackageManager packageManager = context.getPackageManager();
-//        ComponentName componentName = new ComponentName(context, DefaultSMSAppChooserActivity.class);
-//        packageManager.setComponentEnabledSetting(componentName, PackageManager.COMPONENT_ENABLED_STATE_ENABLED, PackageManager.DONT_KILL_APP);
-//
-//        Intent selector = new Intent(Intent.ACTION_MAIN);
-//        selector.addCategory(Intent.CATEGORY_APP_MESSAGING);
-//        selector.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-//        context.startActivity(selector);
-//
-//        packageManager.setComponentEnabledSetting(componentName, PackageManager.COMPONENT_ENABLED_STATE_DEFAULT, PackageManager.DONT_KILL_APP);
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 10001 && resultCode == RESULT_OK) {
-
-        }else{
-
-//            openSMSappChooser(this);
-//            Toast.makeText(this, "Please make it default Messaging app.", Toast.LENGTH_SHORT).show();
+            Log.e("ConversationList", "App made default sms app");
+        } else {
+            openSMSAppChooser();
         }
-
     }
 
     @Override

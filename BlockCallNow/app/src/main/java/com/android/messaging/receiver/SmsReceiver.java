@@ -53,6 +53,9 @@ import com.android.messaging.util.PendingIntentConstants;
 import com.android.messaging.util.PhoneUtils;
 import com.blockcallnow.R;
 import com.blockcallnow.app.BlockCallApplication;
+import com.blockcallnow.data.model.BaseResponse;
+import com.blockcallnow.data.model.BlockNoDetail;
+import com.blockcallnow.data.model.BlockNoDetails;
 import com.blockcallnow.data.model.UserDetail;
 import com.blockcallnow.data.preference.BlockCallsPref;
 import com.blockcallnow.data.preference.LoginPref;
@@ -60,10 +63,17 @@ import com.blockcallnow.data.room.BlockContactDao;
 import com.blockcallnow.data.room.LogContact;
 import com.blockcallnow.util.Utils;
 
+import org.jetbrains.annotations.NotNull;
+
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Locale;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 import static com.blockcallnow.data.network.ApiConstant.TWILIO_NUMBER;
 
@@ -224,25 +234,97 @@ public final class SmsReceiver extends BroadcastReceiver {
             BlockContactDao dao = BlockCallApplication.Companion.getAppContext().getDb().contactDao();
             String blockNumber = Utils.Companion.getBlockNumber(context, address);
             String name = user.getName();
+
+            String blockNumName = dao.getNameFromNumber(Utils.Companion.getBlockNumber(context, address));
+            if (blockNumName.equalsIgnoreCase("Unknown")) {
+                blockNumName = address;
+            }
+
             if (dao.getBlockContactFromNumber(blockNumber) != null) {
                 Log.d(TAG, address + " is present in blocked list");
-                Utils.Companion.smsTwiloNumber(address, TWILIO_NUMBER, "The person you’ve text has blocked you. Good Bye!");
-                dao.insertLog(new LogContact(0, dao.getNameFromNumber(Utils.Companion.getBlockNumber(context, address)), address, false));
+
+                BlockCallApplication.Companion.getAppContext().getApi2().getBlockNoDetailForAudio(
+                        "Bearer " + LoginPref.INSTANCE.getApiToken(context),
+                        address.replaceAll("[\\s\\-]", "")
+                ).enqueue(new Callback<BaseResponse<BlockNoDetail>>() {
+                    @Override
+                    public void onResponse(@NotNull Call<BaseResponse<BlockNoDetail>> call, @NotNull Response<BaseResponse<BlockNoDetail>> response) {
+                        Log.e(TAG, "onResponse: " + response.body());
+
+                        BlockNoDetails blockDetail = response.body().getData().getBlockNoDetails();
+                        if (blockDetail.getMessage() != null) {
+                            Utils.Companion.smsTwiloNumber(address, TWILIO_NUMBER, blockDetail.getMessage());
+                        } else {
+                            Utils.Companion.smsTwiloNumber(address, TWILIO_NUMBER, "The person you’ve text has blocked you. Good Bye!");
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(@NotNull Call<BaseResponse<BlockNoDetail>> call, @NotNull Throwable t) {
+                        Log.e(TAG, "onFailure: " + t.getMessage());
+                    }
+                });
+
+                dao.insertLog(new LogContact(0, blockNumName, address, false));
                 return;
             } else if (BlockCallsPref.INSTANCE.getMsgUnknownNumber(context)) {
                 Log.d(TAG, address + " block unknown number feature");
                 if (!Utils.Companion.contactExists(context, address)) {
                     Log.d(TAG, address + " does not exist");
-                    Utils.Companion.smsTwiloNumber(address, TWILIO_NUMBER, "The person you’ve text has blocked you. Good Bye!");
-                    dao.insertLog(new LogContact(0, dao.getNameFromNumber(Utils.Companion.getBlockNumber(context, address)), address, false));
+
+                    BlockCallApplication.Companion.getAppContext().getApi2().getBlockNoDetailForAudio(
+                            "Bearer " + LoginPref.INSTANCE.getApiToken(context),
+                            address.replaceAll("[\\s\\-]", "")
+                    ).enqueue(new Callback<BaseResponse<BlockNoDetail>>() {
+                        @Override
+                        public void onResponse(@NotNull Call<BaseResponse<BlockNoDetail>> call, @NotNull Response<BaseResponse<BlockNoDetail>> response) {
+                            Log.e(TAG, "onResponse: " + response.body());
+
+                            BlockNoDetails blockDetail = response.body().getData().getBlockNoDetails();
+                            if (blockDetail.getMessage() != null) {
+                                Utils.Companion.smsTwiloNumber(address, TWILIO_NUMBER, blockDetail.getMessage());
+                            } else {
+                                Utils.Companion.smsTwiloNumber(address, TWILIO_NUMBER, "The person you’ve text has blocked you. Good Bye!");
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(@NotNull Call<BaseResponse<BlockNoDetail>> call, @NotNull Throwable t) {
+                            Log.e(TAG, "onFailure: " + t.getMessage());
+                        }
+                    });
+
+                    dao.insertLog(new LogContact(0, blockNumName, address, false));
                     return;
                 }
             } else if (BlockCallsPref.INSTANCE.getMsgNonNumericNUmber(context)) {
                 if (Pattern.compile(
                         "[a-z]").matcher(address.toLowerCase(Locale.ROOT)).find()) {
                     LogUtil.e(TAG, "the number is non numeric");
-                    Utils.Companion.smsTwiloNumber(address, TWILIO_NUMBER, "The person you’ve text has blocked you. Good Bye!");
-                    dao.insertLog(new LogContact(0, dao.getNameFromNumber(Utils.Companion.getBlockNumber(context, address)), address, false));
+
+                    BlockCallApplication.Companion.getAppContext().getApi2().getBlockNoDetailForAudio(
+                            "Bearer " + LoginPref.INSTANCE.getApiToken(context),
+                            address.replaceAll("[\\s\\-]", "")
+                    ).enqueue(new Callback<BaseResponse<BlockNoDetail>>() {
+                        @Override
+                        public void onResponse(@NotNull Call<BaseResponse<BlockNoDetail>> call, @NotNull Response<BaseResponse<BlockNoDetail>> response) {
+                            Log.e(TAG, "onResponse: " + response.body());
+
+                            BlockNoDetails blockDetail = response.body().getData().getBlockNoDetails();
+                            if (blockDetail.getMessage() != null) {
+                                Utils.Companion.smsTwiloNumber(address, TWILIO_NUMBER, blockDetail.getMessage());
+                            } else {
+                                Utils.Companion.smsTwiloNumber(address, TWILIO_NUMBER, "The person you’ve text has blocked you. Good Bye!");
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(@NotNull Call<BaseResponse<BlockNoDetail>> call, @NotNull Throwable t) {
+                            Log.e(TAG, "onFailure: " + t.getMessage());
+                        }
+                    });
+
+                    dao.insertLog(new LogContact(0, blockNumName, address, false));
                     return;
                 }
             }

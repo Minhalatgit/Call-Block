@@ -1,24 +1,29 @@
 package com.blockcallnow.ui.menu.settings
 
 import android.app.AlertDialog
+import android.content.ActivityNotFoundException
 import android.content.DialogInterface
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.text.InputType
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.Toast
-import com.blockcallnow.ui.BlockingActivity
+import com.blockcallnow.BuildConfig
 import com.blockcallnow.R
+import com.blockcallnow.ui.BlockingActivity
 import com.blockcallnow.ui.base.BaseFragment
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import kotlinx.android.synthetic.main.fragment_settings.*
 import kotlinx.android.synthetic.main.layout_call_action.*
 
+
 class SettingsFragment : BaseFragment() {
+
     var busyDivert = "*67*18553605717"
 
     //    var busyDivert = "*67*08553605717"
@@ -55,11 +60,31 @@ class SettingsFragment : BaseFragment() {
         }
 
         tv_support.setOnClickListener {
-            Toast.makeText(context, "Support coming soon", Toast.LENGTH_SHORT).show()
+            Log.d("Settings", "onViewCreated: Support")
+            val emailIntent = Intent(Intent.ACTION_SEND)
+            emailIntent.putExtra(Intent.EXTRA_EMAIL, arrayOf("test@example.com"))
+            emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Test subject")
+            emailIntent.putExtra(Intent.EXTRA_TEXT, "Test message")
+            emailIntent.type = "message/rfc822"
+            startActivity(Intent.createChooser(emailIntent, "Choose an Email client :"))
         }
 
         tv_rate.setOnClickListener {
-            Toast.makeText(context, "Rating coming soon", Toast.LENGTH_SHORT).show()
+            try {
+                startActivity(
+                    Intent(
+                        Intent.ACTION_VIEW,
+                        Uri.parse("market://details?id=${BuildConfig.APPLICATION_ID}")
+                    )
+                )
+            } catch (e: ActivityNotFoundException) {
+                startActivity(
+                    Intent(
+                        Intent.ACTION_VIEW,
+                        Uri.parse("https://play.google.com/store/apps/details?id=${BuildConfig.APPLICATION_ID}")
+                    )
+                )
+            }
         }
 
         tv_affiliate.setOnClickListener {

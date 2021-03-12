@@ -112,7 +112,6 @@ class CallService : CallScreeningService() {
                 call: retrofit2.Call<PhoneNoDetailResponse>,
                 response: Response<PhoneNoDetailResponse>
             ) {
-//                        LogUtil.e(TAG, "response " + Gson().toJson(response))
                 if (response.isSuccessful) {
                     if (response.body() != null && response.body()?.spamRisk != null && response.body()?.spamRisk?.level == 2) {
 //                                rejectAndUpdate(phoneNumber!!, builder, callDetails, app)
@@ -232,10 +231,15 @@ class CallService : CallScreeningService() {
             }
         })
 
+        var name = dao.getNameFromNumber(Utils.getBlockNumber(this, phoneNumber))
+        if (name.equals("Unknown", true)) {
+            name = phoneNumber
+        }
+
         dao.insertLog(
             LogContact(
                 id = 0,
-                name = dao.getNameFromNumber(Utils.getBlockNumber(this, phoneNumber)),
+                name = name,
                 phoneNumber = phoneNumber,
                 isCall = true
             )
@@ -338,10 +342,15 @@ class CallService : CallScreeningService() {
             }
         })
 
+        var name = dao.getNameFromNumber(Utils.getBlockNumber(this, phoneNumber))
+        if (name.equals("Unknown", true)) {
+            name = phoneNumber
+        }
+
         dao.insertLog(
             LogContact(
                 id = 0,
-                name = dao.getNameFromNumber(Utils.getBlockNumber(this, phoneNumber!!)),
+                name = name,
                 phoneNumber = phoneNumber,
                 isCall = true
             )
