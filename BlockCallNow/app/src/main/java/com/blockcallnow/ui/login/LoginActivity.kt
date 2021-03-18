@@ -2,6 +2,7 @@ package com.blockcallnow.ui.login
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.blockcallnow.R
@@ -70,18 +71,24 @@ class LoginActivity : BaseActivity() {
             is BaseNavEvent.Error -> {
                 it.message?.let {
                     toast(it)
+                    Log.e("LoginActivity",  it)
                 }
             }
             is BaseNavEvent.ShowMessage -> {
                 it.message?.let {
                     toast(it)
+                    Log.e("LoginActivity",  it)
                 }
             }
             is BaseNavEvent.JsonParseException -> {
-                it.throwable?.message?.let { it1 -> toast(it1) }
+                it.throwable?.message?.let { it1 -> toast(it1)
+                    Log.e("LoginActivity",  it1)
+                }
             }
             is BaseNavEvent.NetWorkException -> {
-                it.throwable?.message?.let { it1 -> toast(it1) }
+                it.throwable?.message?.let { it1 -> toast(it1)
+                    Log.e("LoginActivity",  it1)
+                }
             }
             is BaseNavEvent.UnKnownException -> {
                 it.throwable?.message?.let { it1 -> toast(it1) }

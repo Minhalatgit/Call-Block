@@ -80,12 +80,12 @@ class BlockContactDetail : BaseActivity(),
         photoUri = intent?.getStringExtra("uri") ?: ""
         isEdit = intent?.getBooleanExtra("isEdit", false) ?: false
 
-        Log.d(TAG, "onCreate: $phoneNo")
+        Log.d(TAG, "onCreate: $phoneNo $blockNumber")
 
         if (isEdit) {
             binding.toolbar.tv_title?.text = "Edit Contact"
             binding.btnSubmit.text = "Update Contact"
-            blockViewModel.getBlockDetail(token, phoneNo)
+            blockViewModel.getBlockDetail(token, blockNumber)
         } else {
             blockNumber = Utils.getBlockNumber(mContext, phoneNo)
             binding.toolbar.tv_title?.text = "Add"
@@ -238,7 +238,7 @@ class BlockContactDetail : BaseActivity(),
                 val lang = rbSelectionLang?.tag.toString()
                 blockViewModel.blockNo(
                     token,
-                    blockNumber,
+                    phoneNo,
                     blockNumber,
                     name,
                     blockStatus,
@@ -269,7 +269,7 @@ class BlockContactDetail : BaseActivity(),
                 val lang = rbSelectionLang?.tag.toString()
                 blockViewModel.blockNo(
                     token,
-                    blockNumber,
+                    phoneNo,
                     blockNumber,
                     name,
                     blockStatus,
@@ -408,10 +408,10 @@ class BlockContactDetail : BaseActivity(),
 
                 if (blockStatus == "full" && destFile != null) {
 
-                    blockViewModel.uploadAudio(token, blockNumber, destFile!!)
+                    blockViewModel.uploadAudio(token, phoneNo, destFile!!)
 
                 } else {
-                    blockContact(blockNumber, blockNumber, blockStatus, photoUri)
+                    blockContact(phoneNo, blockNumber, blockStatus, photoUri)
                     setResult(Activity.RESULT_OK)
                     finish()
                 }

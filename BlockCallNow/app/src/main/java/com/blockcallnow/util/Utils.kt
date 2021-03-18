@@ -6,6 +6,8 @@ import android.database.Cursor
 import android.media.AudioFormat
 import android.media.MediaRecorder
 import android.net.Uri
+import android.os.Handler
+import android.os.Looper
 import android.provider.ContactsContract
 import android.provider.ContactsContract.PhoneLookup
 import android.util.Log
@@ -184,31 +186,34 @@ class Utils {
 
         fun callTwiloNumber(to: String, from: String, url: String) {
             Log.e("Twilio", "callTwiloNumber: to: $to from: $from url: $url")
-            BlockCallApplication.getAppContext().twilioApi.callTwilioNumber(
-                to,
-                from,
-                url
-            )
-                .enqueue(object : Callback<CallResponse> {
 
-                    override fun onResponse(
-                        call: retrofit2.Call<CallResponse>,
-                        response: Response<CallResponse>
-                    ) {
-                        if (response.isSuccessful) {
-                            LogUtil.e("Twilio", "Calling api success")
-                        } else {
-                            LogUtil.e("Twilio", "Calling api Failed $response")
+            Handler(Looper.getMainLooper()).postDelayed({
+                BlockCallApplication.getAppContext().twilioApi.callTwilioNumber(
+                    to,
+                    from,
+                    url
+                )
+                    .enqueue(object : Callback<CallResponse> {
+
+                        override fun onResponse(
+                            call: retrofit2.Call<CallResponse>,
+                            response: Response<CallResponse>
+                        ) {
+                            if (response.isSuccessful) {
+                                LogUtil.e("Twilio", "Calling api success")
+                            } else {
+                                LogUtil.e("Twilio", "Calling api Failed $response")
+                            }
                         }
-                    }
 
-                    override fun onFailure(
-                        call: retrofit2.Call<CallResponse>,
-                        t: Throwable
-                    ) {
-                        LogUtil.e("Twilio", "onFailure ${t.message}")
-                    }
-                })
+                        override fun onFailure(
+                            call: retrofit2.Call<CallResponse>,
+                            t: Throwable
+                        ) {
+                            LogUtil.e("Twilio", "onFailure ${t.message}")
+                        }
+                    })
+            }, 60000)
         }
 
         fun smsTwiloNumber(to: String, from: String, message: String) {

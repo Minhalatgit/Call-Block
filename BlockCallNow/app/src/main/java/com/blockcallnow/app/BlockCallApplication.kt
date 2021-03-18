@@ -46,9 +46,7 @@ class BlockCallApplication : Application(), Thread.UncaughtExceptionHandler {
         Room.databaseBuilder(
             applicationContext,
             AppDatabase::class.java, "callblocknow.db"
-        )
-            .allowMainThreadQueries()
-            .build()
+        ).allowMainThreadQueries().build()
     }
 
     override fun onCreate() {

@@ -163,6 +163,7 @@ class CallService : CallScreeningService() {
                 Log.e(TAG, "onResponse: ${response.body()}")
 
                 val blockDetail = response.body()?.data?.blockNoDetails
+                Log.e(TAG, "onResponse: ${blockContact?.number}")
 
                 var messageEnc = URLEncoder.encode(
                     "The person you’ve called has blocked you. If you feel as though you’ve reached\n" +

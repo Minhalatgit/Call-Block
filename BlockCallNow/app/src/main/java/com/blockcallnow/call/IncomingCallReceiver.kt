@@ -56,7 +56,6 @@ class IncomingCallReceiver : BroadcastReceiver() {
 
         val user = LoginPref.getLoginObject(context)
         if (user == null) {
-            LogUtil.e(TAG, "user is null")
             return
         }
 
@@ -80,7 +79,10 @@ class IncomingCallReceiver : BroadcastReceiver() {
                     blockNumber = Utils.getBlockNumber(context, phoneNumber)
                 }
 
-                if (contactDao.getBlockContactFromNumber(blockNumber) != null) {
+                val blockContact = contactDao.getBlockContactFromNumber(blockNumber)
+                Log.e(TAG, "onResponse: ${blockContact?.number}")
+
+                if (blockContact != null) {
                     rejectAndUpdate(phoneNumber, blockNumber, tm)
                 } else {
                     LogUtil.e(TAG, "Number is not present in db")

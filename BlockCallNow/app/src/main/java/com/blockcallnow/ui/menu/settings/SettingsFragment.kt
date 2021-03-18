@@ -15,6 +15,7 @@ import com.blockcallnow.BuildConfig
 import com.blockcallnow.R
 import com.blockcallnow.ui.BlockingActivity
 import com.blockcallnow.ui.base.BaseFragment
+import com.blockcallnow.util.Utils
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import kotlinx.android.synthetic.main.fragment_settings.*
 import kotlinx.android.synthetic.main.layout_call_action.*
@@ -22,7 +23,6 @@ import kotlinx.android.synthetic.main.layout_call_action.*
 class SettingsFragment : BaseFragment() {
 
     var busyDivert = "*67*18553605717"
-
     //    var busyDivert = "*67*08553605717"
     var cancelBusyDivert = "67"
     var cancelAll = "#002#"
@@ -56,12 +56,7 @@ class SettingsFragment : BaseFragment() {
         }
 
         tv_support.setOnClickListener {
-            val emailIntent = Intent(Intent.ACTION_SEND)
-            emailIntent.putExtra(Intent.EXTRA_EMAIL, arrayOf("test@example.com"))
-            emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Test subject")
-            emailIntent.putExtra(Intent.EXTRA_TEXT, "Test message")
-            emailIntent.type = "message/rfc822"
-            startActivity(Intent.createChooser(emailIntent, "Contact Support:"))
+            Utils.openLink(requireContext(), "https://www.BlockCallsNow.com/#contacts")
         }
 
         tv_rate.setOnClickListener {

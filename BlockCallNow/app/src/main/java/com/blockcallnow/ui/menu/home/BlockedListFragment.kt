@@ -4,6 +4,7 @@ import android.app.Activity.RESULT_OK
 import android.app.AlertDialog
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -160,7 +161,7 @@ class BlockedListFragment : BaseFragment() {
         override fun onUnBlock(blockContact: BlockContact?) {
             blockContact?.let {
                 AlertDialog.Builder(mContext)
-                    .setMessage("You are about to unblock " + it.blockNumber + ". Are you sure?")
+                    .setMessage("You are about to unblock " + it.number + ". Are you sure?")
                     .setPositiveButton("Yes") { _, _ -> unblock(it) }
                     .setNegativeButton("Cancel", null)
                     .create().show()
@@ -235,6 +236,7 @@ class BlockedListFragment : BaseFragment() {
                 dialog.dialog.cancel()
             }
             is BaseNavEvent.Success -> {
+                Log.e(TAG, "Success")
                 blockContact?.let {
                     myApp.db.contactDao().deleteContact(it)
                 }
@@ -242,6 +244,7 @@ class BlockedListFragment : BaseFragment() {
                 getData()
             }
             is BaseNavEvent.Error -> {
+                Log.e(TAG, "Error")
                 it.message?.let {
                     toast(it)
                 }
