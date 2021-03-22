@@ -310,7 +310,6 @@ class MainActivity : BaseActivity() {
                 LogUtil.e(TAG, "Please allow sms default app")
                 openSMSAppChooser()
             }
-
         } else if (requestCode == RC_CONTACT_CHANGE) {
             if (resultCode == Activity.RESULT_OK) {
                 updateContactList()

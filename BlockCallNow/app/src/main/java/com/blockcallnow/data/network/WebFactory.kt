@@ -2,8 +2,6 @@ package com.blockcallnow.data.network
 
 import com.blockcallnow.BuildConfig
 import com.blockcallnow.data.network.ApiConstant.Companion.BASE_URL
-import com.blockcallnow.data.network.ApiConstant.Companion.TWILIO_ACCOUNT_SID
-import com.blockcallnow.data.network.ApiConstant.Companion.TWILIO_AUTH_TOKEN
 import com.blockcallnow.data.network.ApiConstant.Companion.TWILIO_BASE_URL
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -83,28 +81,3 @@ class WebFactory {
         }
     }
 }
-//    private var retrofit: Retrofit? = null
-//    var webServices: WebServices? = null
-//        get() = if (field == null) retrofitInstance?.create(
-//            WebServices::class.java
-//        ).also { field = it } else field
-//        private set
-//    private val retrofitInstance: Retrofit?
-//        private get() {
-//            if (retrofit == null) {
-//                val interceptor = HttpLoggingInterceptor()
-//                interceptor.setLevel(HttpLoggingInterceptor.Level.BODY)
-//                val builder = OkHttpClient.Builder()
-//                    .readTimeout(60, TimeUnit.SECONDS)
-//                    .connectTimeout(60, TimeUnit.SECONDS)
-//                if (BuildConfig.DEBUG) {
-//                    builder.addInterceptor(interceptor)
-//                }
-//                retrofit = Retrofit.Builder()
-//                    .baseUrl(BASE_URL)
-//                    .client(builder.build())
-//                    .addConverterFactory(GsonConverterFactory.create())
-//                    .build()
-//            }
-//            return retrofit
-//        }

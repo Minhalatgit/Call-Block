@@ -23,24 +23,6 @@
             android:paddingEnd="@dimen/_15sdp"
             android:paddingBottom="@dimen/_20sdp">
 
-            <!--        <TextView-->
-            <!--            android:layout_width="wrap_content"-->
-            <!--            android:layout_height="wrap_content"-->
-            <!--            android:drawablePadding="@dimen/_10sdp"-->
-            <!--            android:text="From Call Logs"-->
-            <!--            android:textAllCaps="true"-->
-            <!--            android:textColor="#a4a4a4"-->
-            <!--            android:textSize="@dimen/_18ssp"-->
-            <!--            android:textStyle="bold"-->
-            <!--            app:drawableStartCompat="@drawable/ic_call" />-->
-
-            <!--        <View-->
-            <!--            android:layout_width="match_parent"-->
-            <!--            android:layout_height="@dimen/_1sdp"-->
-            <!--            android:layout_marginTop="@dimen/_15sdp"-->
-            <!--            android:layout_marginBottom="@dimen/_10sdp"-->
-            <!--            android:background="#a2a2a2" />-->
-
             <TextView
                 android:id="@+id/tv_contacts"
                 android:layout_width="wrap_content"
@@ -73,11 +55,6 @@
                 android:textStyle="bold"
                 app:drawableStartCompat="@drawable/ic_dial_pad" />
 
-            <!--            <View-->
-            <!--                android:layout_width="match_parent"-->
-            <!--                android:layout_height="0.5dp"-->
-            <!--                android:layout_marginTop="@dimen/_15sdp"-->
-            <!--                android:background="#a2a2a2" />-->
         </LinearLayout>
 
         <ImageView

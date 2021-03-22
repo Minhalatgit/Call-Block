@@ -37,6 +37,7 @@ class IncomingCallReceiver : BroadcastReceiver() {
     private var alreadyOnCall = false
     lateinit var mContext: Context
     lateinit var contactDao: BlockContactDao
+    var isBlockContact: Boolean = false
 
     public val mDisposable by lazy {
         CompositeDisposable()
@@ -55,7 +56,7 @@ class IncomingCallReceiver : BroadcastReceiver() {
         contactDao = app.db.contactDao()
 
         val user = LoginPref.getLoginObject(context)
-        if (user == null) {
+        if (user == null || user.is_expired) {
             return
         }
 
@@ -80,27 +81,33 @@ class IncomingCallReceiver : BroadcastReceiver() {
                 }
 
                 val blockContact = contactDao.getBlockContactFromNumber(blockNumber)
-                Log.e(TAG, "onResponse: ${blockContact?.number}")
+                Log.e(TAG, "onReceive: ${blockContact?.number}")
 
                 if (blockContact != null) {
+                    isBlockContact = true
                     rejectAndUpdate(phoneNumber, blockNumber, tm)
                 } else {
                     LogUtil.e(TAG, "Number is not present in db")
                     if (BlockCallsPref.getBlockAllOption(context)) {
+                        isBlockContact = false
                         rejectCall(tm, phoneNumber)
                     } else if (phoneNumber.isNullOrEmpty() || phoneNumber == "-1" || phoneNumber == "-2") {
                         if (BlockCallsPref.getPvtNumOption(context)) {
+                            isBlockContact = false
                             rejectCall(tm, phoneNumber)
                         }
                     } else if (BlockCallsPref.getSpamOption(mContext)) {
+                        isBlockContact = false
                         checkForSpam(tm, phoneNumber, blockNumber)
                     } else {
                         if (BlockCallsPref.getUnknownNum(context)) {
                             if (!Utils.contactExists(context, phoneNumber)) {
+                                isBlockContact = false
                                 rejectAndUpdate(phoneNumber, blockNumber, tm)
                             }
                         } else if (Utils.isInternationalNumber(mContext, phoneNumber)) {
                             if (BlockCallsPref.getInternationalOption(mContext)) {
+                                isBlockContact = false
                                 rejectAndUpdate(phoneNumber, blockNumber, tm)
                             }
                         }
@@ -169,105 +176,132 @@ class IncomingCallReceiver : BroadcastReceiver() {
 
         Log.e(TAG, "rejectCall: ${Utils.getBlockNumber(mContext, phoneNumber)}")
 
-        BlockCallApplication.getAppContext().api2.getBlockNoDetailForAudio(
-            "Bearer " + LoginPref.getApiToken(mContext),
-            Utils.getBlockNumber(mContext, phoneNumber).replace("[\\s\\-]".toRegex(), "")
-        ).enqueue(object : retrofit2.Callback<BaseResponse<BlockNoDetail>> {
-            override fun onFailure(
-                call: retrofit2.Call<BaseResponse<BlockNoDetail>>,
-                t: Throwable
-            ) {
-                Log.e(TAG, "onFailure: ${t.message} ")
-            }
+        if (isBlockContact) {
+            BlockCallApplication.getAppContext().api2.getBlockNoDetailForAudio(
+                "Bearer " + LoginPref.getApiToken(mContext),
+                Utils.getBlockNumber(mContext, phoneNumber).replace("[\\s\\-]".toRegex(), "")
+            ).enqueue(object : retrofit2.Callback<BaseResponse<BlockNoDetail>> {
+                override fun onFailure(
+                    call: retrofit2.Call<BaseResponse<BlockNoDetail>>,
+                    t: Throwable
+                ) {
+                    Log.e(TAG, "onFailure: ${t.message} ")
+                }
 
-            override fun onResponse(
-                call: retrofit2.Call<BaseResponse<BlockNoDetail>>,
-                response: Response<BaseResponse<BlockNoDetail>>
-            ) {
-                Log.e(TAG, "onResponse: ${response.body()}")
+                override fun onResponse(
+                    call: retrofit2.Call<BaseResponse<BlockNoDetail>>,
+                    response: Response<BaseResponse<BlockNoDetail>>
+                ) {
+                    Log.e(TAG, "onResponse: ${response.body()}")
 
-                val blockDetail = response.body()?.data?.blockNoDetails
+                    val blockDetail = response.body()?.data?.blockNoDetails
 
-                var messageEnc = URLEncoder.encode(
-                    "The person you’ve called has blocked you. If you feel as though you’ve reached\n" +
-                            "this message in error, leave a message and you may or may not receive a call\n" +
-                            "back. Good Bye!", "utf-8"
-                )
+                    var contactName = blockDetail?.name
+                    val contactPhone = blockDetail?.phoneNo
+                    if (contactName.equals("Unknown", true)) {
+                        contactName = contactPhone
+                    }
 
-                if (blockDetail?.status == Utils.FULL_BLOCK) {
-                    Log.e(TAG, "onResponse: Full block")
+                    contactDao.insertLog(
+                        LogContact(
+                            id = 0,
+                            name = contactName,
+                            phoneNumber = contactPhone!!,
+                            isCall = true
+                        )
+                    )
 
-                    val genderEnc = URLEncoder.encode("man", "utf-8")
-                    val languageEnc = URLEncoder.encode("en", "utf-8")
+                    var messageEnc = URLEncoder.encode(
+                        "The person you’ve called has blocked you. If you feel as though you’ve reached\n" +
+                                "this message in error, leave a message and you may or may not receive a call\n" +
+                                "back. Good Bye!", "utf-8"
+                    )
 
-                    if (blockDetail.is_generic_text == 0) {
-                        messageEnc = URLEncoder.encode(blockDetail.message, "utf-8")
+                    if (blockDetail?.status == Utils.FULL_BLOCK) {
+                        Log.e(TAG, "onResponse: Full block")
+
+                        val genderEnc = URLEncoder.encode("man", "utf-8")
+                        val languageEnc = URLEncoder.encode("en", "utf-8")
+
+                        if (blockDetail.is_generic_text == 0) {
+                            messageEnc = URLEncoder.encode(blockDetail.message, "utf-8")
+                            Utils.callTwiloNumber(
+                                blockDetail.phoneNo!!,
+                                TWILIO_NUMBER,
+                                "http://webprojectmockup.com/custom/call_block/response.php?message=$messageEnc&gender=$genderEnc&language=$languageEnc"
+                            )
+                        } else {
+                            Utils.callTwiloNumber(
+                                blockDetail.phoneNo!!,
+                                TWILIO_NUMBER,
+                                response.body()?.data?.audio?.fileUrl
+                                    ?: "http://webprojectmockup.com/custom/call_block/response.php?message=$messageEnc&gender=$genderEnc&language=$languageEnc"
+                            )
+                        }
+
+                    } else {
+                        // Partial block
+                        val user = LoginPref.getLoginObject(mContext)
+
+                        if (blockDetail?.message != null) {
+                            messageEnc = URLEncoder.encode(blockDetail.message, "utf-8")
+                        }
+                        var genderEnc: String
+                        val language: String
+
+                        if (user?.paywhirl_plan_id == Utils.PLAN_PRO) {
+                            // Pro plan
+                            genderEnc = if (blockDetail?.set_voice_gender == "F") {
+                                URLEncoder.encode("woman", "utf-8")
+                            } else {
+                                URLEncoder.encode("man", "utf-8")
+                            }
+                            language = Utils.getLanguage(blockDetail?.set_voice_lang!!)
+                        } else {
+                            // Standard
+                            genderEnc = URLEncoder.encode("man", "utf-8")
+                            language = "en"
+                        }
+
+                        if (language == "ru-RU" || language == "zh-CN") {
+                            genderEnc = URLEncoder.encode("alice", "utf-8")
+                        }
+
+                        val languageEnc = URLEncoder.encode(language, "utf-8")
+
                         Utils.callTwiloNumber(
-                            blockDetail.phoneNo!!,
+                            blockDetail?.phoneNo!!,
                             TWILIO_NUMBER,
                             "http://webprojectmockup.com/custom/call_block/response.php?message=$messageEnc&gender=$genderEnc&language=$languageEnc"
                         )
-                    } else {
-                        Utils.callTwiloNumber(
-                            blockDetail.phoneNo!!,
-                            TWILIO_NUMBER,
-                            response.body()?.data?.audio?.fileUrl
-                                ?: "http://webprojectmockup.com/custom/call_block/response.php?message=$messageEnc&gender=$genderEnc&language=$languageEnc"
-                        )
                     }
-
-                } else {
-                    // Partial block
-                    val user = LoginPref.getLoginObject(mContext)
-
-                    if (blockDetail?.message != null) {
-                        messageEnc = URLEncoder.encode(blockDetail.message, "utf-8")
-                    }
-                    var genderEnc: String
-                    val language: String
-
-                    if (user?.paywhirl_plan_id == Utils.PLAN_PRO) {
-                        // Pro plan
-                        genderEnc = if (blockDetail?.set_voice_gender == "F") {
-                            URLEncoder.encode("woman", "utf-8")
-                        } else {
-                            URLEncoder.encode("man", "utf-8")
-                        }
-                        language = Utils.getLanguage(blockDetail?.set_voice_lang!!)
-                    } else {
-                        // Standard
-                        genderEnc = URLEncoder.encode("man", "utf-8")
-                        language = "en"
-                    }
-
-                    if (language == "ru-RU" || language == "zh-CN") {
-                        genderEnc = URLEncoder.encode("alice", "utf-8")
-                    }
-
-                    val languageEnc = URLEncoder.encode(language, "utf-8")
-
-                    Utils.callTwiloNumber(
-                        blockDetail?.phoneNo!!,
-                        TWILIO_NUMBER,
-                        "http://webprojectmockup.com/custom/call_block/response.php?message=$messageEnc&gender=$genderEnc&language=$languageEnc"
-                    )
                 }
-            }
-        })
+            })
+        } else {
+            val messageEnc = URLEncoder.encode(
+                "The person you’ve called has blocked you. If you feel as though you’ve reached\n" +
+                        "this message in error, leave a message and you may or may not receive a call\n" +
+                        "back. Good Bye!", "utf-8"
+            )
+            val genderEnc = URLEncoder.encode("man", "utf-8")
+            val languageEnc = URLEncoder.encode("en", "utf-8")
 
-        var name = contactDao.getNameFromNumber(Utils.getBlockNumber(mContext, phoneNumber))
-        if (name.equals("Unknown", true)) {
-            name = phoneNumber
+            contactDao.insertLog(
+                LogContact(
+                    id = 0,
+                    name = phoneNumber,
+                    phoneNumber = phoneNumber,
+                    isCall = true
+                )
+            )
+
+            Utils.callTwiloNumber(
+                phoneNumber,
+                ApiConstant.TWILIO_NUMBER,
+                "http://webprojectmockup.com/custom/call_block/response.php?message=$messageEnc&gender=$genderEnc&language=$languageEnc"
+            )
         }
 
-        contactDao.insertLog(
-            LogContact(
-                id = 0,
-                name = name,
-                phoneNumber = phoneNumber,
-                isCall = true
-            )
-        )
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
             val telManager = mContext.getSystemService(TELECOM_SERVICE) as TelecomManager
             try {

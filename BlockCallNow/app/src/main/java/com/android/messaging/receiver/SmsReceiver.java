@@ -233,71 +233,20 @@ public final class SmsReceiver extends BroadcastReceiver {
         if (user != null) {
             BlockContactDao dao = BlockCallApplication.Companion.getAppContext().getDb().contactDao();
             String blockNumber = Utils.Companion.getBlockNumber(context, address);
-            String name = user.getName();
-
-            //get name or phone from local db
-            String blockNumName = dao.getNameFromNumber(blockNumber);
-            if (blockNumName != null && blockNumName.equalsIgnoreCase("Unknown")) {
-                blockNumName = address;
-            }
 
             if (dao.getBlockContactFromNumber(blockNumber) != null) {
                 Log.e(TAG, blockNumber + " is present in blocked list");
 
-                BlockCallApplication.Companion.getAppContext().getApi2().getBlockNoDetailForAudio(
-                        "Bearer " + LoginPref.INSTANCE.getApiToken(context),
-                        blockNumber.replaceAll("[\\s\\-]", "")
-                ).enqueue(new Callback<BaseResponse<BlockNoDetail>>() {
-                    @Override
-                    public void onResponse(@NotNull Call<BaseResponse<BlockNoDetail>> call, @NotNull Response<BaseResponse<BlockNoDetail>> response) {
-                        Log.e(TAG, "onResponse: " + response.body());
+                getDetailAndSendSms(address, context, dao);
 
-                        BlockNoDetails blockDetail = response.body().getData().getBlockNoDetails();
-                        if (blockDetail != null) {
-                            if (blockDetail.getMessage() != null) {
-                                Utils.Companion.smsTwiloNumber(blockDetail.getPhoneNo(), TWILIO_NUMBER, blockDetail.getMessage());
-                            } else {
-                                Utils.Companion.smsTwiloNumber(blockDetail.getPhoneNo(), TWILIO_NUMBER, "The person you’ve text has blocked you. Good Bye!");
-                            }
-                        }
-                    }
-
-                    @Override
-                    public void onFailure(@NotNull Call<BaseResponse<BlockNoDetail>> call, @NotNull Throwable t) {
-                        Log.e(TAG, "onFailure: " + t.getMessage());
-                    }
-                });
-
-                dao.insertLog(new LogContact(0, blockNumName, address, false));
                 return;
             } else if (BlockCallsPref.INSTANCE.getMsgUnknownNumber(context)) {
                 Log.d(TAG, address + " block unknown number feature");
                 if (!Utils.Companion.contactExists(context, address)) {
                     Log.d(TAG, address + " does not exist");
 
-                    BlockCallApplication.Companion.getAppContext().getApi2().getBlockNoDetailForAudio(
-                            "Bearer " + LoginPref.INSTANCE.getApiToken(context),
-                            address.replaceAll("[\\s\\-]", "")
-                    ).enqueue(new Callback<BaseResponse<BlockNoDetail>>() {
-                        @Override
-                        public void onResponse(@NotNull Call<BaseResponse<BlockNoDetail>> call, @NotNull Response<BaseResponse<BlockNoDetail>> response) {
-                            Log.e(TAG, "onResponse: " + response.body());
+                    getDetailAndSendSms(address, context, dao);
 
-                            BlockNoDetails blockDetail = response.body().getData().getBlockNoDetails();
-                            if (blockDetail != null && blockDetail.getMessage() != null) {
-                                Utils.Companion.smsTwiloNumber(address, TWILIO_NUMBER, blockDetail.getMessage());
-                            } else {
-                                Utils.Companion.smsTwiloNumber(address, TWILIO_NUMBER, "The person you’ve text has blocked you. Good Bye!");
-                            }
-                        }
-
-                        @Override
-                        public void onFailure(@NotNull Call<BaseResponse<BlockNoDetail>> call, @NotNull Throwable t) {
-                            Log.e(TAG, "onFailure: " + t.getMessage());
-                        }
-                    });
-
-                    dao.insertLog(new LogContact(0, blockNumName, address, false));
                     return;
                 }
             } else if (BlockCallsPref.INSTANCE.getMsgNonNumericNUmber(context)) {
@@ -305,29 +254,8 @@ public final class SmsReceiver extends BroadcastReceiver {
                         "[a-z]").matcher(address.toLowerCase(Locale.ROOT)).find()) {
                     LogUtil.e(TAG, "the number is non numeric");
 
-                    BlockCallApplication.Companion.getAppContext().getApi2().getBlockNoDetailForAudio(
-                            "Bearer " + LoginPref.INSTANCE.getApiToken(context),
-                            address.replaceAll("[\\s\\-]", "")
-                    ).enqueue(new Callback<BaseResponse<BlockNoDetail>>() {
-                        @Override
-                        public void onResponse(@NotNull Call<BaseResponse<BlockNoDetail>> call, @NotNull Response<BaseResponse<BlockNoDetail>> response) {
-                            Log.e(TAG, "onResponse: " + response.body());
+                    getDetailAndSendSms(address, context, dao);
 
-                            BlockNoDetails blockDetail = response.body().getData().getBlockNoDetails();
-                            if (blockDetail != null && blockDetail.getMessage() != null) {
-                                Utils.Companion.smsTwiloNumber(address, TWILIO_NUMBER, blockDetail.getMessage());
-                            } else {
-                                Utils.Companion.smsTwiloNumber(address, TWILIO_NUMBER, "The person you’ve text has blocked you. Good Bye!");
-                            }
-                        }
-
-                        @Override
-                        public void onFailure(@NotNull Call<BaseResponse<BlockNoDetail>> call, @NotNull Throwable t) {
-                            Log.e(TAG, "onFailure: " + t.getMessage());
-                        }
-                    });
-
-                    dao.insertLog(new LogContact(0, blockNumName, address, false));
                     return;
                 }
             }
@@ -509,5 +437,47 @@ public final class SmsReceiver extends BroadcastReceiver {
      */
     public static boolean shouldIgnoreMessage(Intent intent) {
         return getMessagesFromIntent(intent) == null;
+    }
+
+    private static void getDetailAndSendSms(String phoneNumber, Context context, BlockContactDao dao) {
+
+        String blockNumber = Utils.Companion.getBlockNumber(context, phoneNumber);
+        Log.e(TAG, blockNumber + " get detail from it and send sms and phone number is " + phoneNumber);
+
+        BlockCallApplication.Companion.getAppContext().getApi2().getBlockNoDetailForAudio(
+                "Bearer " + LoginPref.INSTANCE.getApiToken(context),
+                blockNumber.replaceAll("[\\s\\-]", "")
+        ).enqueue(new Callback<BaseResponse<BlockNoDetail>>() {
+            @Override
+            public void onResponse(@NotNull Call<BaseResponse<BlockNoDetail>> call, @NotNull Response<BaseResponse<BlockNoDetail>> response) {
+                Log.e(TAG, "onResponse: " + response.body());
+
+                BlockNoDetails blockDetail = response.body().getData().getBlockNoDetails();
+                if (blockDetail != null) {
+                    String blockName = blockDetail.getName();
+                    String blockNum = blockDetail.getPhoneNo();
+                    if (blockName != null && blockName.equalsIgnoreCase("Unknown")) {
+                        blockName = blockNum;
+                    }
+                    Log.e(TAG, "Block number:" + blockNum + "Block name: " + blockName);
+                    dao.insertLog(new LogContact(0, blockName, blockNum, false));
+
+                    if (blockDetail.getMessage() != null) {
+                        Utils.Companion.smsTwiloNumber(blockDetail.getPhoneNo(), TWILIO_NUMBER, blockDetail.getMessage());
+                    } else {
+                        Utils.Companion.smsTwiloNumber(blockDetail.getPhoneNo(), TWILIO_NUMBER, "The person you’ve text has blocked you. Good Bye!");
+                    }
+                } else {
+                    Log.e(TAG, "Sending sms other than blocked contact list");
+                    dao.insertLog(new LogContact(0, phoneNumber, phoneNumber, false));
+                    Utils.Companion.smsTwiloNumber(phoneNumber, TWILIO_NUMBER, "The person you’ve text has blocked you. Good Bye!");
+                }
+            }
+
+            @Override
+            public void onFailure(@NotNull Call<BaseResponse<BlockNoDetail>> call, @NotNull Throwable t) {
+                Log.e(TAG, "onFailure: " + t.getMessage());
+            }
+        });
     }
 }

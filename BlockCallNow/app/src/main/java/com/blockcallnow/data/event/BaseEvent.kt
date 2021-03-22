@@ -25,7 +25,6 @@ open class BaseNavEvent<T> {
         this.message = message
     }
 
-
     class Success<T>(data: BaseResponse<T>? = null) : BaseNavEvent<T>(data)
     class StartLoading<T>(data: BaseResponse<T>? = null) : BaseNavEvent<T>(data)
     class StopLoading<T>(data: BaseResponse<T>? = null) : BaseNavEvent<T>(data)

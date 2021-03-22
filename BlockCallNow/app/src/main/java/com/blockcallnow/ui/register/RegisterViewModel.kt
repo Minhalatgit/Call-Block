@@ -12,25 +12,25 @@ class RegisterViewModel : BaseViewModel() {
     val registerNavEvent: LiveData<BaseNavEvent<LoginResponse?>> = navEvent
 
     fun register(
-            name: String,
-            email: String,
-            phone: String,
-            password: String,
-            confirmPassword: String
+        name: String,
+        email: String,
+        phone: String,
+        password: String,
+        confirmPassword: String
     ) {
         when {
-            name.isBlank() -> navEvent.value = BaseNavEvent.ShowMessage("Please your full name.")
+            name.isBlank() -> navEvent.value = BaseNavEvent.ShowMessage("Please your full name")
             email.isBlank() -> navEvent.value = BaseNavEvent.ShowMessage("Please enter email")
-            phone.isBlank() -> navEvent.value = BaseNavEvent.ShowMessage("Please enter phone no.")
+            phone.isBlank() -> navEvent.value = BaseNavEvent.ShowMessage("Please enter phone no")
             password.isBlank() -> navEvent.value =
-                    BaseNavEvent.ShowMessage("Please enter password.")
+                BaseNavEvent.ShowMessage("Please enter password")
             confirmPassword.isBlank() -> navEvent.value =
-                    BaseNavEvent.ShowMessage("Please enter confirm password.")
+                BaseNavEvent.ShowMessage("Please enter confirm password")
             password != confirmPassword -> navEvent.value =
-                    BaseNavEvent.ShowMessage("Password and Confirm Password does not match.")
+                BaseNavEvent.ShowMessage("Password and Confirm Password does not match")
             else -> makeRequest(
-                    api.register(name, email, phone, password, confirmPassword),
-                    navEvent
+                api.register(name, email, phone, password, confirmPassword),
+                navEvent
             )
         }
     }

@@ -54,8 +54,7 @@ class CustomProgressDialog {
         // Text Color
         ttle.setTextColor(Color.WHITE)
 
-        dialog =
-            CustomDialog(context)
+        dialog = CustomDialog(context)
         dialog.setCancelable(false)
 
         dialog.setContentView(view)
@@ -76,7 +75,6 @@ class CustomProgressDialog {
         init {
             // Set Semi-Transparent Color for Dialog Background
             window?.decorView?.rootView?.setBackgroundResource(R.color.dialogBackground)
-
         }
     }
 }
