@@ -78,6 +78,7 @@ interface WebServices {
     fun uploadAudio(
         @Header("Authorization") token: String,
         @Part("phone_no") phoneNo: RequestBody,
+        @Part("formatted_phone_no") blockNo: RequestBody,
         @Part("title") title: RequestBody,
         @Part audio: MultipartBody.Part?
     ): Single<BaseResponse<UploadAudioResponse?>?>?
@@ -85,7 +86,7 @@ interface WebServices {
     @DELETE(API_AUDIO)
     fun deleteAudio(
         @Header("Authorization") token: String,
-        @Query("phone_no") phone: String
+        @Query("formatted_phone_no") phone: String
     ): Single<BaseResponse<Void?>?>?
 
     @FormUrlEncoded

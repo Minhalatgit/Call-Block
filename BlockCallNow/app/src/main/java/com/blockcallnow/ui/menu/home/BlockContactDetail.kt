@@ -120,12 +120,7 @@ class BlockContactDetail : BaseActivity(),
         binding.rbChinese.setOnCheckedChangeListener(this)
 
         binding.btnSubmit.setOnClickListener {
-//            if (isEdit) {
-//
-//            } else {
             addBlockContact()
-//            }
-
         }
         binding.ivPlayPause.setOnClickListener {
             if (::player.isInitialized && player.isPlaying) {
@@ -305,39 +300,37 @@ class BlockContactDetail : BaseActivity(),
     private fun initPlayer(path: String?, uri: Uri?) {
         player = MediaPlayer()
         player.setOnCompletionListener(this)
+
 //        player.setOnBufferingUpdateListener { mp, percent ->
 //            if(percent<100){
 //
-//                binding.pb.visibility= VISIBLE
-//                binding.ivPlayPause.visibility=GONE
-//            }
-//            else{
+//                binding.pb.visibility = VISIBLE
+//                binding.ivPlayPause.visibility = GONE
+//            } else {
 //                binding.pb.visibility= VISIBLE
 //                binding.ivPlayPause.visibility= GONE
 //            }
 //
 //        }
-        if (uri != null)
-            player.setDataSource(mContext, uri)
-        else if (path != null)
-            player.setDataSource(path)
+
+        //setting audio resource into player; either from api or from recording
+        if (uri != null) {
+            Log.d(TAG, "initPlayer: from recording")
+            player.setDataSource(mContext, uri) //from recording
+        } else if (path != null) {
+            Log.d(TAG, "initPlayer: from api")
+            player.setDataSource(path) //from api
+        }
+
+
         player.setOnPreparedListener {
+            Log.d(TAG, "On prepared called ${it.duration}")
             binding.pb.visibility = GONE
             binding.ivPlayPause.visibility = VISIBLE
             binding.chronometerPlayer.base = SystemClock.elapsedRealtime()
             it.start()
             binding.chronometerPlayer.start()
             binding.ivPlayPause.setImageResource(R.drawable.ic_pause)
-        }
-    }
-
-    private fun startPlaying() {
-        try {
-            player.prepareAsync()
-            binding.pb.visibility = VISIBLE
-            binding.ivPlayPause.visibility = INVISIBLE
-        } catch (e: Exception) {
-            Log.e(TAG, "startPlaying: ${e.message}")
         }
     }
 
@@ -364,6 +357,7 @@ class BlockContactDetail : BaseActivity(),
     }
 
     private fun stopRecording() {
+        Log.d(TAG, "Recording stopped")
         try {
             recorder?.stopRecording()
         } catch (e: Exception) {
@@ -371,10 +365,9 @@ class BlockContactDetail : BaseActivity(),
         }
 
         binding.chronometer.stop()
+
         isRecording = false
-
         binding.fabMic.setImageResource(R.drawable.ic_mic_none)
-
         binding.fabMic.backgroundTintList =
             ColorStateList.valueOf(ContextCompat.getColor(mContext, R.color.colorAccent))
         showPlayerView(null, Uri.fromFile(destFile))
@@ -382,6 +375,16 @@ class BlockContactDetail : BaseActivity(),
 
     override fun onCompletion(mp: MediaPlayer?) {
         stopPlaying()
+    }
+
+    private fun startPlaying() {
+        try {
+            player.prepareAsync()
+            binding.pb.visibility = VISIBLE
+            binding.ivPlayPause.visibility = INVISIBLE
+        } catch (e: Exception) {
+            Log.e(TAG, "startPlaying: ${e.message}")
+        }
     }
 
     private fun stopPlaying() {
@@ -408,7 +411,7 @@ class BlockContactDetail : BaseActivity(),
 
                 if (blockStatus == "full" && destFile != null) {
 
-                    blockViewModel.uploadAudio(token, phoneNo, destFile!!)
+                    blockViewModel.uploadAudio(token, phoneNo, blockNumber, destFile!!)
 
                 } else {
                     blockContact(phoneNo, blockNumber, blockStatus, photoUri)
@@ -441,7 +444,6 @@ class BlockContactDetail : BaseActivity(),
 
     private fun blockContact(number: String, blockNumber: String, status: String, uri: String?) {
         val doa = myApp.db.contactDao()
-//        val blockNumber = Utils.getBlockNumber(mContext, number)
         val oldContact = doa.getBlockContactFromNumber(blockNumber)
         val newBlockContact = BlockContact(0, name, number, blockNumber, status, uri, 0, 0)
         oldContact?.let {
@@ -461,14 +463,7 @@ class BlockContactDetail : BaseActivity(),
                 dialog.dialog.cancel()
             }
             is BaseNavEvent.Success -> {
-//                binding.llRecord.visibility = GONE
-//                binding.rl.visibility = VISIBLE
-//                binding.fabMic.backgroundTintList = ColorStateList.valueOf(Color.parseColor("#FFF"))
-//                binding.fabMic.setImageResource(R.drawable.ic_mic_none)
-//                it.data?.data?.audio?.fileUrl?.let { path ->
-//                    showPlayerView(path)
-//                }
-                blockContact(blockNumber, blockNumber, blockStatus, photoUri)
+                blockContact(phoneNo, blockNumber, blockStatus, photoUri)
                 setResult(Activity.RESULT_OK)
                 finish()
             }
@@ -694,32 +689,6 @@ class BlockContactDetail : BaseActivity(),
             ColorStateList.valueOf(ContextCompat.getColor(mContext, R.color.colorAccent))
         initPlayer(fileUrl, uri)
     }
-
-//    private fun blockContact(data: Uri?, status: String) {
-//
-//        data?.let {
-//
-//
-//            val cursor: Cursor? = contentResolver?.query(it, null, null, null, null)
-//            cursor?.let {
-//                if (cursor.moveToFirst()) {
-//
-//                    val doa = myApp.db.contactDao()
-//                    val newBlockContact = Utils.cursorToBlockContact(mContext, cursor, status)
-//                    val oldContact = doa.getBlockContactFromNumber(newBlockContact.blockNumber)
-//                    oldContact?.let { blockContact ->
-//                        blockContact.name = newBlockContact.name
-//                        blockContact.uri = newBlockContact.uri
-//                        blockContact.blockStatus = newBlockContact.blockStatus
-//                        doa.updateBlockContact(oldContact)
-//                    } ?: doa.insertAll(listOf(newBlockContact))
-//
-//
-//                }
-//                cursor.close()
-//            }
-//        }
-//    }
 
     override fun onCheckedChanged(buttonView: CompoundButton?, isChecked: Boolean) {
         // due to twilio lang limit

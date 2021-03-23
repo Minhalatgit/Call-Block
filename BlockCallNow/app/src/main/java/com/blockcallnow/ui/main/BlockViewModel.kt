@@ -101,10 +101,10 @@ class BlockViewModel : BaseViewModel() {
         )
     }
 
-    fun uploadAudio(token: String, phoneNo: String, file: File) {
+    fun uploadAudio(token: String, phoneNo: String, blockNo: String, file: File) {
         makeRequest(
             api.uploadAudio(
-                token, phoneNo.toRequestBody(), file.name.toRequestBody(),
+                token, phoneNo.toRequestBody(), blockNo.toRequestBody(), file.name.toRequestBody(),
 
                 MultipartBody.Part.createFormData(
                     "file",
