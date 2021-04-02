@@ -2,7 +2,7 @@ package com.blockcallnow.data.network
 
 class ApiConstant {
     companion object {
-        const val BASE_URL = "http://webprojectmockup.com/custom/callblock_apis/"
+        const val BASE_URL = "http://api.blockcallsnow.com/"
         const val TWILIO_BASE_URL =
             "https://api.twilio.com/2010-04-01/Accounts/ACc215d55fa3243b7699d2fdae7a30cdfe/"
         const val API_LOGIN = "api/auth/login"
