@@ -14,7 +14,7 @@
     See the License for the specific language governing permissions and
     limitations under the License.
 -->
-<com.android.messaging.ui.conversationsettings.PeopleOptionsItemView
+<com.call.messaging.ui.conversationsettings.PeopleOptionsItemView
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="horizontal"
     android:layout_width="match_parent"
@@ -61,4 +61,4 @@
         android:clickable="false"
         android:visibility="gone" />
 
-</com.android.messaging.ui.conversationsettings.PeopleOptionsItemView>
+</com.call.messaging.ui.conversationsettings.PeopleOptionsItemView>

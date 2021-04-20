@@ -14,14 +14,14 @@
     See the License for the specific language governing permissions and
     limitations under the License.
 -->
-<com.android.messaging.ui.BlockedParticipantListItemView
+<com.call.messaging.ui.BlockedParticipantListItemView
     xmlns:android="http://schemas.android.com/apk/res/android"
 
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
     android:padding="@dimen/blocked_participant_list_item_view_padding">
-    <com.android.messaging.ui.ContactIconView
+    <com.call.messaging.ui.ContactIconView
         xmlns:app="http://schemas.android.com/apk/res-auto"
         android:id="@+id/contact_icon"
         android:layout_width="@dimen/contact_list_icon_size"
@@ -49,4 +49,4 @@
         android:layout_gravity="center_vertical"
         android:gravity="right"
         android:padding="@dimen/blocked_participant_list_item_view_padding"/>
-</com.android.messaging.ui.BlockedParticipantListItemView>
+</com.call.messaging.ui.BlockedParticipantListItemView>

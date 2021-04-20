@@ -23,7 +23,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.util.SparseArray;
 
-import com.blockcallnow.R;
+import com.call.blockcallnow.R;
 
 
 /**

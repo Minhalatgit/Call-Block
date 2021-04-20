@@ -17,7 +17,7 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:appcompat="http://schemas.android.com/apk/res-auto"
-    tools:context="com.android.messaging.ConversationActivity" >
+    tools:context="com.call.messaging.ConversationActivity" >
 
     <item
         android:id="@+id/action_call"

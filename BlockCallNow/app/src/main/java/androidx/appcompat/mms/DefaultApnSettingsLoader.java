@@ -28,7 +28,7 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.util.SparseArray;
 
-import com.blockcallnow.R;
+import com.call.blockcallnow.R;
 
 import java.net.URI;
 import java.net.URISyntaxException;

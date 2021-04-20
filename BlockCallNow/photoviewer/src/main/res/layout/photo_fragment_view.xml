@@ -19,7 +19,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent" >
 
-    <com.android.ex.photo.views.PhotoView
+    <com.call.ex.photo.views.PhotoView
         android:id="@+id/photo_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />

@@ -24,7 +24,7 @@
         <intent android:action="android.provider.Telephony.ACTION_CHANGE_DEFAULT">
             <extra
                 android:name="package"
-                android:value="com.android.messaging" />
+                android:value="com.call.messaging" />
         </intent>
     </PreferenceScreen>
     <PreferenceScreen

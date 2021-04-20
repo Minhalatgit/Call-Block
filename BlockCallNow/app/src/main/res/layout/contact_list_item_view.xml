@@ -14,7 +14,7 @@
     See the License for the specific language governing permissions and
     limitations under the License.
 -->
-<com.android.messaging.ui.contact.ContactListItemView
+<com.call.messaging.ui.contact.ContactListItemView
     xmlns:android="http://schemas.android.com/apk/res/android"
 
     style="@style/ContactListItemViewStyle"
@@ -38,7 +38,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical">
 
-        <com.android.messaging.ui.ContactIconView
+        <com.call.messaging.ui.ContactIconView
             xmlns:app="http://schemas.android.com/apk/res-auto"
             android:id="@+id/contact_icon"
             android:layout_width="@dimen/contact_list_icon_size"
@@ -110,4 +110,4 @@
                 style="@style/ContactListItemDetailType" />
         </LinearLayout>
     </LinearLayout>
-</com.android.messaging.ui.contact.ContactListItemView>
+</com.call.messaging.ui.contact.ContactListItemView>

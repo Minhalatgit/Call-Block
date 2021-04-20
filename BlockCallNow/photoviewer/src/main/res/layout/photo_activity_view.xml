@@ -27,7 +27,7 @@
         android:layout_height="match_parent"
         android:background="#ff000000" />
 
-    <com.android.ex.photo.PhotoViewPager
+    <com.call.ex.photo.PhotoViewPager
         android:id="@+id/photo_view_pager"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />

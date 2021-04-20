@@ -17,7 +17,7 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:appcompat="http://schemas.android.com/apk/res-auto"
-    tools:context="com.android.messaging.ConversationActivity" >
+    tools:context="com.call.messaging.ConversationActivity" >
 
     <!-- This must always be the first item so it appears right next to the chip view -->
     <item

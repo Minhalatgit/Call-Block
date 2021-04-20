@@ -19,7 +19,7 @@
     android:layout_height="wrap_content"
     android:orientation="horizontal">
 
-    <com.android.messaging.ui.ContactIconView xmlns:app="http://schemas.android.com/apk/res-auto"
+    <com.call.messaging.ui.ContactIconView xmlns:app="http://schemas.android.com/apk/res-auto"
         android:id="@+id/contact_icon"
         android:layout_width="@dimen/contact_list_icon_size"
         android:layout_height="@dimen/contact_list_icon_size"

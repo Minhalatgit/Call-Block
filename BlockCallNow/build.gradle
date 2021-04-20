@@ -33,7 +33,7 @@ ext {
     compileSdk = 29
     buildTools = "29.0.3"
     verName = "1"
-    verCode = 19
+    verCode = 1
 }
 task clean(type: Delete) {
     delete rootProject.buildDir

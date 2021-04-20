@@ -39,7 +39,7 @@
 
         </LinearLayout>
 
-        <com.android.ex.chips.CircularImageView style="@style/ChipEndIconStyle" />
+        <com.call.ex.chips.CircularImageView style="@style/ChipEndIconStyle" />
 
     </LinearLayout>
 
