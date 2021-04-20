@@ -176,7 +176,6 @@ class MainActivity : BaseActivity() {
     private fun callPermission() = runWithPermissions(
         Manifest.permission.READ_PHONE_STATE,
         Manifest.permission.CALL_PHONE,
-        Manifest.permission.READ_CALL_LOG,
         Manifest.permission.READ_SMS,
         Manifest.permission.READ_CONTACTS
     ) {}
@@ -184,7 +183,6 @@ class MainActivity : BaseActivity() {
     private fun callPermissionForP() = runWithPermissions(
         Manifest.permission.READ_PHONE_STATE,
         Manifest.permission.CALL_PHONE,
-        Manifest.permission.READ_CALL_LOG,
         Manifest.permission.READ_SMS,
         Manifest.permission.ANSWER_PHONE_CALLS
     ) {}
