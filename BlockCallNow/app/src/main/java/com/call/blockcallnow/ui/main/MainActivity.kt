@@ -72,7 +72,7 @@ class MainActivity : BaseActivity() {
     private val RC_DEFAULT_SMS: Int = 1003
     private val RC_CONTACT_CHANGE: Int = 1004
 
-    private val blockOptionSheet = BlockOptionSheet()
+//    private val blockOptionSheet = BlockOptionSheet()
     private lateinit var appBarConfiguration: AppBarConfiguration
 
     private val TAG: String? = MainActivity::class.simpleName
@@ -147,10 +147,10 @@ class MainActivity : BaseActivity() {
         requestAppPermissions()
         callPermission()
 
-        blockOptionSheet.navBlockOptions.observe(this,
-            Observer {
-                sendBlockContact(it)
-            })
+//        blockOptionSheet.navBlockOptions.observe(this,
+//            Observer {
+//                sendBlockContact(it)
+//            })
     }
 
     @RequiresApi(Build.VERSION_CODES.Q)
@@ -186,22 +186,6 @@ class MainActivity : BaseActivity() {
         Manifest.permission.READ_SMS,
         Manifest.permission.ANSWER_PHONE_CALLS
     ) {}
-
-    private fun sendBlockContact(status: String) {
-        blockStatus = status
-        if (selectedOption == "contact") {
-            selectedContact?.let {
-                Utils.getCursorFromUri(mContext, it)?.let { cursor ->
-                    if (cursor.moveToFirst()) {
-                        val contact = Utils.cursorToBlockContact(mContext, cursor, status)
-//                        blockViewModel.blockNo(token, contact.number, contact.name, status)
-                    }
-                }
-            }
-        } else {
-//            blockViewModel.blockNo(token, selectedPhoneNo, null, status)
-        }
-    }
 
     private fun showInputDialog() {
         val builder: AlertDialog.Builder = AlertDialog.Builder(mContext)
@@ -397,31 +381,47 @@ class MainActivity : BaseActivity() {
         return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
     }
 
-    class BlockOptionSheet : BottomSheetDialogFragment() {
+//    class BlockOptionSheet : BottomSheetDialogFragment() {
+//
+//        private val blockOptions = MutableLiveData<String>()
+//        val navBlockOptions: LiveData<String> = blockOptions
+//
+//        override fun onCreateView(
+//            inflater: LayoutInflater,
+//            container: ViewGroup?,
+//            savedInstanceState: Bundle?
+//        ): View? {
+//            return inflater.inflate(R.layout.layout_block_options, container, false)
+//        }
+//
+//        override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+//            super.onViewCreated(view, savedInstanceState)
+//            tv_partial_block?.setOnClickListener {
+//                blockOptions.value = PARTIAL_BLOCK
+//                dismiss()
+//            }
+//            tv_full_block.setOnClickListener {
+//                blockOptions.value = FULL_BLOCK
+//                dismiss()
+//            }
+//        }
+//    }
 
-        private val blockOptions = MutableLiveData<String>()
-        val navBlockOptions: LiveData<String> = blockOptions
-
-        override fun onCreateView(
-            inflater: LayoutInflater,
-            container: ViewGroup?,
-            savedInstanceState: Bundle?
-        ): View? {
-            return inflater.inflate(R.layout.layout_block_options, container, false)
-        }
-
-        override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-            super.onViewCreated(view, savedInstanceState)
-            tv_partial_block?.setOnClickListener {
-                blockOptions.value = PARTIAL_BLOCK
-                dismiss()
-            }
-            tv_full_block.setOnClickListener {
-                blockOptions.value = FULL_BLOCK
-                dismiss()
-            }
-        }
-    }
+    //    private fun sendBlockContact(status: String) {
+//        blockStatus = status
+//        if (selectedOption == "contact") {
+//            selectedContact?.let {
+//                Utils.getCursorFromUri(mContext, it)?.let { cursor ->
+//                    if (cursor.moveToFirst()) {
+//                        val contact = Utils.cursorToBlockContact(mContext, cursor, status)
+////                        blockViewModel.blockNo(token, contact.number, contact.name, status)
+//                    }
+//                }
+//            }
+//        } else {
+////            blockViewModel.blockNo(token, selectedPhoneNo, null, status)
+//        }
+//    }
 
     private val blockNoObserver = Observer<BaseNavEvent<Void?>> {
         when (it) {
