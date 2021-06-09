@@ -8,6 +8,7 @@ import com.call.blockcallnow.data.network.ApiConstant.Companion.API_HISTORY
 
 import com.call.blockcallnow.data.network.ApiConstant.Companion.API_LOGIN
 import com.call.blockcallnow.data.network.ApiConstant.Companion.API_REGISTER
+import com.call.blockcallnow.data.network.ApiConstant.Companion.API_UPDATE_PASSWORD
 import com.call.blockcallnow.data.network.ApiConstant.Companion.API_USER
 import io.reactivex.rxjava3.core.Single
 import okhttp3.MultipartBody
@@ -24,6 +25,14 @@ interface WebServices {
         @Field("password") password: String,
         @Field("device_type") device_type: String,
         @Field("device_token") device_token: String
+    ): Single<BaseResponse<LoginResponse?>?>?
+
+    @FormUrlEncoded
+    @POST(API_UPDATE_PASSWORD)
+    fun updatePasswordAPI(
+        @Query("id") id: String,
+        @Field("password") password: String,
+        @Field("password_confirmation") confirmPassword: String
     ): Single<BaseResponse<LoginResponse?>?>?
 
     @FormUrlEncoded

@@ -23,6 +23,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.provider.Telephony.Sms;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.call.messaging.Factory;
 import com.call.messaging.datamodel.BugleDatabaseOperations;
@@ -46,6 +47,8 @@ public class ReceiveSmsMessageAction extends Action implements Parcelable {
     private static final String KEY_MESSAGE_VALUES = "message_values";
     private static final String KEY_SUB_ID = "sub_id";
 
+    private static final String KEY_BLOCK_SMS = "block_sms";
+
     /**
      * Create a message received from a particular number in a particular conversation
      */
@@ -53,8 +56,15 @@ public class ReceiveSmsMessageAction extends Action implements Parcelable {
         actionParameters.putParcelable(KEY_MESSAGE_VALUES, messageValues);
     }
 
+    public ReceiveSmsMessageAction(final ContentValues messageValues, boolean blockSms) {
+        actionParameters.putParcelable(KEY_MESSAGE_VALUES, messageValues);
+        actionParameters.putBoolean(KEY_BLOCK_SMS, blockSms);
+        Log.e(TAG, "ReceiveSmsMessageAction called with blockSms " + actionParameters.getBoolean(KEY_BLOCK_SMS));
+    }
+
     @Override
     protected Object executeAction() {
+        Log.e(TAG, "executeAction called " + actionParameters.getBoolean(KEY_BLOCK_SMS));
         final Context context = Factory.get().getApplicationContext();
         final ContentValues messageValues = actionParameters.getParcelable(KEY_MESSAGE_VALUES);
         final DatabaseWrapper db = DataModel.get().getDatabase();
@@ -68,7 +78,6 @@ public class ReceiveSmsMessageAction extends Action implements Parcelable {
         String address = messageValues.getAsString(Sms.ADDRESS);
 
         LogUtil.e(TAG, "address " + address);
-
 
         if (TextUtils.isEmpty(address)) {
             LogUtil.e(TAG, "Received an SMS without an address; using unknown sender.");
@@ -171,8 +180,11 @@ public class ReceiveSmsMessageAction extends Action implements Parcelable {
                         + "secondary user.");
             }
         }
-        // Show a notification to let the user know a new message has arrived
-        BugleNotifications.update(false/*silent*/, conversationId, BugleNotifications.UPDATE_ALL);
+
+        //Not show notification when sms is blocked
+        if (!actionParameters.getBoolean(KEY_BLOCK_SMS))
+            // Show a notification to let the user know a new message has arrived
+            BugleNotifications.update(false/*silent*/, conversationId, BugleNotifications.UPDATE_ALL);
 
         MessagingContentProvider.notifyMessagesChanged(conversationId);
         MessagingContentProvider.notifyPartsChanged();

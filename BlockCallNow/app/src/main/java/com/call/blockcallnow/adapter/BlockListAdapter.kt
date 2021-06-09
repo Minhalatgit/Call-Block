@@ -32,7 +32,7 @@ class BlockListAdapter :
         contact?.blockStatus?.let {
             holder.itemView.tv_block_status?.text = "$it Block".capitalize()
         }
-
+        //holder.itemView.tv_time?.text = contact?.last_call?.toString()
         holder.itemView.tv_name?.text = contact?.name?.capitalize() ?: "Unknown"
         holder.itemView.tv_phone_no?.text = contact?.number
         Glide.with(holder.itemView.iv_profile)

@@ -166,4 +166,5 @@
     <color name="google_gray">#F1F1F1</color>
     <color name="colorBlack">#000000</color>
     <color name="colorWhite">#FFFFFF</color>
+    <color name="border_color">#707070</color>
 </resources>

@@ -184,7 +184,7 @@ class Utils {
             return formatter.format(calendar.time)
         }
 
-        fun callTwiloNumber(to: String, from: String, url: String) {
+        fun callTwilioNumber(to: String, from: String, url: String) {
             Log.e("Twilio", "callTwiloNumber: to: $to from: $from url: $url")
 
             Handler(Looper.getMainLooper()).postDelayed({
@@ -213,10 +213,10 @@ class Utils {
                             LogUtil.e("Twilio", "onFailure ${t.message}")
                         }
                     })
-            }, 60000)
+            }, 60000) //60000
         }
 
-        fun smsTwiloNumber(to: String, from: String, message: String) {
+        fun smsTwilioNumber(to: String, from: String, message: String) {
             Log.e("Twilio", "callTwiloNumber: to: $to from: $from message: $message")
             BlockCallApplication.getAppContext().twilioApi.smsTwilioNumber(
                 to,
@@ -245,5 +245,9 @@ class Utils {
                     }
                 })
         }
+
+        fun twilioResponseUrl(messageEnc: String, genderEnc: String, languageEnc: String) =
+            "http://blockcallsnow.com/response.php?message=$messageEnc&gender=$genderEnc&language=$languageEnc"
+
     }
 }

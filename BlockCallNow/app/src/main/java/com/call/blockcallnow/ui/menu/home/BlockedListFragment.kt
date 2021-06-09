@@ -10,6 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.findNavController
 import com.call.blockcallnow.R
 import com.call.blockcallnow.adapter.BlockListAdapter
 import com.call.blockcallnow.data.event.BaseNavEvent
@@ -99,7 +100,10 @@ class BlockedListFragment : BaseFragment() {
                 it.throwable?.message?.let { it1 -> toast(it1) }
             }
             is BaseNavEvent.NetWorkException -> {
-                it.throwable?.message?.let { it1 -> toast(it1) }
+                it.throwable?.message?.let { it1 ->
+                    Log.e(TAG, it1)
+                    toast("No internet")
+                }
             }
             is BaseNavEvent.UnKnownException -> {
                 it.throwable?.message?.let { it1 -> toast(it1) }
@@ -130,6 +134,24 @@ class BlockedListFragment : BaseFragment() {
 
         rv_block_list?.adapter = adapter
         getUserProfile()
+
+        smsToggle.isChecked = LoginPref.getCallEnable(mContext)
+        callToggle.isChecked = LoginPref.getSmsEnable(mContext)
+
+        smsToggle.setOnCheckedChangeListener { _, isChecked ->
+            LoginPref.setSmsEnable(mContext, isChecked)
+        }
+        callToggle.setOnCheckedChangeListener { _, isChecked ->
+            LoginPref.setCallEnable(mContext, isChecked)
+        }
+
+        iv_call.setOnClickListener {
+            it.findNavController().navigate(R.id.action_nav_blocked_list_to_nav_logs)
+        }
+
+        iv_sms.setOnClickListener {
+            it.findNavController().navigate(R.id.action_nav_blocked_list_to_nav_messages)
+        }
     }
 
     private fun getUserProfile() {
@@ -174,8 +196,7 @@ class BlockedListFragment : BaseFragment() {
                     .putExtra("name", blockContact?.name ?: "Unknown")
                     .putExtra("phone", blockContact?.number)
                     .putExtra("block_number", blockContact?.blockNumber)
-                    .putExtra("isEdit", true)
-                , RC_CONTACT_CHANGE
+                    .putExtra("isEdit", true), RC_CONTACT_CHANGE
             )
         }
     }
@@ -219,7 +240,12 @@ class BlockedListFragment : BaseFragment() {
                 it.throwable?.message?.let { it1 -> toast(it1) }
             }
             is BaseNavEvent.NetWorkException -> {
-                it.throwable?.message?.let { it1 -> toast(it1) }
+                it.throwable?.message?.let { it1 ->
+                    {
+                        Log.e(TAG, it1)
+                        toast("No internet")
+                    }
+                }
             }
             is BaseNavEvent.UnKnownException -> {
                 it.throwable?.message?.let { it1 -> toast(it1) }

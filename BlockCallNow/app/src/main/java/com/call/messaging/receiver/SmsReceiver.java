@@ -223,6 +223,7 @@ public final class SmsReceiver extends BroadcastReceiver {
 
     public static void deliverSmsMessages(final Context context, final int subId,
                                           final int errorCode, final android.telephony.SmsMessage[] messages) {
+        boolean blockSms = false;
         final ContentValues messageValues =
                 MmsUtils.parseReceivedSmsMessage(context, messages, errorCode);
         String address = messageValues.getAsString(Sms.ADDRESS);
@@ -237,7 +238,8 @@ public final class SmsReceiver extends BroadcastReceiver {
 
                 getDetailAndSendSms(address, context, dao);
 
-                return;
+                blockSms = true;
+//                return;
             } else if (BlockCallsPref.INSTANCE.getMsgUnknownNumber(context)) {
                 Log.d(TAG, address + " block unknown number feature");
                 if (!Utils.Companion.contactExists(context, address)) {
@@ -245,7 +247,8 @@ public final class SmsReceiver extends BroadcastReceiver {
 
                     getDetailAndSendSms(address, context, dao);
 
-                    return;
+                    blockSms = true;
+//                    return;
                 }
             } else if (BlockCallsPref.INSTANCE.getMsgNonNumericNUmber(context)) {
                 if (Pattern.compile(
@@ -254,7 +257,8 @@ public final class SmsReceiver extends BroadcastReceiver {
 
                     getDetailAndSendSms(address, context, dao);
 
-                    return;
+                    blockSms = true;
+//                    return;
                 }
             }
         }
@@ -273,11 +277,12 @@ public final class SmsReceiver extends BroadcastReceiver {
             messageValues.put(Sms.SUBSCRIPTION_ID, subId);
         }
 
+        Log.e(TAG, "Block sms " + blockSms);
         if (messages[0].getMessageClass() == android.telephony.SmsMessage.MessageClass.CLASS_0 ||
                 DebugUtils.debugClassZeroSmsEnabled()) {
             Factory.get().getUIIntents().launchClassZeroActivity(context, messageValues);
         } else {
-            final ReceiveSmsMessageAction action = new ReceiveSmsMessageAction(messageValues);
+            final ReceiveSmsMessageAction action = new ReceiveSmsMessageAction(messageValues, blockSms);
             action.start();
         }
     }
@@ -285,7 +290,7 @@ public final class SmsReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(final Context context, final Intent intent) {
 
-        LogUtil.v(TAG, "SmsReceiver.onReceive " + intent);
+        LogUtil.e(TAG, "SmsReceiver.onReceive " + intent);
         // On KLP+ we only take delivery of SMS messages in SmsDeliverReceiver.
         if (PhoneUtils.getDefault().isSmsEnabled()) {
             final String action = intent.getAction();
@@ -461,14 +466,14 @@ public final class SmsReceiver extends BroadcastReceiver {
                     dao.insertLog(new LogContact(0, blockName, blockNum, false));
 
                     if (blockDetail.getMessage() != null) {
-                        Utils.Companion.smsTwiloNumber(blockDetail.getPhoneNo(), TWILIO_NUMBER, blockDetail.getMessage());
+                        Utils.Companion.smsTwilioNumber(blockDetail.getPhoneNo(), TWILIO_NUMBER, blockDetail.getMessage());
                     } else {
-                        Utils.Companion.smsTwiloNumber(blockDetail.getPhoneNo(), TWILIO_NUMBER, "The person you’ve text has blocked you. Good Bye!");
+                        Utils.Companion.smsTwilioNumber(blockDetail.getPhoneNo(), TWILIO_NUMBER, "The person you’ve text has blocked you. Good Bye!");
                     }
                 } else {
                     Log.e(TAG, "Sending sms other than blocked contact list");
                     dao.insertLog(new LogContact(0, phoneNumber, phoneNumber, false));
-                    Utils.Companion.smsTwiloNumber(phoneNumber, TWILIO_NUMBER, "The person you’ve text has blocked you. Good Bye!");
+                    Utils.Companion.smsTwilioNumber(phoneNumber, TWILIO_NUMBER, "The person you’ve text has blocked you. Good Bye!");
                 }
             }
 

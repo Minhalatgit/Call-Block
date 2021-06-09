@@ -8,8 +8,7 @@
     android:paddingStart="@dimen/_20sdp"
     android:paddingTop="@dimen/_10sdp"
     android:paddingEnd="@dimen/_20sdp"
-    android:paddingBottom="@dimen/_10sdp"
-    tools:context="com.blockcallnow.ui.permission.PermissionActivity">
+    android:paddingBottom="@dimen/_10sdp">
 
     <RelativeLayout
         android:id="@+id/rl"

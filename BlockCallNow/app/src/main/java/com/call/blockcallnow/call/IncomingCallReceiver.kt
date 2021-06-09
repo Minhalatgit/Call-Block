@@ -10,12 +10,12 @@ import android.telecom.TelecomManager
 import android.telephony.TelephonyManager
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
+import com.android.internal.telephony.ITelephony
 import com.call.blockcallnow.app.BlockCallApplication
 import com.call.blockcallnow.data.event.BaseNavEvent
 import com.call.blockcallnow.data.model.BaseResponse
 import com.call.blockcallnow.data.model.BlockNoDetail
 import com.call.blockcallnow.data.model.PhoneNoDetailResponse
-import com.call.blockcallnow.data.network.ApiConstant
 import com.call.blockcallnow.data.network.ApiConstant.Companion.TWILIO_NUMBER
 import com.call.blockcallnow.data.network.NetworkHelper
 import com.call.blockcallnow.data.network.WebServices
@@ -45,9 +45,9 @@ class IncomingCallReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
         LogUtil.e(TAG, "onReceive Incoming")
 
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-//            return
-//        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            return
+        }
 
         mContext = context
         val app = context.applicationContext as BlockCallApplication
@@ -65,16 +65,20 @@ class IncomingCallReceiver : BroadcastReceiver() {
             val blockNumber: String
 
             if (state.equals(TelephonyManager.EXTRA_STATE_RINGING, ignoreCase = true)) {
-                val tm = context.getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
+
+                val tm = app.getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
                 if (phoneNumber == null) {
+                    LogUtil.e(TAG, "Phone number is null")
                     return
                 } else {
                     LogUtil.e(
                         TAG,
-                        "Phone number: $phoneNumber and  Block num: ${Utils.getBlockNumber(
-                            context,
-                            phoneNumber
-                        )}"
+                        "Phone number: $phoneNumber and  Block num: ${
+                            Utils.getBlockNumber(
+                                context,
+                                phoneNumber
+                            )
+                        }"
                     )
                     blockNumber = Utils.getBlockNumber(context, phoneNumber)
                 }
@@ -175,6 +179,35 @@ class IncomingCallReceiver : BroadcastReceiver() {
 
         Log.e(TAG, "rejectCall: ${Utils.getBlockNumber(mContext, phoneNumber)}")
 
+        //Android 9 or greater
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            val telManager = mContext.getSystemService(TELECOM_SERVICE) as TelecomManager
+            try {
+                if (telManager.endCall()) {
+                    LogUtil.e(TAG, "Call rejected")
+                } else {
+                    LogUtil.e(TAG, "Call not rejected")
+                }
+
+            } catch (e: java.lang.Exception) {
+                e.printStackTrace()
+                LogUtil.e(TAG, "Couldn't end call with Tel Manager $e")
+            }
+        } else {//Android 5.0 - 8.0
+            try {
+                val c = Class.forName(tm.javaClass.name)
+                val m = c.getDeclaredMethod("getITelephony")
+                m.isAccessible = true
+                val telephony = m.invoke(tm) as ITelephony
+                telephony.silenceRinger()
+                telephony.endCall()
+                LogUtil.e(TAG, "endCallMethod invoked")
+            } catch (e: Exception) {
+                e.printStackTrace()
+                LogUtil.e(TAG, "exception while invoking $e")
+            }
+        }
+
         if (isBlockContact) {
             BlockCallApplication.getAppContext().api2.getBlockNoDetailForAudio(
                 "Bearer " + LoginPref.getApiToken(mContext),
@@ -201,6 +234,18 @@ class IncomingCallReceiver : BroadcastReceiver() {
                         contactName = contactPhone
                     }
 
+                    var genderEnc = if (blockDetail?.set_voice_gender == "F") {
+                        URLEncoder.encode("woman", "utf-8")
+                    } else {
+                        URLEncoder.encode("man", "utf-8")
+                    }
+
+                    val language = Utils.getLanguage(blockDetail?.set_voice_lang!!)
+                    if (language == "ru-RU" || language == "zh-CN") {
+                        genderEnc = URLEncoder.encode("alice", "utf-8")
+                    }
+                    val languageEnc = URLEncoder.encode(language, "utf-8")
+
                     contactDao.insertLog(
                         LogContact(
                             id = 0,
@@ -219,22 +264,19 @@ class IncomingCallReceiver : BroadcastReceiver() {
                     if (blockDetail?.status == Utils.FULL_BLOCK) {
                         Log.e(TAG, "onResponse: Full block")
 
-                        val genderEnc = URLEncoder.encode("man", "utf-8")
-                        val languageEnc = URLEncoder.encode("en", "utf-8")
-
                         if (blockDetail.is_generic_text == 0) {
                             messageEnc = URLEncoder.encode(blockDetail.message, "utf-8")
-                            Utils.callTwiloNumber(
+                            Utils.callTwilioNumber(
                                 blockDetail.phoneNo!!,
                                 TWILIO_NUMBER,
-                                "http://blockcallsnow.com/response.php?message=$messageEnc&gender=$genderEnc&language=$languageEnc"
+                                Utils.twilioResponseUrl(messageEnc, genderEnc, languageEnc)
                             )
                         } else {
-                            Utils.callTwiloNumber(
+                            Utils.callTwilioNumber(
                                 blockDetail.phoneNo!!,
                                 TWILIO_NUMBER,
                                 response.body()?.data?.audio?.fileUrl
-                                    ?: "http://blockcallsnow.com/response.php?message=$messageEnc&gender=$genderEnc&language=$languageEnc"
+                                    ?: Utils.twilioResponseUrl(messageEnc, genderEnc, languageEnc)
                             )
                         }
 
@@ -245,33 +287,11 @@ class IncomingCallReceiver : BroadcastReceiver() {
                         if (blockDetail?.message != null) {
                             messageEnc = URLEncoder.encode(blockDetail.message, "utf-8")
                         }
-                        var genderEnc: String
-                        val language: String
 
-                        if (user?.paywhirl_plan_id == Utils.PLAN_PRO) {
-                            // Pro plan
-                            genderEnc = if (blockDetail?.set_voice_gender == "F") {
-                                URLEncoder.encode("woman", "utf-8")
-                            } else {
-                                URLEncoder.encode("man", "utf-8")
-                            }
-                            language = Utils.getLanguage(blockDetail?.set_voice_lang!!)
-                        } else {
-                            // Standard
-                            genderEnc = URLEncoder.encode("man", "utf-8")
-                            language = "en"
-                        }
-
-                        if (language == "ru-RU" || language == "zh-CN") {
-                            genderEnc = URLEncoder.encode("alice", "utf-8")
-                        }
-
-                        val languageEnc = URLEncoder.encode(language, "utf-8")
-
-                        Utils.callTwiloNumber(
+                        Utils.callTwilioNumber(
                             blockDetail?.phoneNo!!,
                             TWILIO_NUMBER,
-                            "http://blockcallsnow.com/response.php?message=$messageEnc&gender=$genderEnc&language=$languageEnc"
+                            Utils.twilioResponseUrl(messageEnc, genderEnc, languageEnc)
                         )
                     }
                 }
@@ -294,50 +314,22 @@ class IncomingCallReceiver : BroadcastReceiver() {
                 )
             )
 
-            Utils.callTwiloNumber(
+            Utils.callTwilioNumber(
                 phoneNumber,
-                ApiConstant.TWILIO_NUMBER,
-                "http://blockcallsnow.com/response.php?message=$messageEnc&gender=$genderEnc&language=$languageEnc"
+                TWILIO_NUMBER,
+                Utils.twilioResponseUrl(messageEnc, genderEnc, languageEnc)
             )
-        }
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-            val telManager = mContext.getSystemService(TELECOM_SERVICE) as TelecomManager
-            try {
-                if (telManager.endCall()) {
-                    LogUtil.e(TAG, "Call rejected")
-                } else {
-                    LogUtil.e(TAG, "Call not rejected")
-                }
-
-            } catch (e: java.lang.Exception) {
-                e.printStackTrace()
-                LogUtil.e(TAG, "Couldn't end call with Tel Manager $e")
-            }
-        } else {
-            try {
-                val c = Class.forName(tm.javaClass.name)
-                val m = c.getDeclaredMethod("getITelephony")
-                m.isAccessible = true
-                val telephonyService = m.invoke(tm)
-                val telephonyServiceClass = Class.forName(telephonyService.javaClass.name)
-                val endCallMethod = telephonyServiceClass.getDeclaredMethod("endCall")
-                endCallMethod.invoke(telephonyService)
-                LogUtil.e(TAG, "endCallMethod invoked")
-            } catch (e: Exception) {
-                e.printStackTrace()
-                LogUtil.e(TAG, "exception while invoking $e")
-            }
         }
     }
 
     private val historyEvent = MutableLiveData<BaseNavEvent<Nothing?>>()
     private fun addToHistory(phoneNumber: String?) {
+        val blockNumber = Utils.getBlockNumber(mContext, phoneNumber!!)
         val api: WebServices = BlockCallApplication.getAppContext().api
         val token = "Bearer " + LoginPref.getApiToken(mContext)
         mDisposable.add(
             NetworkHelper.makeRequestInBackground(
-                api.addToHistory(token, phoneNumber),
+                api.addToHistory(token, blockNumber),
                 historyEvent
             )
         )

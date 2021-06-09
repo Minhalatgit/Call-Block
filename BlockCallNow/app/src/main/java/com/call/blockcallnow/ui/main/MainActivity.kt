@@ -16,12 +16,8 @@ import android.os.Build
 import android.os.Bundle
 import android.provider.ContactsContract
 import android.provider.Telephony
-import android.telephony.TelephonyManager
 import android.text.InputType
-import android.view.LayoutInflater
 import android.view.MenuItem
-import android.view.View
-import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
@@ -29,8 +25,6 @@ import androidx.annotation.DimenRes
 import androidx.annotation.DrawableRes
 import androidx.annotation.RequiresApi
 import androidx.drawerlayout.widget.DrawerLayout
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
@@ -48,11 +42,8 @@ import com.call.blockcallnow.ui.menu.home.BlockContactDetail
 import com.call.blockcallnow.ui.menu.home.BlockedListFragment
 import com.call.blockcallnow.util.LogUtil
 import com.call.blockcallnow.util.Utils
-import com.call.blockcallnow.util.Utils.Companion.FULL_BLOCK
-import com.call.blockcallnow.util.Utils.Companion.PARTIAL_BLOCK
 import com.call.blockcallnow.util.dialog.CallBlockDialog
 import com.call.blockcallnow.util.toast
-import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.navigation.NavigationView
 import com.livinglifetechway.quickpermissions_kotlin.runWithPermissions
 import kotlinx.android.synthetic.main.app_bar_main.*
@@ -72,7 +63,6 @@ class MainActivity : BaseActivity() {
     private val RC_DEFAULT_SMS: Int = 1003
     private val RC_CONTACT_CHANGE: Int = 1004
 
-//    private val blockOptionSheet = BlockOptionSheet()
     private lateinit var appBarConfiguration: AppBarConfiguration
 
     private val TAG: String? = MainActivity::class.simpleName
@@ -94,7 +84,7 @@ class MainActivity : BaseActivity() {
 
         val ivProfile = navView.getHeaderView(0).findViewById<ImageView>(R.id.iv_profile)
         val tvName = navView.getHeaderView(0).findViewById<TextView>(R.id.tv_name)
-        tvName.text = userDetail?.name
+        tvName.text = userDetail?.name?.capitalize()
 
         navView.setupWithNavController(navController)
 
@@ -109,6 +99,7 @@ class MainActivity : BaseActivity() {
                 R.id.nav_messages,
                 R.id.nav_logs,
                 R.id.nav_settings,
+                R.id.nav_change_password,
                 R.id.nav_logout
             ), drawerLayout
         )
@@ -146,11 +137,6 @@ class MainActivity : BaseActivity() {
         requestRole() //for Android 10 and higher
         requestAppPermissions()
         callPermission()
-
-//        blockOptionSheet.navBlockOptions.observe(this,
-//            Observer {
-//                sendBlockContact(it)
-//            })
     }
 
     @RequiresApi(Build.VERSION_CODES.Q)
@@ -176,14 +162,13 @@ class MainActivity : BaseActivity() {
     private fun callPermission() = runWithPermissions(
         Manifest.permission.READ_PHONE_STATE,
         Manifest.permission.CALL_PHONE,
-        Manifest.permission.READ_SMS,
         Manifest.permission.READ_CONTACTS
     ) {}
 
     private fun callPermissionForP() = runWithPermissions(
         Manifest.permission.READ_PHONE_STATE,
+        Manifest.permission.READ_CALL_LOG,
         Manifest.permission.CALL_PHONE,
-        Manifest.permission.READ_SMS,
         Manifest.permission.ANSWER_PHONE_CALLS
     ) {}
 
@@ -380,48 +365,6 @@ class MainActivity : BaseActivity() {
         val navController = findNavController(R.id.nav_host_fragment)
         return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
     }
-
-//    class BlockOptionSheet : BottomSheetDialogFragment() {
-//
-//        private val blockOptions = MutableLiveData<String>()
-//        val navBlockOptions: LiveData<String> = blockOptions
-//
-//        override fun onCreateView(
-//            inflater: LayoutInflater,
-//            container: ViewGroup?,
-//            savedInstanceState: Bundle?
-//        ): View? {
-//            return inflater.inflate(R.layout.layout_block_options, container, false)
-//        }
-//
-//        override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-//            super.onViewCreated(view, savedInstanceState)
-//            tv_partial_block?.setOnClickListener {
-//                blockOptions.value = PARTIAL_BLOCK
-//                dismiss()
-//            }
-//            tv_full_block.setOnClickListener {
-//                blockOptions.value = FULL_BLOCK
-//                dismiss()
-//            }
-//        }
-//    }
-
-    //    private fun sendBlockContact(status: String) {
-//        blockStatus = status
-//        if (selectedOption == "contact") {
-//            selectedContact?.let {
-//                Utils.getCursorFromUri(mContext, it)?.let { cursor ->
-//                    if (cursor.moveToFirst()) {
-//                        val contact = Utils.cursorToBlockContact(mContext, cursor, status)
-////                        blockViewModel.blockNo(token, contact.number, contact.name, status)
-//                    }
-//                }
-//            }
-//        } else {
-////            blockViewModel.blockNo(token, selectedPhoneNo, null, status)
-//        }
-//    }
 
     private val blockNoObserver = Observer<BaseNavEvent<Void?>> {
         when (it) {

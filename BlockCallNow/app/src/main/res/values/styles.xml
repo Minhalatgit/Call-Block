@@ -41,17 +41,17 @@
         <item name="android:textColor">#FFF</item>
         <item name="android:textSize">@dimen/_15ssp</item>
     </style>
-<!--    <style name="Widget.Material.Toolbar.Button.Navigation" parent="Widget.Material">-->
-<!--        <item name="background">@drawable/control_background_40dp_material</item>-->
-<!--        <item name="minWidth">56dp</item>-->
-<!--        <item name="scaleType">center</item>-->
-<!--    </style>-->
+    <!--    <style name="Widget.Material.Toolbar.Button.Navigation" parent="Widget.Material">-->
+    <!--        <item name="background">@drawable/control_background_40dp_material</item>-->
+    <!--        <item name="minWidth">56dp</item>-->
+    <!--        <item name="scaleType">center</item>-->
+    <!--    </style>-->
 
-<!--        <style name="StyleAppbar" parent="Widget.MaterialComponents.BottomAppBar">-->
-<!--&lt;!&ndash;&ndash;&gt;-->
-<!--&lt;!&ndash;            <dimen name="design_navigation_icon_size" tools:override="true">24dp</dimen>&ndash;&gt;-->
-<!--            <dimen name="minWidth" tools:override="true">24dp</dimen>-->
-<!--        </style>-->
+    <!--        <style name="StyleAppbar" parent="Widget.MaterialComponents.BottomAppBar">-->
+    <!--&lt;!&ndash;&ndash;&gt;-->
+    <!--&lt;!&ndash;            <dimen name="design_navigation_icon_size" tools:override="true">24dp</dimen>&ndash;&gt;-->
+    <!--            <dimen name="minWidth" tools:override="true">24dp</dimen>-->
+    <!--        </style>-->
 
     <style name="BtnSecondary">
 
@@ -63,15 +63,21 @@
     <style name="CustomDialogTheme">
         <item name="android:windowBackground">@android:color/transparent</item>
     </style>
+
     <style name="AppTheme.NoActionBar">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
     </style>
 
+    <style name="NavigationView" parent="Base.Theme.AppCompat">
+        <item name="android:listDivider">@color/colorWhite</item>
+        <item name="listPreferredItemHeightSmall">70dp</item>
+    </style>
+
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
-<!--Messages-->
+    <!--Messages-->
     <style name="BugleBaseTheme" parent="Theme.AppCompat.Light.DarkActionBar">
         <!--
             Theme customizations available in newer API levels can go in
@@ -91,19 +97,20 @@
         <item name="apnPreferenceStyle">@style/ApnPreference</item>
     </style>
 
-    <style name="BugleTheme.ConversationActivity"
-        parent="@style/BugleTheme.ConversationActivityBase">
-    </style>
+    <style name="BugleTheme.ConversationActivity" parent="@style/BugleTheme.ConversationActivityBase"></style>
 
     <style name="BugleTheme.ConversationActivityBase" parent="BugleTheme">
         <item name="android:windowBackground">@color/conversation_background</item>
         <item name="windowActionBarOverlay">true</item>
-        <item name="android:fastScrollPreviewBackgroundLeft">@drawable/contacts_fastscroll_label_left</item>
-        <item name="android:fastScrollPreviewBackgroundRight">@drawable/contacts_fastscroll_label_right</item>
+        <item name="android:fastScrollPreviewBackgroundLeft">
+            @drawable/contacts_fastscroll_label_left
+        </item>
+        <item name="android:fastScrollPreviewBackgroundRight">
+            @drawable/contacts_fastscroll_label_right
+        </item>
     </style>
 
-    <style name="BugleTheme.DialogActivity" parent="@style/Theme.AppCompat.Light.Dialog">
-    </style>
+    <style name="BugleTheme.DialogActivity" parent="@style/Theme.AppCompat.Light.Dialog"></style>
 
     <style name="BugleTheme.ConversationListActivity" parent="BugleTheme">
         <item name="android:windowBackground">@android:color/background_light</item>
@@ -111,7 +118,9 @@
 
     <style name="BugleTheme.ArchivedConversationListActivity" parent="BugleTheme.ConversationListActivity">
         <item name="colorPrimary">@color/archived_conversation_action_bar_background_color</item>
-        <item name="colorPrimaryDark">@color/archived_conversation_action_bar_background_color_dark</item>
+        <item name="colorPrimaryDark">
+            @color/archived_conversation_action_bar_background_color_dark
+        </item>
     </style>
 
     <style name="BugleTheme.SettingsActivity" parent="BugleTheme">
@@ -193,12 +202,15 @@
         <item name="android:background">@null</item>
         <item name="android:scrollHorizontally">false</item>
         <item name="android:textCursorDrawable">@null</item>
-        <item name="android:inputType">textShortMessage|textAutoCorrect|textCapSentences|textMultiLine</item>
+        <item name="android:inputType">
+            textShortMessage|textAutoCorrect|textCapSentences|textMultiLine
+        </item>
     </style>
 
     <style name="ConversationComposeSubjectText" parent="ConversationComposeSendText">
         <item name="android:paddingLeft">18dp</item>
-        <item name="android:layout_marginLeft">@dimen/compose_message_subject_cancel_left_margin</item>
+        <item name="android:layout_marginLeft">@dimen/compose_message_subject_cancel_left_margin
+        </item>
     </style>
 
     <style name="ContactListItem">
@@ -676,9 +688,11 @@
         <item name="android:textColor">@android:color/white</item>
         <item name="android:fontFamily">roboto-regular</item>
     </style>
+
     <style name="PromoScreenTextStyle.CenterAligned">
         <item name="android:textAlignment">center</item>
     </style>
+
     <style name="PromoScreenButtonStyle">
         <item name="android:textSize">14sp</item>
         <item name="android:fontFamily">roboto-medium</item>
@@ -688,6 +702,7 @@
         <item name="android:textColor">@android:color/white</item>
         <item name="android:gravity">center</item>
     </style>
+
     <style name="DirectoryHeaderStyle">
         <item name="android:paddingLeft">@dimen/directory_header_padding_start</item>
         <item name="android:paddingStart">@dimen/directory_header_padding_start</item>

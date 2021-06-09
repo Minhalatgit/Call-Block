@@ -86,7 +86,7 @@
         android:background="@drawable/bg_white_round"
         android:drawablePadding="@dimen/_5sdp"
         android:padding="@dimen/_10sdp"
-        android:text="@string/label_affiliate_program"
+        android:text="@string/label_employment"
         android:textColor="#000"
         android:textSize="@dimen/_15ssp"
         app:drawableStartCompat="@drawable/ic_doller"

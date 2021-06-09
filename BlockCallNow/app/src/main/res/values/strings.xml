@@ -16,9 +16,7 @@
     <string name="menu_home">Home</string>
     <string name="menu_gallery">Gallery</string>
     <string name="menu_slideshow">Slideshow</string>
-    <string name="menu_blocked_list">Blocked List</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="menu_blocked_list">Block List</string>
     <string name="menu_logs">Logs</string>
     <string name="msg_please_click_button_to_add_number_to_the_block_list">Please click + button to add number to the Block List</string>
     <string name="label_activate_deactivate">Activate/Deactivate</string>
@@ -56,7 +54,7 @@
     <string name="label_block_all_calls">Block All Calls</string>
     <string name="label_block_all_calls_while_voip_is_established">Block all calls while VOIP is established</string>
     <string name="label_rate_5_stars">Rate 5 Stars</string>
-    <string name="label_affiliate_program">Affiliate Program</string>
+    <string name="label_employment">Employment</string>
 
     <!--    Messages-->
     <!-- The name of the application as it appears in external share intent dialogs -->
@@ -1045,11 +1043,13 @@
     <string name="label_french">French</string>
     <string name="label_disabled">Disabled</string>
     <string name="label_protection_status">Protection status:</string>
-    <string name="msg_your_plan_has_expired_please_upgrade_to_use_full_functionality">Your plan has expired. Please upgrade to use full functionality</string>
+    <string name="msg_your_plan_has_expired_please_upgrade_to_use_full_functionality">Your plan has expired.\nPlease upgrade to use full functionality</string>
     <string name="label_upgrade">Upgrade</string>
     <string name="label_add_contact">Add Contact</string>
     <string name="label_block_contact">Block Contact</string>
     <string name="label_this_feature_available_in_pro_plan">This feature is available in Pro Plan</string>
     <string name="label_block_non_numeric_numbers">Block Non Numeric Numbers</string>
     <string name="label_text_messages">Text Messages</string>
+    <string name="change_password">Change Password</string>
+    <string name="block_list">Blocked List</string>
 </resources>

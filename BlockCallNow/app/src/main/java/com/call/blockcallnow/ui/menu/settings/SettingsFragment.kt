@@ -78,7 +78,7 @@ class SettingsFragment : BaseFragment() {
         }
 
         tv_affiliate.setOnClickListener {
-            Toast.makeText(context, "Affiliate coming soon", Toast.LENGTH_SHORT).show()
+            Utils.openLink(requireContext(), "https://www.BlockCallsNow.com/Employment")
         }
     }
 

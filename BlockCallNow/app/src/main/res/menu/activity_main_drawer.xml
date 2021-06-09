@@ -3,29 +3,36 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:showIn="navigation_view">
 
-    <group android:checkableBehavior="single">
+    <group
+        android:id="@+id/topGroup"
+        android:checkableBehavior="single">
         <item
             android:id="@+id/nav_blocked_list"
             android:checkable="false"
             android:icon="@drawable/menu_block_list"
             android:title="@string/menu_blocked_list" />
-    </group>
-    <group android:checkableBehavior="single">
         <item
             android:id="@+id/nav_messages"
             android:checkable="false"
-            android:icon="@drawable/ic_sms_light"
+            android:icon="@drawable/chat"
             android:title="@string/menu_messages" />
-    </group>
-    <group android:checkableBehavior="single">
 
         <item
             android:id="@+id/nav_logs"
             android:checkable="false"
             android:icon="@drawable/menu_logs"
             android:title="@string/menu_logs" />
+
+        <item
+            android:id="@+id/nav_change_password"
+            android:checkable="false"
+            android:icon="@drawable/padlock"
+            android:title="@string/change_password" />
+
     </group>
+
     <group
+        android:id="@+id/bottomGroup"
         android:checkable="false"
         android:checkableBehavior="single">
 
@@ -34,11 +41,12 @@
             android:checkable="false"
             android:icon="@drawable/menu_setting"
             android:title="@string/action_settings" />
+
+        <item
+            android:id="@+id/nav_logout"
+            android:checkable="false"
+            android:icon="@drawable/ic_logout"
+            android:onClick="logout"
+            android:title="@string/label_logout" />
     </group>
-    <item
-        android:id="@+id/nav_logout"
-        android:checkable="false"
-        android:icon="@drawable/ic_logout"
-        android:onClick="logout"
-        android:title="@string/label_logout" />
 </menu>

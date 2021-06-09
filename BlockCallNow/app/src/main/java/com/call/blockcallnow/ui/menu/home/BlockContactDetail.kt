@@ -104,7 +104,7 @@ class BlockContactDetail : BaseActivity(),
             binding.rgStatus.check(R.id.rb_partial_block)
             binding.rbPartialBlock.isChecked = true
             binding.rgMessage.check(R.id.rb_generic_msg)
-            binding.rgVoice.check(R.id.rb_male_voice)
+            binding.rgVoice.check(R.id.rb_female_voice)
             binding.rbEng.isChecked = true
             rbSelectionLang = binding.rbEng
         }

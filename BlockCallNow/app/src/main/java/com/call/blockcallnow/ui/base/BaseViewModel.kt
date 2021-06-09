@@ -1,5 +1,6 @@
 package com.call.blockcallnow.ui.base
 
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.call.blockcallnow.app.BlockCallApplication

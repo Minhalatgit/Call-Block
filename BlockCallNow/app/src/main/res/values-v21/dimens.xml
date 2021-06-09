@@ -4,5 +4,4 @@
     <dimen name="fab_left_right_margin">16dp</dimen>
     <dimen name="fab_size">56dp</dimen>
     <dimen name="fab_padding_bottom">0dp</dimen>
-
 </resources>

@@ -84,6 +84,8 @@ class PrefManager {
         const val KEY_TOKEN = "key_user_Token"
         const val KEY_DEVICE_ID = "key_device_id"
         const val KEY_FCM_TOKEN = "key_fcm_token"
+        const val KEY_SMS_ENABLE = "key_fcm_token"
+        const val KEY_CALL_ENABLE = "key_fcm_token"
 
         //        blocking preference constants
         const val KEY_CALLS_LIST = "key_calls_list"

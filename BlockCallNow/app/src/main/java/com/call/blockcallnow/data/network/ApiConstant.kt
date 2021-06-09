@@ -8,6 +8,7 @@ class ApiConstant {
         const val API_LOGIN = "api/auth/login"
         const val API_REGISTER = "api/auth/signup"
         const val API_BLOCK_NO = "api/auth/block-no"
+        const val API_UPDATE_PASSWORD = "api/auth/updatePassword"
         const val API_AUDIO = "api/auth/audio"
         const val API_BLOCK_NO_DETAIL = "api/auth/block-no/show"
         const val API_HISTORY = "api/auth/history"

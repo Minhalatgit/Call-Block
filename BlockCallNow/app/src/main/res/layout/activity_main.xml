@@ -19,6 +19,7 @@
         android:layout_height="match_parent"
         android:layout_gravity="start"
         android:background="@color/colorPrimary"
+        android:theme="@style/NavigationView"
         app:headerLayout="@layout/nav_header_main"
         app:itemIconTint="@color/colorWhite"
         app:itemTextColor="@color/colorWhite"

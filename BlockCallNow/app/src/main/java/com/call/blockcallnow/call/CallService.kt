@@ -21,6 +21,7 @@ import com.call.blockcallnow.data.room.LogContact
 import com.call.blockcallnow.util.LogUtil
 import com.call.blockcallnow.util.Utils
 import com.call.blockcallnow.util.Utils.Companion.PLAN_PRO
+import com.call.blockcallnow.util.Utils.Companion.twilioResponseUrl
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import retrofit2.Response
 import java.net.URLEncoder
@@ -176,11 +177,12 @@ class CallService : CallScreeningService() {
 
     private val historyEvent = MutableLiveData<BaseNavEvent<Nothing?>>()
     private fun addToHistory(phoneNumber: String?) {
+        val blockNumber = Utils.getBlockNumber(this, phoneNumber!!)
         val api: WebServices = BlockCallApplication.getAppContext().api
         val token = "Bearer " + LoginPref.getApiToken(this)
         mDisposable.add(
             NetworkHelper.makeRequestInBackground(
-                api.addToHistory(token, phoneNumber),
+                api.addToHistory(token, blockNumber),
                 historyEvent
             )
         )
@@ -216,6 +218,18 @@ class CallService : CallScreeningService() {
                         contactName = contactPhone
                     }
 
+                    var genderEnc = if (blockDetail?.set_voice_gender == "F") {
+                        URLEncoder.encode("woman", "utf-8")
+                    } else {
+                        URLEncoder.encode("man", "utf-8")
+                    }
+
+                    val language = Utils.getLanguage(blockDetail?.set_voice_lang!!)
+                    if (language == "ru-RU" || language == "zh-CN") {
+                        genderEnc = URLEncoder.encode("alice", "utf-8")
+                    }
+                    val languageEnc = URLEncoder.encode(language, "utf-8")
+
                     dao.insertLog(
                         LogContact(
                             id = 0,
@@ -234,59 +248,35 @@ class CallService : CallScreeningService() {
                     if (blockDetail?.status == Utils.FULL_BLOCK) {
                         Log.e(TAG, "onResponse: Full block")
 
-                        val genderEnc = URLEncoder.encode("man", "utf-8")
-                        val languageEnc = URLEncoder.encode("en", "utf-8")
-
                         if (blockDetail.is_generic_text == 0) {
                             messageEnc = URLEncoder.encode(blockDetail.message, "utf-8")
-                            Utils.callTwiloNumber(
+                            Utils.callTwilioNumber(
                                 contactPhone,
                                 ApiConstant.TWILIO_NUMBER,
-                                "http://blockcallsnow.com/response.php?message=$messageEnc&gender=$genderEnc&language=$languageEnc"
+                                twilioResponseUrl(messageEnc, genderEnc, languageEnc)
                             )
                         } else {
-                            Utils.callTwiloNumber(
+                            Utils.callTwilioNumber(
                                 contactPhone,
                                 ApiConstant.TWILIO_NUMBER,
                                 response.body()?.data?.audio?.fileUrl
-                                    ?: "http://blockcallsnow.com/response.php?message=$messageEnc&gender=$genderEnc&language=$languageEnc"
+                                    ?: twilioResponseUrl(messageEnc, genderEnc, languageEnc)
                             )
                         }
 
                     } else {
                         // Partial block
+                        Log.d(TAG, "Block detail: $blockDetail")
                         val user = LoginPref.getLoginObject(this@CallService)
 
                         if (blockDetail?.message != null) {
                             messageEnc = URLEncoder.encode(blockDetail.message, "utf-8")
                         }
-                        var genderEnc: String
-                        val language: String
 
-                        if (user?.paywhirl_plan_id == PLAN_PRO) {
-                            // Pro plan
-                            genderEnc = if (blockDetail?.set_voice_gender == "F") {
-                                URLEncoder.encode("woman", "utf-8")
-                            } else {
-                                URLEncoder.encode("man", "utf-8")
-                            }
-                            language = Utils.getLanguage(blockDetail?.set_voice_lang!!)
-                        } else {
-                            // Standard
-                            genderEnc = URLEncoder.encode("man", "utf-8")
-                            language = "en"
-                        }
-
-                        if (language == "ru-RU" || language == "zh-CN") {
-                            genderEnc = URLEncoder.encode("alice", "utf-8")
-                        }
-
-                        val languageEnc = URLEncoder.encode(language, "utf-8")
-
-                        Utils.callTwiloNumber(
+                        Utils.callTwilioNumber(
                             contactPhone,
                             ApiConstant.TWILIO_NUMBER,
-                            "http://blockcallsnow.com/response.php?message=$messageEnc&gender=$genderEnc&language=$languageEnc"
+                            twilioResponseUrl(messageEnc, genderEnc, languageEnc)
                         )
                     }
                 }
@@ -309,10 +299,10 @@ class CallService : CallScreeningService() {
                 )
             )
 
-            Utils.callTwiloNumber(
+            Utils.callTwilioNumber(
                 phoneNumber,
                 ApiConstant.TWILIO_NUMBER,
-                "http://blockcallsnow.com/response.php?message=$messageEnc&gender=$genderEnc&language=$languageEnc"
+                twilioResponseUrl(messageEnc, genderEnc, languageEnc)
             )
         }
 

@@ -9,7 +9,14 @@
         android:id="@+id/nav_blocked_list"
         android:name="com.call.blockcallnow.ui.menu.home.BlockedListFragment"
         android:label="@string/menu_blocked_list"
-        tools:layout="@layout/fragment_blocked_list" />
+        tools:layout="@layout/fragment_blocked_list" >
+        <action
+            android:id="@+id/action_nav_blocked_list_to_nav_logs"
+            app:destination="@id/nav_logs" />
+        <action
+            android:id="@+id/action_nav_blocked_list_to_nav_messages"
+            app:destination="@id/nav_messages" />
+    </fragment>
     <fragment
         android:id="@+id/nav_logs"
         android:name="com.call.blockcallnow.ui.menu.logs.LogsFragment"
@@ -25,5 +32,10 @@
         android:name="com.call.messaging.ui.conversationlist.ConversationListActivity"
         android:label="@string/menu_messages"
         tools:layout="@layout/conversation_fragment" />
+    <activity
+        android:id="@+id/nav_change_password"
+        android:name="com.call.blockcallnow.ui.menu.changepassword.ChangePasswordActivity"
+        tools:layout="@layout/activity_change_password"
+        android:label="@string/change_password" />
 
 </navigation>
