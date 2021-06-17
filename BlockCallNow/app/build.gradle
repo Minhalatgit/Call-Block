@@ -21,8 +21,8 @@ android {
         applicationId "com.call.blockcallnow"
         minSdkVersion 21
         targetSdkVersion 30
-        versionCode 5
-        versionName "1.4"
+        versionCode 8
+        versionName "1.7"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         javaCompileOptions {

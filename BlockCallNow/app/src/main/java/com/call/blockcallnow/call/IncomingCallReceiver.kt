@@ -25,6 +25,7 @@ import com.call.blockcallnow.data.room.BlockContactDao
 import com.call.blockcallnow.data.room.LogContact
 import com.call.blockcallnow.util.LogUtil
 import com.call.blockcallnow.util.Utils
+import com.call.blockcallnow.util.Utils.Companion.BLOCK_MESSAGE
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import retrofit2.Response
 import java.net.URLEncoder
@@ -255,11 +256,7 @@ class IncomingCallReceiver : BroadcastReceiver() {
                         )
                     )
 
-                    var messageEnc = URLEncoder.encode(
-                        "The person you’ve called has blocked you. If you feel as though you’ve reached\n" +
-                                "this message in error, leave a message and you may or may not receive a call\n" +
-                                "back. Good Bye!", "utf-8"
-                    )
+                    var messageEnc = URLEncoder.encode(BLOCK_MESSAGE, "utf-8")
 
                     if (blockDetail?.status == Utils.FULL_BLOCK) {
                         Log.e(TAG, "onResponse: Full block")
@@ -297,11 +294,7 @@ class IncomingCallReceiver : BroadcastReceiver() {
                 }
             })
         } else {
-            val messageEnc = URLEncoder.encode(
-                "The person you’ve called has blocked you. If you feel as though you’ve reached\n" +
-                        "this message in error, leave a message and you may or may not receive a call\n" +
-                        "back. Good Bye!", "utf-8"
-            )
+            val messageEnc = URLEncoder.encode(BLOCK_MESSAGE, "utf-8")
             val genderEnc = URLEncoder.encode("man", "utf-8")
             val languageEnc = URLEncoder.encode("en", "utf-8")
 

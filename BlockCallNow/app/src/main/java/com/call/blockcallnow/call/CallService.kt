@@ -20,6 +20,7 @@ import com.call.blockcallnow.data.room.BlockContactDao
 import com.call.blockcallnow.data.room.LogContact
 import com.call.blockcallnow.util.LogUtil
 import com.call.blockcallnow.util.Utils
+import com.call.blockcallnow.util.Utils.Companion.BLOCK_MESSAGE
 import com.call.blockcallnow.util.Utils.Companion.PLAN_PRO
 import com.call.blockcallnow.util.Utils.Companion.twilioResponseUrl
 import io.reactivex.rxjava3.disposables.CompositeDisposable
@@ -78,6 +79,7 @@ class CallService : CallScreeningService() {
                 rejectCall(response, callDetails, phoneNumber, dao)
             }
         } else if (BlockCallsPref.getSpamOption(this)) {
+            LogUtil.e(TAG, "Spam blocking is active, checking for scam")
             isBlockContact = false
             checkForSpam(response, callDetails, phoneNumber, app)
         } else {
@@ -123,18 +125,18 @@ class CallService : CallScreeningService() {
                 if (response.isSuccessful) {
                     if (response.body() != null && response.body()?.spamRisk != null && response.body()?.spamRisk?.level == 2) {
 //                                rejectAndUpdate(phoneNumber!!, builder, callDetails, app)
-                        LogUtil.e(TAG, "number is spam from ,rejecting")
+                        LogUtil.e(TAG, "Number is from spam, rejecting")
                         rejectCall(builder, callDetails, phoneNumber, dao)
                     } else {
-                        LogUtil.e(TAG, "number not spam from api")
+                        LogUtil.e(TAG, "Number not spam from api")
                     }
                 } else {
-                    LogUtil.e(TAG, "response not success")
+                    LogUtil.e(TAG, "Response not success")
                 }
             }
         })
 
-        LogUtil.e(TAG, "exit checkForSpam")
+        LogUtil.e(TAG, "Exit checkForSpam")
     }
 
     private fun rejectAndUpdate(
@@ -239,11 +241,7 @@ class CallService : CallScreeningService() {
                         )
                     )
 
-                    var messageEnc = URLEncoder.encode(
-                        "The person you’ve called has blocked you. If you feel as though you’ve reached\n" +
-                                "this message in error, leave a message and you may or may not receive a call\n" +
-                                "back. Good Bye!", "utf-8"
-                    )
+                    var messageEnc = URLEncoder.encode(BLOCK_MESSAGE, "utf-8")
 
                     if (blockDetail?.status == Utils.FULL_BLOCK) {
                         Log.e(TAG, "onResponse: Full block")
@@ -282,11 +280,7 @@ class CallService : CallScreeningService() {
                 }
             })
         } else {
-            val messageEnc = URLEncoder.encode(
-                "The person you’ve called has blocked you. If you feel as though you’ve reached\n" +
-                        "this message in error, leave a message and you may or may not receive a call\n" +
-                        "back. Good Bye!", "utf-8"
-            )
+            val messageEnc = URLEncoder.encode(BLOCK_MESSAGE, "utf-8")
             val genderEnc = URLEncoder.encode("man", "utf-8")
             val languageEnc = URLEncoder.encode("en", "utf-8")
 
@@ -308,4 +302,5 @@ class CallService : CallScreeningService() {
 
 
     }
+
 }

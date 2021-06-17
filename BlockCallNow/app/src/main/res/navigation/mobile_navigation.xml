@@ -27,9 +27,9 @@
         android:name="com.call.blockcallnow.ui.menu.settings.SettingsFragment"
         android:label="@string/label_setting"
         tools:layout="@layout/fragment_settings" />
-    <activity
+    <fragment
         android:id="@+id/nav_messages"
-        android:name="com.call.messaging.ui.conversationlist.ConversationListActivity"
+        android:name="com.call.blockcallnow.ui.menu.ConversationFragment"
         android:label="@string/menu_messages"
         tools:layout="@layout/conversation_fragment" />
     <activity

@@ -133,7 +133,6 @@ class MainActivity : BaseActivity() {
             navController.navigate(R.id.nav_blocked_list)
         }
 
-        openSMSAppChooser()
         requestRole() //for Android 10 and higher
         requestAppPermissions()
         callPermission()
@@ -167,7 +166,6 @@ class MainActivity : BaseActivity() {
 
     private fun callPermissionForP() = runWithPermissions(
         Manifest.permission.READ_PHONE_STATE,
-        Manifest.permission.READ_CALL_LOG,
         Manifest.permission.CALL_PHONE,
         Manifest.permission.ANSWER_PHONE_CALLS
     ) {}
@@ -246,37 +244,13 @@ class MainActivity : BaseActivity() {
                 LogUtil.e(TAG, "this is default app")
             } else {
                 LogUtil.e(TAG, "Please allow sms default app")
-                openSMSAppChooser()
+//                openSMSAppChooser()
             }
         } else if (requestCode == RC_CONTACT_CHANGE) {
             if (resultCode == Activity.RESULT_OK) {
                 updateContactList()
             } else
                 LogUtil.e(TAG, "Contact does not change")
-        }
-    }
-
-    fun isDefaultSmsApp(context: Context): Boolean {
-        return context.packageName == Telephony.Sms.getDefaultSmsPackage(context)
-    }
-
-    private fun openSMSAppChooser() {
-        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.P) {
-            val roleManager = getSystemService(RoleManager::class.java)
-            if (!roleManager.isRoleHeld(RoleManager.ROLE_SMS)) {
-                val roleRequestIntent = roleManager.createRequestRoleIntent(RoleManager.ROLE_SMS)
-                startActivityForResult(roleRequestIntent, RC_DEFAULT_SMS)
-            } else {
-                LogUtil.e(TAG, "you are already default app")
-            }
-        } else {
-            if (!isDefaultSmsApp(this)) {
-                val setSmsAppIntent = Intent(Telephony.Sms.Intents.ACTION_CHANGE_DEFAULT)
-                setSmsAppIntent.putExtra(Telephony.Sms.Intents.EXTRA_PACKAGE_NAME, packageName)
-                startActivityForResult(setSmsAppIntent, RC_DEFAULT_SMS)
-            } else {
-                LogUtil.e(TAG, "You are already default SMS app")
-            }
         }
     }
 

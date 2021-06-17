@@ -33,6 +33,9 @@ class Utils {
         const val PLAN_STAND = 134321
         const val PLAN_PRO = 119832
 
+        const val BLOCK_MESSAGE =
+            "Attention, The person you've called does not want to speak to you. This means You Have Been Blocked. So remove this number and do not call again. Powered by Block Calls Now Dot Com. Good Bye!"
+
         fun isInternationalNumber(context: Context, phoneNumber: String): Boolean {
             val phoneNumberUtil = PhoneNumberUtil.createInstance(context)
             try {
