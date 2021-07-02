@@ -166,6 +166,7 @@ class MainActivity : BaseActivity() {
 
     private fun callPermissionForP() = runWithPermissions(
         Manifest.permission.READ_PHONE_STATE,
+        Manifest.permission.READ_CALL_LOG,
         Manifest.permission.CALL_PHONE,
         Manifest.permission.ANSWER_PHONE_CALLS
     ) {}
