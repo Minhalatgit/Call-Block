@@ -29,9 +29,13 @@ class Utils {
 
         const val PARTIAL_BLOCK: String = "partial"
         const val FULL_BLOCK: String = "full"
-        const val PLAN_TRIAL = 1
-        const val PLAN_STAND = 134321
-        const val PLAN_PRO = 119832
+//        const val PLAN_TRIAL = 1
+//        const val PLAN_STAND = 134321
+//        const val PLAN_PRO = 119832
+
+        const val PLAN_TRIAL = "plan_IZx1LSDoxnJbiN"
+        const val PLAN_STAND = "price_1ITc7hBqliNLNa257IjLat2B"
+        const val PLAN_PRO = "plan_IZx15jl4XhoNP9"
 
         const val BLOCK_MESSAGE =
             "Attention, The person you've called does not want to speak to you. This means You Have Been Blocked. So remove this number and do not call again. Powered by Block Calls Now Dot Com. Good Bye!"

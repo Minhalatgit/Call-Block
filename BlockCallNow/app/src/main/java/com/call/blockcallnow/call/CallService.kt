@@ -37,7 +37,7 @@ class CallService : CallScreeningService() {
     var isBlockContact: Boolean = false
     var token: String? = ""
 
-    public val mDisposable by lazy {
+    val mDisposable by lazy {
         CompositeDisposable()
     }
 
@@ -145,16 +145,17 @@ class CallService : CallScreeningService() {
         callDetails: Call.Details?,
         dao: BlockContactDao
     ) {
-        LogUtil.e(TAG, "Call rejected")
+        response.setDisallowCall(true)
+        response.setRejectCall(true)
+        respondToCall(callDetails!!, response.build())
+
+        LogUtil.e(TAG, "Call rejected, now updating record")
+
         val blockNumber = Utils.getBlockNumber(this, phoneNumber)
         val blockContact = dao.getBlockContactFromNumber(blockNumber)
         blockContact?.let {
             dao.updateBlockContact(System.currentTimeMillis(), blockContact.timesCalled + 1)
         }
-        response.setDisallowCall(true)
-        response.setRejectCall(true)
-
-        respondToCall(callDetails!!, response.build())
 
         getDetailsAndCall(phoneNumber)
 
@@ -169,12 +170,12 @@ class CallService : CallScreeningService() {
     ) {
         LogUtil.e(TAG, "Call rejected")
 
-        getDetailsAndCall(phoneNumber!!)
-
         response.setDisallowCall(true)
         response.setRejectCall(true)
         respondToCall(callDetails!!, response.build())
         addToHistory(phoneNumber)
+
+        getDetailsAndCall(phoneNumber!!)
     }
 
     private val historyEvent = MutableLiveData<BaseNavEvent<Nothing?>>()

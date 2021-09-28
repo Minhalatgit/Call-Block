@@ -13,6 +13,6 @@ data class BlockContact(
     @ColumnInfo(name = "block_number") var blockNumber: String?,
     @ColumnInfo(name = "block_status") var blockStatus: String,
     @ColumnInfo(name = "image") var uri: String?,
-    @ColumnInfo(name = "last_call") var last_call: Int? ,
+    @ColumnInfo(name = "last_call") var last_call: Int?,
     @ColumnInfo(name = " times_called") var timesCalled: Int
 )

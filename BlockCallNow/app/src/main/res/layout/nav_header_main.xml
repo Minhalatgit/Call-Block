@@ -8,10 +8,11 @@
     android:theme="@style/ThemeOverlay.AppCompat.Dark">
 
     <LinearLayout
-        android:orientation="horizontal"
         android:layout_width="match_parent"
-        android:padding="@dimen/_15sdp"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="@dimen/_15sdp">
+
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/iv_profile"
             android:layout_width="@dimen/_70sdp"
@@ -51,10 +52,10 @@
 
     </LinearLayout>
 
-   <View
-       android:background="@color/colorWhite"
-       android:layout_width="match_parent"
-       android:alpha="0.9"
-       android:layout_height="1.4dp"/>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1.4dp"
+        android:alpha="0.9"
+        android:background="@color/colorWhite" />
 
 </LinearLayout>

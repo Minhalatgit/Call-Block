@@ -28,7 +28,6 @@ class BlockCallApplication : Application() {
     override fun onCreate() {
         super.onCreate()
         ctx = this
-
     }
 
     companion object {

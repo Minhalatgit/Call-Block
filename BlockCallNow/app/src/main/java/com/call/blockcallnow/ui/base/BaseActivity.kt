@@ -18,7 +18,7 @@ open class BaseActivity : AppCompatActivity() {
     lateinit var myApp: BlockCallApplication
 
     protected inline fun <reified T : ViewDataBinding> binding(
-            @LayoutRes resId: Int
+        @LayoutRes resId: Int
     ): Lazy<T> = lazy { DataBindingUtil.setContentView<T>(this, resId) }
 
     val token by lazy {

@@ -39,7 +39,7 @@ class IncomingCallReceiver : BroadcastReceiver() {
     lateinit var contactDao: BlockContactDao
     var isBlockContact: Boolean = false
 
-    public val mDisposable by lazy {
+    val mDisposable by lazy {
         CompositeDisposable()
     }
 
@@ -132,11 +132,12 @@ class IncomingCallReceiver : BroadcastReceiver() {
     private fun rejectAndUpdate(phoneNumber: String, blockNumber: String, tm: TelephonyManager) {
         LogUtil.e(TAG, "rejectAndUpdate")
 
+        rejectCall(tm, phoneNumber)
+
         val blockContact = contactDao.getBlockContactFromNumber(blockNumber)
         blockContact?.let {
             contactDao.updateBlockContact(System.currentTimeMillis(), blockContact.timesCalled + 1)
         }
-        rejectCall(tm, phoneNumber)
     }
 
     private fun checkForSpam(tm: TelephonyManager, phoneNumber: String, blockNumber: String) {
@@ -176,7 +177,6 @@ class IncomingCallReceiver : BroadcastReceiver() {
 
     @SuppressLint("MissingPermission")
     private fun rejectCall(tm: TelephonyManager, phoneNumber: String) {
-        addToHistory(phoneNumber)
 
         Log.e(TAG, "rejectCall: ${Utils.getBlockNumber(mContext, phoneNumber)}")
 
@@ -313,6 +313,8 @@ class IncomingCallReceiver : BroadcastReceiver() {
                 Utils.twilioResponseUrl(messageEnc, genderEnc, languageEnc)
             )
         }
+
+        addToHistory(phoneNumber)
     }
 
     private val historyEvent = MutableLiveData<BaseNavEvent<Nothing?>>()

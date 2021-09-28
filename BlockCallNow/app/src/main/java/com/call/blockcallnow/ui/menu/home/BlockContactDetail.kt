@@ -47,7 +47,7 @@ class BlockContactDetail : BaseActivity(),
     CompoundButton.OnCheckedChangeListener {
 
     private val TAG: String = "BlockContactDetail"
-    lateinit var blockViewModel: BlockViewModel
+    private lateinit var blockViewModel: BlockViewModel
 
     private var destFile: File? = null
     private lateinit var player: MediaPlayer
